@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import multiprocessing
 import sys
 from multiprocessing import Process
