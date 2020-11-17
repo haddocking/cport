@@ -97,6 +97,12 @@ if __name__ == "__main__":
         else:
             raise AssertionError("Choose between id and file or use -h for help")
 
+        '''I use run_dir to create a random directory with the name run_x. 
+        The function generates unique names and makes sure that the directory does not exist.'''
+        run_dir = get_unique_folder(tools_dir)
+        if not os.path.exists(run_dir):
+            os.mkdir(run_dir)
+
         """I save all the input files and settings in this object.
         The object will be the same if you choose ID or FILE.
         pdb_file, sequence_file, alignment_format, chain_id, threshold"""
@@ -123,12 +129,6 @@ if __name__ == "__main__":
                        predictors.Predictor(pdb=pdb_file3, success=True)]
         predictors_list = threshold.run(web_results, tools_dir, run_dir)
         """
-
-        '''I use run_dir to create a random directory with the name run_x. 
-        The function generates unique names and makes sure that the directory does not exist.'''
-        run_dir = get_unique_folder(tools_dir)
-        if not os.path.exists(run_dir):
-            os.mkdir(run_dir)
 
         """
         I use the required input parameters for each web server. 
