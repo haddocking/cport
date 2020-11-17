@@ -64,12 +64,6 @@ if __name__ == "__main__":
         it can use external files like threshold.stats and residue distance calculations'''
         tools_dir = os.path.dirname(os.path.realpath(__file__))
 
-        '''I use run_dir to create a random directory with the name run_x. 
-        The function generates unique names and makes sure that the directory does not exist.'''
-        run_dir = get_unique_folder(tools_dir)
-        if not os.path.exists(run_dir):
-            os.mkdir(run_dir)
-
         """Command-line arguments"""
         if len(sys.argv) > 1:
             arg_parser = argparse.ArgumentParser()
@@ -129,6 +123,12 @@ if __name__ == "__main__":
                        predictors.Predictor(pdb=pdb_file3, success=True)]
         predictors_list = threshold.run(web_results, tools_dir, run_dir)
         """
+
+        '''I use run_dir to create a random directory with the name run_x. 
+        The function generates unique names and makes sure that the directory does not exist.'''
+        run_dir = get_unique_folder(tools_dir)
+        if not os.path.exists(run_dir):
+            os.mkdir(run_dir)
 
         """
         I use the required input parameters for each web server. 
