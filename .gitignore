@@ -4,3 +4,5 @@ __pycache__
 Icon?
 *.o
 venv/
+
+run_*/
