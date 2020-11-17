@@ -16,33 +16,34 @@ import os
 import random
 
 
+def func1(i, re,params,main_dir):
+    print("s1")
+    re[i] = pro_mate.run(params, main_dir)
+    print("e1")
+
+def func2(i, re,params,main_dir):
+    print("s2")
+    re[i] = meta_ppisp.run(params, main_dir)
+    print("e2")
+
+def func3(i, re,params,main_dir):
+    print("s3")
+    re[i] = spider.run(params, main_dir)
+    print("e3")
+
 def run(params, main_dir):
-    def func1(i, re):
-        print("s1")
-        re[i] = pro_mate.run(params, main_dir)
-        print("e1")
-
-    def func2(i, re):
-        print("s2")
-        re[i] = meta_ppisp.run(params, main_dir)
-        print("e2")
-
-    def func3(i, re):
-        print("s3")
-        re[i] = spider.run(params, main_dir)
-        print("e3")
 
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
 
-    p1 = Process(target=func1, args=(0, predictors_dic))
+    p1 = Process(target=func1, args=(0, predictors_dic,params,main_dir))
     p1.start()
-    p2 = Process(target=func2, args=(1, predictors_dic))
-    p2.start()
-    p3 = Process(target=func3, args=(2, predictors_dic))
+    #p2 = Process(target=func2, args=(1, predictors_dic,params,main_dir))
+    #p2.start()
+    p3 = Process(target=func3, args=(2, predictors_dic,params,main_dir))
     p3.start()
     p1.join()
-    p2.join()
+    #p2.join()
     p3.join()
 
     return predictors_dic

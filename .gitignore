@@ -6,3 +6,5 @@ Icon?
 venv/
 
 run_*/
+
+.idea/
