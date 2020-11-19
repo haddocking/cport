@@ -12,6 +12,7 @@ from tools import calc_sasa
 from tools import residiues_distance, predictors
 from tools import reconstract_pdb
 from tools import save_csv
+from tools import validations
 import os
 import random
 
@@ -38,12 +39,12 @@ def run(params, main_dir):
 
     p1 = Process(target=func1, args=(0, predictors_dic,params,main_dir))
     p1.start()
-    #p2 = Process(target=func2, args=(1, predictors_dic,params,main_dir))
-    #p2.start()
+    p2 = Process(target=func2, args=(1, predictors_dic,params,main_dir))
+    p2.start()
     p3 = Process(target=func3, args=(2, predictors_dic,params,main_dir))
     p3.start()
     p1.join()
-    #p2.join()
+    p2.join()
     p3.join()
 
     return predictors_dic
@@ -74,29 +75,16 @@ if __name__ == "__main__":
             it will automatically use 3: very sensitive (recommended from the Cport webserver)
             """
             # I am not sure what to do if you don't set a chain id
-            arg_parser.add_argument('-chain_id', help="optional argument")
-            arg_parser.add_argument('-threshold', help="optional preset to 3", type=int, default=3)
-
-            """Select between ID and FILE.
-            example for id:   id -pdb_id 1PPE
-            example for file: file -pdb ./1PPE.pdb -seq ./seq.fasta -al FASTA """
-            subparsers = arg_parser.add_subparsers(help='Choose between id and file')
-
-            group1 = subparsers.add_parser('id', help='id help')
-            group1.add_argument('-pdb_id', help="pid", required=True)
-
-            group2 = subparsers.add_parser('file', help='file help')
-            group2.add_argument('-pdb', help="fpdb", required=True)
-            group2.add_argument('-seq', help="fseq", required=True)
-            group2.add_argument('-al', help="alformat", required=True)
-
-            """This is a silent argument. It does not affect the input arguments. 
-            I use this argument later to distinguish the method you use"""
-            group2.add_argument('-pdb_id', help=argparse.SUPPRESS, default=None)
-
-            args = arg_parser.parse_args()
+            arg_parser.add_argument('-chain_id', help="optional argument",dest="chain_id")
+            arg_parser.add_argument('-threshold', help="optional preset to 3", type=int, default=3,dest="threshold")
+            arg_parser.add_argument('-pdb_id',help="give the id of the pdb XXXX",dest="pdb_id")
+            arg_parser.add_argument('-pdb_file',help="load the pdb from a local file",type=validations.pdb_assertions,dest="pdb_file")
+            arg_parser.add_argument('-sequence_file', help="load the seq from a local file",type=validations.seq_assertions,dest="seq_file")
+            arg_parser.add_argument('-alignment_format',help="give the format of the alignment",choices=["FASTA","CLUSTAL","MAF","PHYLIP"],dest="al")
+            cl_arguments = arg_parser.parse_args()
+            validations.argument_assertions(cl_arguments)
         else:
-            raise AssertionError("Choose between id and file or use -h for help")
+            raise AssertionError("Please provide pdb_id or pdb_file")
 
         '''I use run_dir to create a random directory with the name run_x. 
         The function generates unique names and makes sure that the directory does not exist.'''
@@ -107,7 +95,7 @@ if __name__ == "__main__":
         """I save all the input files and settings in this object.
         The object will be the same if you choose ID or FILE.
         pdb_file, sequence_file, alignment_format, chain_id, threshold"""
-        input_params = parser.run(args, run_dir)
+        input_params = parser.run(cl_arguments, run_dir)
 
         """
         This is a hard-coded part of the script. 
