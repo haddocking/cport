@@ -35,8 +35,8 @@ def run(argv,main_dir):
         from url, from file and from string
         More details in the pdb.py 
         """
-        pdb_file = pdb.from_file(argv.pdb, name=os.path.basename(argv.pdb).split(".")[0],main_dir=main_dir)
-        sequence_file = open(argv.seq, "r").read()
+        pdb_file = pdb.from_file(argv.pdb_file, name=os.path.basename(argv.pdb_file).split(".")[0],main_dir=main_dir)
+        sequence_file = open(argv.seq_file, "r").read()
         alignment_format = argv.al
 
     chain_id = argv.chain_id
