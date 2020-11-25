@@ -38,6 +38,6 @@ def from_url(seq_url, name, main_dir,format):
     return seq_object
 
 def fetch_from_id(pdb_id,format,main_dir):
-    seq_url = "http://www.uniprot.org/uniprot/?query=database%3A%28type%3Apdb+{}%29&format={}".format(pdb_id,format)
+    seq_url = "https://www.rcsb.org/fasta/entry/{}/display".format(pdb_id)
     object = from_url(seq_url,pdb_id,main_dir,format)
     return object
