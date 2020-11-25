@@ -1,3 +1,5 @@
+import os
+
 def argument_assertions(args):
     if (args.pdb_id is None) and (args.pdb_file is None):
         embed()
