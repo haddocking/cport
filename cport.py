@@ -5,7 +5,7 @@ import sys
 from multiprocessing import Process
 from IPython import embed
 from tools import parser
-from send_file import meta_ppisp, pro_mate, spider
+from send_file import meta_ppisp, pro_mate, spider, whiscy
 import argparse
 from tools import threshold
 from tools import calc_sasa
@@ -16,7 +16,6 @@ from tools import validations
 import os
 import random
 import time
-
 
 def func1(i, predictors_dic, params, main_dir):
     predictors_dic[i] = pro_mate.run(params, main_dir)
@@ -30,6 +29,10 @@ def func3(i, predictors_dic, params, main_dir):
     predictors_dic[i] = spider.run(params, main_dir)
 
 
+def func4(i, predictors_dic, params, main_dir):
+    predictors_dic[i] = whiscy.run(params, main_dir)
+
+
 def get_processes(web_servers, predictors_dic, params, main_dir):
     processes = []
     for i, server in enumerate(web_servers):
@@ -39,6 +42,8 @@ def get_processes(web_servers, predictors_dic, params, main_dir):
             p = Process(target=func2, args=(i, predictors_dic, params, main_dir))
         elif server == "spidder":
             p = Process(target=func3, args=(i, predictors_dic, params, main_dir))
+        elif server == "whiscy":
+            p = Process(target=func4, args=(i, predictors_dic, params, main_dir))
         else:
             raise AssertionError("Webserver not in the list")
         processes.append(p)
@@ -61,8 +66,8 @@ def get_multiprocess_string(web_servers, main_dir):
 def run(params, main_dir):
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
-    web_servers = ["promate", "meta_ppisp", "spidder"]
-    #web_servers = ["promate"]
+    #web_servers = ["promate", "meta_ppisp", "spidder", "whiscy"]
+    web_servers = ["promate","spidder","meta_ppisp"]
     print("Preparing the {} web servers to run in parallel".format(len(web_servers)))
     processes = get_processes(web_servers, predictors_dic, params, main_dir)
 
@@ -125,6 +130,7 @@ if __name__ == "__main__":
         """I save all the input files and settings in this object.
         The object will be the same if you choose ID or FILE.
         pdb_file, sequence_file, alignment_format, chain_id, threshold"""
+
         input_params = parser.run(cl_arguments, run_dir)
         """
         This is a hard-coded part of the script. 
