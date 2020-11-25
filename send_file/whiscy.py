@@ -48,10 +48,10 @@ def run(input_params, main_dir):
     init_session = session.get(url, verify=False)
     csrf_token = get_csrf_token(init_session.text)
     pdb_file = open(input_params.pdb_file.pdb_dir)
-    seq_file = open(input_params.seqence_file.seq_dir)
+    seq_file = open(input_params.sequence_file.seq_dir)
 
     data = {"chain": input_params.chain_id,
-            "alignment_format": input_params.seqence_file.format,
+            "alignment_format": input_params.sequence_file.format,
             "interface_propensities": True,
             "surface_smoothing": True,
             "csrf_token": csrf_token}
