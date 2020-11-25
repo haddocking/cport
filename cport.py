@@ -66,8 +66,8 @@ def get_multiprocess_string(web_servers, main_dir):
 def run(params, main_dir):
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
-    #web_servers = ["promate", "meta_ppisp", "spidder", "whiscy"]
-    web_servers = ["promate","spidder","meta_ppisp"]
+    web_servers = ["promate", "meta_ppisp", "spidder", "whiscy"]
+    #web_servers = ["promate"]
     print("Preparing the {} web servers to run in parallel".format(len(web_servers)))
     processes = get_processes(web_servers, predictors_dic, params, main_dir)
 

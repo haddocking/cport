@@ -114,5 +114,5 @@ def from_string(pdb_string, name,main_dir,chain=None):
 def fetch_from_id(pdb_id,main_dir,chain=None):
     name = pdb_id
     pdb_url = "http://files.rcsb.org/view/{}.pdb".format(name)
-    pdb_object = from_url(pdb_url,name,chain)
+    pdb_object = from_url(pdb_url,name,main_dir,chain)
     return pdb_object
