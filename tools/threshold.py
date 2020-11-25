@@ -43,7 +43,9 @@ def run(predictors,tools_dir,main_dir):
     """
     I upgrade predictors  
     """
+    final_suc_predictors = []
     for pred in predictors:
-        pred.cutoff_rank, pred.cutoff_score = thress[pred.pdb.name]
-
-    return predictors
+        if pred.success is True:
+            pred.cutoff_rank, pred.cutoff_score = thress[pred.pdb.name]
+            final_suc_predictors.append(pred)
+    return final_suc_predictors
