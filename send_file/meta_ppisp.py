@@ -30,7 +30,7 @@ def wait(url,temp_file):
 def run(input_params,main_dir):
     url = 'https://pipe.rcc.fsu.edu/cgi-bin/meta-ppisp/run'
 
-    file = {'userfile': ("1PPE", input_params.pdb_file.as_string, 'text/plan'),
+    file = {'userfile': (input_params.name, input_params.pdb_file.as_string, 'text/plan'),
             'submitter': "1PPE",
             'pChain': input_params.chain_id}
 
@@ -50,7 +50,6 @@ def run(input_params,main_dir):
 
     html_string = wait(url,temp_file)
 
-    print("META PPISP: Run finished successfully", file=open(temp_file, "a"))
     pdb_url=""
     for line in html_string.split("\n"):
         if ("pdb" in line) & ("http" in line):

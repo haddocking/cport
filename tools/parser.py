@@ -1,4 +1,4 @@
-from tools import fetch_files, pdb
+from tools import pdb,seq
 from IPython import embed
 import os
 
@@ -10,6 +10,7 @@ class InputParams:
         self.alignment_format = alignment_format
         self.chain_id = chain_id
         self.threshold = threshold
+        self.name = pdb_file.name
 
     def print_args(self):
         print(
@@ -20,23 +21,24 @@ class InputParams:
             self.threshold)
 
 
-def run(argv,main_dir):
+def run(argv, main_dir):
     if argv.pdb_id is not None:
         """
         If you choose id, then the script auto-download the PDB and Sequence (FASTA format).
         If you specify chain id, then the PDB will contain only the residues with that chain id
         """
-        pdb_file = fetch_files.fetch_pdb(argv.pdb_id, argv.chain_id,main_dir)
-        sequence_file = fetch_files.fetch_sequence(argv.pdb_id)
         alignment_format = "FASTA"
+        pdb_file = pdb.fetch_from_id(argv.pdb_id, main_dir,argv.chain_id)
+        sequence_file = seq.fetch_from_id(argv.pdb_id,alignment_format,main_dir)
     else:
         """
         The pdb Object can get information with three different inputs
         from url, from file and from string
         More details in the pdb.py 
         """
-        pdb_file = pdb.from_file(argv.pdb_file, name=os.path.basename(argv.pdb_file).split(".")[0],main_dir=main_dir)
-        sequence_file = open(argv.seq_file, "r").read()
+        name =os.path.basename(argv.pdb_file).split(".")[0]
+        pdb_file = pdb.from_file(argv.pdb_file, name, main_dir=main_dir)
+        sequence_file = seq.from_file(argv.seq_file,name,main_dir,argv.al)
         alignment_format = argv.al
 
     chain_id = argv.chain_id

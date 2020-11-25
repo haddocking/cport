@@ -7,7 +7,7 @@ from IPython import embed
 def run(input_params,main_dir):
     url = "http://bioinfo41.weizmann.ac.il/promate-bin/processBSF.cgi"
 
-    file = {'fileup': ("1PPE", input_params.pdb_file.as_string, 'text/plan'),
+    file = {'fileup': (input_params.name, input_params.pdb_file.as_string, 'text/plan'),
             'pdbId': "dmmy",
             'chain': input_params.chain_id,
             'scConf': 1,
