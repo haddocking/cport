@@ -8,3 +8,6 @@ venv/
 run_*/
 
 .idea/
+
+id.sh
+pdb.sh
