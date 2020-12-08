@@ -1,7 +1,7 @@
 from IPython import embed
 import os
 from tools import pdb
-def run(predictors_list,main_dir):
+def run(init_pdb,predictors_list,main_dir):
     active_res =[]
     passive_res =[]
     for predictor in predictors_list:
@@ -14,7 +14,7 @@ def run(predictors_list,main_dir):
             if res in active_res:continue
             passive_res.append(res)
 
-    pdb_file = predictors_list[0].pdb
+    pdb_file = init_pdb
 
 
     pdb_string = ""
