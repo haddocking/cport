@@ -50,11 +50,15 @@ def run(input_params,main_dir):
 
     pdb_url = ""
 
+    time.sleep(10)
+
     r = requests.get(result_url)
     html = lxml.html.fromstring(r.text)
     refresh = html.cssselect('meta[http-equiv="Refresh"]')
 
-    if refresh:
+    if not refresh:
+        pass
+    else:
         print("SPPIDER: URL {} refresh".format(temp_url),file=open(temp_file, "a"))
         x = refresh[0].attrib['content'].find('http')
         result_url = refresh[0].attrib['content'][x:]
@@ -71,5 +75,5 @@ def run(input_params,main_dir):
         print("SPPIDER: Finished successfully", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=results_pdb, success=True)
     else:
-        print("SPPIDER: Failed {}".format(temp_url), file=open(temp_file, "a"))
+        print("SPPIDER: Failed {}".format(result_url), file=open(temp_file, "a"))
         return predictors.Predictor(pdb=input_params.pdb_file,success=False)
