@@ -22,32 +22,54 @@ class InputParams:
 
 
 def run(argv, main_dir):
+    # Using the PDB ID will download the Sequence and the PDB file
     if argv.pdb_id is not None:
-        """
-        If you choose id, then the script auto-download the PDB and Sequence (FASTA format).
-        If you specify chain id, then the PDB will contain only the residues with that chain id
-        """
+
         alignment_format = "FASTA"
+        print("Downloading the PDB file\n")
         pdb_file = pdb.fetch_from_id(argv.pdb_id, main_dir,argv.chain_id)
-        sequence_file = seq.fetch_from_id(argv.pdb_id,alignment_format,main_dir)
+        print("PDB file is ready")
+        chain_id = argv.chain_id
+
+        # If the chain id is not set will stop
+        # If the pdb contains one chain will use that one
+        if chain_id is None:
+            chain_id = pdb_file.get_chain_ids()
+            if len(chain_id) == 1:
+                print("Only one Chain id found {} - Selected chain: {}\n".format(chain_id[0]),chain_id[0])
+                chain_id = chain_id[0]
+            else:
+                raise AssertionError(
+                    "{} chain ids found specify one with -chain_id {}".format(len(chain_id), " or ".join(chain_id)))
+
+        print("Downloading the Sequence file\n")
+        # Using HSSP file from the web returns a PHYLSEQ for WHISCY
+        sequence_file = seq.fetch_from_id(argv.pdb_id,alignment_format,main_dir,pdb_file,chain_id)
+        print("Sequence file is ready\n")
+
     else:
-        """
-        The pdb Object can get information with three different inputs
-        from url, from file and from string
-        More details in the pdb.py 
-        """
+        # PDB file given
         name =os.path.basename(argv.pdb_file).split(".")[0]
         pdb_file = pdb.from_file(argv.pdb_file, name, main_dir=main_dir)
-        sequence_file = seq.from_file(argv.seq_file,name,main_dir,argv.al)
-        alignment_format = argv.al
+        print("PDB file is ready\n")
+        chain_id = argv.chain_id
 
-    chain_id = argv.chain_id
-    """
-    I don't know what to do if you don't specify the chain id
-    Here I use the id of the larger chain
-    """
-    if chain_id is None:
-        chain_id = pdb_file.get_larger_chain()
+        # If the chain id is not set will stop
+        # If the pdb contains one chain will use that one
+        if chain_id is None:
+            chain_id = pdb_file.get_chain_ids()
+            if len(chain_id) == 1:
+                print("Only one Chain id found {} - Selected chain: {}\n".format(chain_id[0],chain_id[0]))
+                chain_id = chain_id[0]
+            else:
+                raise AssertionError(
+                    "{} chain ids found specify one with -chain_id {}\n".format(len(chain_id), " or ".join(chain_id)))
+        print("Preparing the Sequence file \n")
+        # Converts the sequence file to match the format of WHISCY
+        sequence_file = seq.from_file(argv.seq_file,name,main_dir,argv.al,pdb_file,chain_id)
+        alignment_format = sequence_file.format
+        print("Sequence file is ready\n")
+
 
     threshold = argv.threshold
 
