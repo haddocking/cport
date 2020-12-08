@@ -26,15 +26,14 @@ class PdbFile:
         text_file.close()
         self.pdb_dir = full_dir
 
-    def get_larger_chain(self):
+
+    def get_chain_ids(self):
         chains = []
         for line in self.as_string.split("\n"):
             if line.startswith("ATOM"):
                 chain = line[20:23]
                 chains.append(chain.strip())
-        chain_names, chain_counts = np.unique(chains, return_counts=True)
-        idx = chain_counts == max(chain_counts)
-        return chain_names[idx].tolist()[0]
+        return list(set(chains))
 
     """
     I extract the scores from the b-factor column
@@ -78,9 +77,9 @@ def clear_pdb_string(pdb_string,chain=None):
 
 def save_pdb_to_temp_dir(main_dir,pdb_string,name):
     temp_dir = os.path.join(main_dir, "temp")
+    print("PDB is saved to the temp folder\n".format(name,os.path.join(os.path.basename(main_dir),"temp")))
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
-
     pdb_file = "{}.pdb".format(name)
     pdb_dir = os.path.join(temp_dir,pdb_file)
 
