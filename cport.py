@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import multiprocessing
 import sys
 from multiprocessing import Process
@@ -35,19 +34,17 @@ def func4(i, predictors_dic, params, main_dir):
 
 
 def get_processes(web_servers, predictors_dic, params, main_dir):
+    function_dictionary = {"promate":func1,
+                           "meta-ppisp":func2,
+                           "spidder":func3,
+                           "whiscy":func4}
     processes = []
+
     for i, server in enumerate(web_servers):
-        if server == "promate":
-            p = Process(target=func1, args=(i, predictors_dic, params, main_dir))
-        elif server == "meta_ppisp":
-            p = Process(target=func2, args=(i, predictors_dic, params, main_dir))
-        elif server == "spidder":
-            p = Process(target=func3, args=(i, predictors_dic, params, main_dir))
-        elif server == "whiscy":
-            p = Process(target=func4, args=(i, predictors_dic, params, main_dir))
-        else:
-            raise AssertionError("Webserver not in the list")
+        target_func = function_dictionary[server]
+        p = Process(target=target_func, args=(i, predictors_dic, params, main_dir))
         processes.append(p)
+
     return processes
 
 
@@ -67,8 +64,7 @@ def get_multiprocess_string(web_servers, main_dir):
 def run(params, main_dir):
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
-    web_servers = ["promate", "meta_ppisp", "spidder", "whiscy"]
-    #web_servers = ["promate"]
+    web_servers = input_params.servers
 
     print("Preparing the {} web servers to run in parallel\n".format(len(web_servers)))
     processes = get_processes(web_servers, predictors_dic, params, main_dir)
@@ -86,11 +82,17 @@ def run(params, main_dir):
 
 
 def get_unique_folder(tools_folder):
-    while True:
-        random_int = random.randint(1, 10000)
-        main_dir = os.path.join(tools_folder, "run_{}".format(random_int))
+    counter = 0
+    Val = True
+    while Val:
+        random_int = random.randint(1, 9999)
+        fixed_char = format(random_int,"04d")
+        main_dir = os.path.join(tools_folder, "run_{}".format(fixed_char))
         if not os.path.exists(main_dir):
             return main_dir
+        if counter > 9999:
+            Val = False
+        raise AssertionError("Maximum number of folders reached")
 
 
 if __name__ == "__main__":
@@ -113,6 +115,9 @@ if __name__ == "__main__":
                                     type=validations.seq_assertions, dest="seq_file")
             arg_parser.add_argument('-alignment_format', help="give the format of the alignment",
                                     choices=["FASTA", "CLUSTAL", "MAF", "PHYLIP"], dest="al")
+
+            arg_parser.add_argument("-servers",help="Choose between: whiscy(1) promate(2) meta_ppisp(3) spidder(4) Can select by Numbers,Names or combination Can also use range ex 1:4 (All servers) Default value: All",nargs="+",default="all")
+
             cl_arguments = arg_parser.parse_args()
             validations.argument_assertions(cl_arguments)
         else:
