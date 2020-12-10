@@ -4,13 +4,14 @@ import os
 
 
 class InputParams:
-    def __init__(self, pdb_file, sequence_file, alignment_format, chain_id, threshold):
+    def __init__(self, pdb_file, sequence_file, alignment_format, chain_id, threshold,servers):
         self.pdb_file = pdb_file
         self.sequence_file = sequence_file
         self.alignment_format = alignment_format
         self.chain_id = chain_id
         self.threshold = threshold
         self.name = pdb_file.name
+        self.servers = servers
 
     def print_args(self):
         print(
@@ -18,17 +19,53 @@ class InputParams:
             self.sequence_file,
             self.chain_id,
             self.alignment_format,
-            self.threshold)
+            self.threshold,
+            self.servers)
+
+
+def select_servers(choice_list):
+    servers = {
+        1: "whiscy",
+        2: "promate",
+        3: "meta_ppisp",
+        4: "spidder"}
+
+    server_selection = []
+
+    if choice_list == "all":
+        server_selection = list(servers.values())
+
+    else:
+        for selection in choice_list:
+            try:
+                n = int(selection)
+                server_selection.append(servers[n])
+            except:
+                split_selection = selection.split(":")
+                if len(split_selection) > 1:
+                    min_val = int(min(selection.split(":")))
+                    max_val = int(max(selection.split(":"))) + 1
+                    server_selection.extend([servers[int(n)] for n in range(min_val, max_val)])
+                else:
+                    if selection.lower() in servers.values():
+                        server_selection.append(selection.lower())
+                    else:
+                        raise AssertionError("Server not found in the list")
+
+    server_selection = list(set(server_selection))
+    return server_selection
 
 
 def run(argv, main_dir):
+    servers = select_servers(argv.servers)
+
     # Using the PDB ID will download the Sequence and the PDB file
     if argv.pdb_id is not None:
 
         alignment_format = "FASTA"
         print("Downloading the PDB file\n")
         pdb_file = pdb.fetch_from_id(argv.pdb_id, main_dir,argv.chain_id)
-        print("PDB file is ready")
+        print("PDB file is ready\n")
         chain_id = argv.chain_id
 
         # If the chain id is not set will stop
@@ -70,13 +107,13 @@ def run(argv, main_dir):
         alignment_format = sequence_file.format
         print("Sequence file is ready\n")
 
-
     threshold = argv.threshold
 
     input_params = InputParams(pdb_file,
                                sequence_file,
                                alignment_format,
                                chain_id,
-                               threshold)
+                               threshold,
+                               servers)
 
     return input_params
