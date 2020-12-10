@@ -10,29 +10,49 @@ To install the dependencies use:
 python3 -m pip install -r requirements.txt
 ```
 
+Change the config.json in Cport directory 
+
+```
+{
+"MUSCLE": "$CPORTPATH/tools/muscle3"
+  }
+```
+
 ## Command line arguments
 
-To execute the script, you need to run the cport.py file
+###To execute the script, you need to run the cport.py file
 
 Then you must choose between a pdb id or a local file
 
-For the id, you only need to give the ID of the pdb:
+For the id, you  need to give the ID of the pdb and the chain id:
 
 ```
-./cport.py -pdb_id XXXX
+./cport.py -pdb_id XXXX -chain X
 ```
-For the local file, you need to give the pdb file, the sequence file, and the alignment format:
+For the local file, you need to give the pdb file, the chain id, the sequence file, and the alignment format:
 
 ```
-./cport.py -pdb_file *.pdb -sequence_file *.txt -alignment_format * 
+./cport.py -pdb_file *.pdb -chain X -sequence_file *.txt -alignment_format * 
 ```
 
-The chain id and threshold are optional arguments:
+###You can select which web servers to use with -servers
+
+To see the available webservers use :
 ```
-./cport.py -chain_id * -threshold * -pdb_id XXXX
-```
-or 
-```
-./cport.py -chain_id * -threshold * -pdb_file *.pdb -sequence_file *.txt -alignment_format *
+./cport.py -h
 ```
 
+You can use numbers:
+```
+./cport.py -pdb_id 1PPE -chain_id E -servers 1 3 4
+```
+Range of numbers:
+```
+./cport.py -pdb_id 1PPE -chain_id E -servers 1:4
+```
+Names:
+```
+./cport.py -pdb_id 1PPE -chain_id E -servers whiscy spidder
+```
+
+The available webservers can 
