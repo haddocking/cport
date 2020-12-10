@@ -3,6 +3,8 @@ from Bio.Align.Applications import MuscleCommandline
 from Bio.Blast import NCBIWWW
 from Bio import SearchIO
 from tools import whiscy_pdbutil
+from IPython import embed
+import json
 
 class SequenceConverter:
     def __init__(self,sequence_dict,master_sequence=None):
@@ -27,7 +29,10 @@ class SequenceConverter:
     
     def save_fasta_msa_alignment(self,main_dir):
         tools_dir = os.path.dirname(os.path.realpath(__file__))
-        muscle_dir = os.path.join(tools_dir,"muscle3")
+        cport_dir = os.path.dirname(tools_dir)
+        config_dir = os.path.join(cport_dir,"config.json")
+        json_file = json.load(open(config_dir,"r"))
+        muscle_dir = json_file["MUSCLE"]
         temp_dir = os.path.join(main_dir,"temp")
         fasta_text = self.dic_to_fasta()
         fin_dir = os.path.join(temp_dir,"temp_fasta.fasta")
