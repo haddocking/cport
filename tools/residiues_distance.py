@@ -1,6 +1,6 @@
 import subprocess
 import os
-from IPython import embed
+
 
 def get_distance_list(distance_results):
     dist_list = []
@@ -13,9 +13,10 @@ def get_distance_list(distance_results):
     return dist_list
 
 
-def run(input_params,tools_dir,main_dir):
-    pdb_dir = input_params.pdb_file.pdb_dir.replace(" ","\ ")
-    res_dir = os.path.join(tools_dir,"tools/resdist/resdist").replace(" ","\ ")
+def run(input_params, tools_dir):
+    pdb_dir = input_params.pdb_file.pdb_dir.replace(" ", r"\ ")
+    res_dir = os.path.join(tools_dir, "tools/resdist/resdist")
+    res_dir = res_dir.replace(" ", r"\ ")
     final_dir = res_dir + " {}".format(pdb_dir)
     try:
         dist = subprocess.getoutput(final_dir)

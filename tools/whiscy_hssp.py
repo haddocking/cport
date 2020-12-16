@@ -122,6 +122,3 @@ def hssp_file_to_phylip(hssp_file_name, phylip_file_name, chain_id, master_seque
                     output_handle.write("{:10s}{}{}".format(proteins[k], alignments[k], os.linesep))
 
     return phylip_file,open(phylip_file,"r").read()
-
-
-

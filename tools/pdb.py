@@ -1,16 +1,13 @@
-from IPython import embed
 from urllib import request
-import numpy as np
 import os
 
 
 class PdbFile:
 
-    def __init__(self, string, name,pdb_dir):
+    def __init__(self, string, name, pdb_dir):
         self.as_string = string
         self.name = name
         self.pdb_dir = pdb_dir
-
 
     def save_file(self, pdb_dir):
         if not pdb_dir.startswith("./") and not pdb_dir.startswith("/"):
@@ -25,7 +22,6 @@ class PdbFile:
         text_file.write(self.as_string)
         text_file.close()
         self.pdb_dir = full_dir
-
 
     def get_chain_ids(self):
         chains = []
@@ -53,35 +49,42 @@ class PdbFile:
 
 
 """
-The pdb object can only get a string as input. 
-Using the functions below I can convert 3 different PDB inputs to string 
-Then I can create the Object
+The pdb object can only get a string as input
+Using the functions below I can convert 3 different PDB inputs to string
 main_dir is the directory of the run
 Each time I create a pdb object, it saves the PDB as file to the temp directory
 """
-def clear_pdb_string(pdb_string,chain=None):
+
+
+def clear_pdb_string(pdb_string, chain=None):
     final_string = ""
     if chain is None:
         for line in pdb_string.split("\n"):
-            if line.startswith("ATOM") | line.startswith("TER") | line.startswith("END"):
+            if (line.startswith("ATOM")
+                    or line.startswith("TER")
+                    or line.startswith("END")):
                 final_string += "{}\n".format(line)
     else:
         for line in pdb_string.split("\n"):
-            if line.startswith("ATOM") | line.startswith("TER"):
+            if (line.startswith("ATOM")
+                    or line.startswith("TER")):
                 chain_in_line = line[21]
-                if chain is not chain_in_line: continue
+                if chain is not chain_in_line:
+                    continue
                 final_string += "{}\n".format(line)
             if line.startswith("END"):
                 final_string += "{}\n".format(line)
-    return  final_string
+    return final_string
 
-def save_pdb_to_temp_dir(main_dir,pdb_string,name):
+
+def save_pdb_to_temp_dir(main_dir, pdb_string, name):
     temp_dir = os.path.join(main_dir, "temp")
-    print("PDB is saved to the temp folder\n".format(name,os.path.join(os.path.basename(main_dir),"temp")))
+    string_temp_dir = os.path.join(os.path.basename(main_dir), "temp")
+    print(f"PDB {name} is saved to the temp folder {string_temp_dir}\n")
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
     pdb_file = "{}.pdb".format(name)
-    pdb_dir = os.path.join(temp_dir,pdb_file)
+    pdb_dir = os.path.join(temp_dir, pdb_file)
 
     if not os.path.exists(pdb_dir):
         save_file = open(pdb_dir, "w")
@@ -90,28 +93,32 @@ def save_pdb_to_temp_dir(main_dir,pdb_string,name):
 
     return pdb_dir
 
-def from_file(pdb_dir, name,main_dir,chain=None):
-    pdb_string = clear_pdb_string(open(pdb_dir, "rb").read().decode("UTF-8"),chain)
-    pdb_dir = save_pdb_to_temp_dir(main_dir,pdb_string,name)
-    pdb_object = PdbFile(pdb_string, name=name,pdb_dir=pdb_dir)
+
+def from_file(pdb_dir, name, main_dir, chain=None):
+    pdb_string = open(pdb_dir, "rb").read().decode("UTF-8")
+    clean_pdb_string = clear_pdb_string(pdb_string, chain)
+    pdb_dir = save_pdb_to_temp_dir(main_dir, clean_pdb_string, name)
+    pdb_object = PdbFile(clean_pdb_string, name=name, pdb_dir=pdb_dir)
     return pdb_object
 
 
-def from_url(pdb_url, name,main_dir,chain=None):
-    pdb_string = clear_pdb_string(request.urlopen(pdb_url).read().decode("utf-8"),chain)
-    pdb_dir = save_pdb_to_temp_dir(main_dir,pdb_string,name)
-    pdb_object  = PdbFile(pdb_string, name=name,pdb_dir=pdb_dir)
+def from_url(pdb_url, name, main_dir, chain=None):
+    pdb_string = request.urlopen(pdb_url).read().decode("utf-8")
+    clean_pdb_string = clear_pdb_string(pdb_string, chain)
+    pdb_dir = save_pdb_to_temp_dir(main_dir, clean_pdb_string, name)
+    pdb_object = PdbFile(clean_pdb_string, name=name, pdb_dir=pdb_dir)
     return pdb_object
 
 
-def from_string(pdb_string, name,main_dir,chain=None):
-    pdb_string = clear_pdb_string(pdb_string,chain)
-    pdb_dir = save_pdb_to_temp_dir(main_dir,pdb_string,name)
-    pdb_object  = PdbFile(pdb_string, name=name,pdb_dir=pdb_dir)
+def from_string(pdb_string, name, main_dir, chain=None):
+    pdb_string = clear_pdb_string(pdb_string, chain)
+    pdb_dir = save_pdb_to_temp_dir(main_dir, pdb_string, name)
+    pdb_object = PdbFile(pdb_string, name=name, pdb_dir=pdb_dir)
     return pdb_object
 
-def fetch_from_id(pdb_id,main_dir,chain=None):
+
+def fetch_from_id(pdb_id, main_dir, chain=None):
     name = pdb_id
     pdb_url = "http://files.rcsb.org/view/{}.pdb".format(name)
-    pdb_object = from_url(pdb_url,name,main_dir,chain)
+    pdb_object = from_url(pdb_url, name, main_dir, chain)
     return pdb_object

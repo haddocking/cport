@@ -2,7 +2,6 @@
 import multiprocessing
 import sys
 from multiprocessing import Process
-from IPython import embed
 from tools import parser
 from send_file import meta_ppisp, pro_mate, spider, whiscy
 import argparse
@@ -34,15 +33,16 @@ def func4(i, predictors_dic, params, main_dir):
 
 
 def get_processes(web_servers, predictors_dic, params, main_dir):
-    function_dictionary = {"promate":func1,
-                           "meta-ppisp":func2,
-                           "spidder":func3,
-                           "whiscy":func4}
+    function_dictionary = {"promate": func1,
+                           "meta_ppisp": func2,
+                           "spidder": func3,
+                           "whiscy": func4}
     processes = []
 
     for i, server in enumerate(web_servers):
         target_func = function_dictionary[server]
-        p = Process(target=target_func, args=(i, predictors_dic, params, main_dir))
+        p = Process(target=target_func,
+                    args=(i, predictors_dic, params, main_dir))
         processes.append(p)
 
     return processes
@@ -67,6 +67,7 @@ def run(params, main_dir):
     web_servers = input_params.servers
 
     print("Preparing the {} web servers to run in parallel\n".format(len(web_servers)))
+
     processes = get_processes(web_servers, predictors_dic, params, main_dir)
 
     print("Parallel run is starting\n")
@@ -86,7 +87,7 @@ def get_unique_folder(tools_folder):
     Val = True
     while Val:
         random_int = random.randint(1, 9999)
-        fixed_char = format(random_int,"04d")
+        fixed_char = format(random_int, "04d")
         main_dir = os.path.join(tools_folder, "run_{}".format(fixed_char))
         if not os.path.exists(main_dir):
             return main_dir
@@ -105,18 +106,41 @@ if __name__ == "__main__":
         if len(sys.argv) > 1:
             arg_parser = argparse.ArgumentParser()
 
-            # All of the arguments are set as optional, they are validated in a later process
-            arg_parser.add_argument('-chain_id', help="optional argument", dest="chain_id")
-            arg_parser.add_argument('-threshold', help="optional preset to 3", type=int, default=3, dest="threshold")
-            arg_parser.add_argument('-pdb_id', help="give the id of the pdb XXXX", dest="pdb_id")
-            arg_parser.add_argument('-pdb_file', help="load the pdb from a local file", type=validations.pdb_assertions,
+            # All of the arguments are set as optional
+            # They are validated in a later process
+            arg_parser.add_argument('-chain_id',
+                                    help="optional argument",
+                                    dest="chain_id")
+            arg_parser.add_argument('-threshold',
+                                    help="optional preset to 3",
+                                    type=int,
+                                    default=3,
+                                    dest="threshold")
+            arg_parser.add_argument('-pdb_id',
+                                    help="give the id of the pdb XXXX",
+                                    dest="pdb_id")
+            arg_parser.add_argument('-pdb_file',
+                                    help="load the pdb from a local file",
+                                    type=validations.pdb_assertions,
                                     dest="pdb_file")
-            arg_parser.add_argument('-sequence_file', help="load the seq from a local file",
-                                    type=validations.seq_assertions, dest="seq_file")
-            arg_parser.add_argument('-alignment_format', help="give the format of the alignment",
-                                    choices=["FASTA", "CLUSTAL", "MAF", "PHYLIP"], dest="al")
-
-            arg_parser.add_argument("-servers",help="Choose between: whiscy(1) promate(2) meta_ppisp(3) spidder(4) Can select by Numbers,Names or combination Can also use range ex 1:4 (All servers) Default value: All",nargs="+",default="all")
+            arg_parser.add_argument('-sequence_file',
+                                    help="load the seq from a local file",
+                                    type=validations.seq_assertions,
+                                    dest="seq_file")
+            arg_parser.add_argument('-alignment_format',
+                                    help="give the format of the alignment",
+                                    choices=["FASTA",
+                                             "CLUSTAL",
+                                             "MAF",
+                                             "PHYLIP"],
+                                    dest="al")
+            arg_parser.add_argument("-servers",
+                                    help="Choose between: whiscy(1) promate(2) meta_ppisp(3) spidder(4)\
+                                     Can select by Numbers,Names\
+                                      Can also use range ex 1:4 (All servers)\
+                                       Default value: All",
+                                    nargs="+",
+                                    default="all")
 
             cl_arguments = arg_parser.parse_args()
             validations.argument_assertions(cl_arguments)
@@ -129,23 +153,30 @@ if __name__ == "__main__":
             os.mkdir(run_dir)
 
         # Parse the input arguments in the object
-        # There are functions to make sure tha the files has the required formats
+        # Convert to the required formats
         print("Preparing the input files\n")
         input_params = parser.run(cl_arguments, run_dir)
         print("Input files are ready\n")
 
-        # Multiprocessing function to send the files in the different webservers in parallel
+        # Multiprocessing function, webservers in parallel run
         # The outcome of the predictors is stored in a list of objects
         web_results = run(input_params, main_dir=run_dir)
         print("Number of webservers: {}\n".format(len(web_results.values())))
-        print("Successful predictors: {}\n".format(sum([i.success for i in web_results.values()])))
+
+        print("Successful predictors: {}\n".format(
+            sum([i.success for i in web_results.values()]))
+        )
 
         # Add the threshold values based on the successful predictors
         print("Update the threshold values based on the successful predictors\n")
-        predictors_list = threshold.run(web_results.values(), tools_dir, run_dir)
+        predictors_list = threshold.run(web_results.values(),
+                                        tools_dir,
+                                        run_dir)
 
-        # Solvent Accessible Surface Area calculations as a list of residues and the values
-        # In some cases freesasa return N/A I am not sure what I should do, for now I remove these residue
+        # Solvent Accessible Surface Area calculations
+        # Return a list of residues and the values
+        # In some cases freesasa return N/A
+        # I am not sure what I should do, for now I remove these residue
         # Freesasa needs to be installed
         print("Calculate solvent accessible surface area\n")
         surface = calc_sasa.run(input_params.pdb_file)
@@ -153,21 +184,25 @@ if __name__ == "__main__":
         # Distance Calculations between two residues (list of tuples)
         # The tools/resdist must be recompiled
         print("Calculate the residues distance\n")
-        distance_list = residiues_distance.run(input_params, tools_dir, run_dir)
+        distance_list = residiues_distance.run(input_params,
+                                               tools_dir)
 
-        # Update the active and passive residues for each predictor using filters from Cport
+        # Update the active and passive residues using filters from Cport
         print("Filter the residues based on precalculated residues and threshold\n")
-        updated_predictors = predictors.update_res(predictor_list=predictors_list,
-                                                   surface=surface,
-                                                   distance_list=distance_list)
+
+        fpredictors = predictors.update_res(predictor_list=predictors_list,
+                                            surface=surface,
+                                            distance_list=distance_list)
 
         # Reconstruction of the final pdb based on the active/passive residues
         print("Construct the final PDB\n")
-        reconstruct_pdb.run(init_pdb = input_params.pdb_file,predictors_list=updated_predictors, main_dir=run_dir)
+        reconstruct_pdb.run(init_pdb=input_params.pdb_file,
+                            predictors_list=fpredictors,
+                            main_dir=run_dir)
 
         # Final table of each predictor and the active/passive residues
         print("Create the residues table\n")
-        save_csv.run(updated_predictors, input_params.pdb_file, run_dir)
+        save_csv.run(fpredictors, input_params.pdb_file, run_dir)
 
     except AssertionError as ae:
         print(ae)

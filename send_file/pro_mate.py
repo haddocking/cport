@@ -2,12 +2,14 @@ import requests
 from urllib3 import encode_multipart_formdata
 from tools import pdb, predictors
 import os
-from IPython import embed
 
-def run(input_params,main_dir):
+
+def run(input_params, main_dir):
     url = "http://bioinfo41.weizmann.ac.il/promate-bin/processBSF.cgi"
+    name = input_params.name
+    pdb_string = input_params.pdb_file.as_string
 
-    file = {'fileup': (input_params.name, input_params.pdb_file.as_string, 'text/plan'),
+    file = {'fileup': (name, pdb_string, 'text/plan'),
             'pdbId': "dmmy",
             'chain': input_params.chain_id,
             'scConf': 1,
@@ -15,7 +17,7 @@ def run(input_params,main_dir):
             'outFormat': 'cbOutAAFull'}
 
     temp_dir = os.path.join(main_dir, "temp")
-    temp_file = os.path.join(temp_dir,"promate.status")
+    temp_file = os.path.join(temp_dir, "promate.status")
     print("Promate: Start", file=open(temp_file, "a"))
 
     (content, header) = encode_multipart_formdata(file)
@@ -31,6 +33,8 @@ def run(input_params,main_dir):
 
         results_url = temp_url + "/BSFout.AA.full.pdb"
 
-        results_pdb = pdb.from_url(results_url, name="ProMate",main_dir=main_dir)
+        results_pdb = pdb.from_url(results_url,
+                                   name="ProMate",
+                                   main_dir=main_dir)
         print("Promate: Finished successfully", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=results_pdb, success=True)

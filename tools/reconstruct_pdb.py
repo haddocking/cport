@@ -1,9 +1,10 @@
-from IPython import embed
 import os
 from tools import pdb
-def run(init_pdb,predictors_list,main_dir):
-    active_res =[]
-    passive_res =[]
+
+
+def run(init_pdb, predictors_list, main_dir):
+    active_res = []
+    passive_res = []
     for predictor in predictors_list:
         pred_active_list = predictor.active_res
         for res in pred_active_list:
@@ -11,11 +12,11 @@ def run(init_pdb,predictors_list,main_dir):
                 active_res.append(res)
         pred_passive_list = predictor.passive_res
         for res in pred_passive_list:
-            if res in active_res:continue
+            if res in active_res:
+                continue
             passive_res.append(res)
 
     pdb_file = init_pdb
-
 
     pdb_string = ""
     for line in pdb_file.as_string.split("\n"):
@@ -32,6 +33,8 @@ def run(init_pdb,predictors_list,main_dir):
             new_line = line
         pdb_string = pdb_string+new_line+"\n"
 
-    final_pdb = pdb.from_string(pdb_string,name="final",main_dir=main_dir)
-    final_dir = os.path.join(main_dir,"final")
+    final_pdb = pdb.from_string(pdb_string,
+                                name="final",
+                                main_dir=main_dir)
+    final_dir = os.path.join(main_dir, "final")
     final_pdb.save_file(final_dir)

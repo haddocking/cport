@@ -1,7 +1,4 @@
-import os
 import subprocess
-
-from IPython import embed
 
 
 class ResidueSASA():
@@ -39,8 +36,12 @@ def parse_rsa_file(rsa_file_name):
                     except ValueError:
                         relative_mainchain = -99.9
 
-                    residue_sasas.append(ResidueSASA(chain_id, name, number,
-                                                     relative_total, relative_sidechain, relative_mainchain))
+                    residue_sasas.append(ResidueSASA(chain_id,
+                                                     name,
+                                                     number,
+                                                     relative_total,
+                                                     relative_sidechain,
+                                                     relative_mainchain))
 
     return residue_sasas
 
@@ -48,12 +49,14 @@ def parse_rsa_file(rsa_file_name):
 def run(pdb_obj):
     pdb_file_name = pdb_obj.pdb_dir
     if " " in pdb_file_name:
-        pdb_file_name = pdb_file_name.replace(" ", "\ ")
+        pdb_file_name = pdb_file_name.replace(" ", r"\ ")
     output_file_name = pdb_file_name.replace(".pdb", ".rsa")
-    cmd = "freesasa {} -n 20 --format=rsa --radii=naccess -o {}".format(pdb_file_name, output_file_name)
+    cmd = "freesasa {} -n 20\
+     --format=rsa\
+      --radii=naccess -o {}".format(pdb_file_name, output_file_name)
     try:
         subprocess.run(cmd, shell=True)
-    except:
+    except Exception:
         subprocess.check_call(cmd, shell=True)
 
     res = parse_rsa_file(pdb_obj.pdb_dir.replace(".pdb", ".rsa"))

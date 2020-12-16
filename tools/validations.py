@@ -1,11 +1,12 @@
 import os
-from IPython import embed
+
 
 servers = {
         1: "whiscy",
         2: "promate",
         3: "meta_ppisp",
         4: "spidder"}
+
 
 def argument_assertions(args):
     if (args.pdb_id is None) and (args.pdb_file is None):
@@ -22,26 +23,27 @@ def argument_assertions(args):
             raise AssertionError("Please provide sequence file")
         elif (args.seq_file is not None) and (args.al is None):
             raise AssertionError("Please provide alignment format")
-    if args.servers != "all":
+    if args.servers[0] != "all":
         for selection in args.servers:
             if ":" in selection:
                 try:
                     numbers = [int(n) for n in selection.split(":")]
-                    check  = [n for n in numbers if n in range(1,max(servers.keys())+1)]
+                    check = [n for n in numbers if n in range(1, max(servers.keys())+1)]
                     if not (len(numbers) == len(check)):
                         raise AssertionError("Invalid range numbers")
-                except:
+                except Exception:
                     raise AssertionError("Invalid range numbers")
             elif len(selection) == 1:
                 if selection.isnumeric():
                     n = int(selection)
-                    if not (n in range(1,max(servers.keys())+1)):
-                        raise AssertionError("Number {} not in selection range".format(selection))
+                    if not (n in range(1, max(servers.keys())+1)):
+                        raise AssertionError(f"Number {selection} not in selection range")
                 else:
-                    raise AssertionError("Single value {} is not a number".format(selection))
+                    raise AssertionError(f"Single value {selection} is not a number")
             else:
                 if selection not in servers.values():
-                    raise AssertionError("Server {} is not available".format(selection))
+                    raise AssertionError(f"Server {selection} is not available")
+
 
 def pdb_assertions(pdb_location):
     if not os.path.exists(pdb_location):
@@ -49,6 +51,7 @@ def pdb_assertions(pdb_location):
     if not pdb_location.endswith(".pdb"):
         raise AssertionError("File extension does not match file format: PDB")
     return pdb_location
+
 
 def seq_assertions(sequence_location):
     if not os.path.exists(sequence_location):

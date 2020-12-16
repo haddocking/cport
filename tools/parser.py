@@ -1,10 +1,15 @@
-from tools import pdb,seq
-from IPython import embed
+from tools import pdb, seq
 import os
 
 
 class InputParams:
-    def __init__(self, pdb_file, sequence_file, alignment_format, chain_id, threshold,servers):
+    def __init__(self,
+                 pdb_file,
+                 sequence_file,
+                 alignment_format,
+                 chain_id,
+                 threshold,
+                 servers):
         self.pdb_file = pdb_file
         self.sequence_file = sequence_file
         self.alignment_format = alignment_format
@@ -32,15 +37,14 @@ def select_servers(choice_list):
 
     server_selection = []
 
-    if choice_list == "all":
+    if choice_list[0] == "all":
         server_selection = list(servers.values())
-
     else:
         for selection in choice_list:
             try:
                 n = int(selection)
                 server_selection.append(servers[n])
-            except:
+            except ValueError:
                 split_selection = selection.split(":")
                 if len(split_selection) > 1:
                     min_val = int(min(selection.split(":")))
@@ -64,7 +68,9 @@ def run(argv, main_dir):
 
         alignment_format = "FASTA"
         print("Downloading the PDB file\n")
-        pdb_file = pdb.fetch_from_id(argv.pdb_id, main_dir,argv.chain_id)
+        pdb_file = pdb.fetch_from_id(argv.pdb_id,
+                                     main_dir,
+                                     argv.chain_id)
         print("PDB file is ready\n")
         chain_id = argv.chain_id
 
@@ -73,20 +79,24 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print("Only one Chain id found {} - Selected chain: {}\n".format(chain_id[0]),chain_id[0])
+                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}\n")
                 chain_id = chain_id[0]
             else:
-                raise AssertionError(
-                    "{} chain ids found specify one with -chain_id {}".format(len(chain_id), " or ".join(chain_id)))
+                n_chains = len(chain_id)
+                chain_string = " or ".join(chain_id)
+                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}")
 
         print("Downloading the Sequence file\n")
         # Using HSSP file from the web returns a PHYLSEQ for WHISCY
-        sequence_file = seq.fetch_from_id(argv.pdb_id,alignment_format,main_dir,pdb_file,chain_id)
+        sequence_file = seq.fetch_from_id(argv.pdb_id,
+                                          main_dir,
+                                          pdb_file,
+                                          chain_id)
         print("Sequence file is ready\n")
 
     else:
         # PDB file given
-        name =os.path.basename(argv.pdb_file).split(".")[0]
+        name = os.path.basename(argv.pdb_file).split(".")[0]
         pdb_file = pdb.from_file(argv.pdb_file, name, main_dir=main_dir)
         print("PDB file is ready\n")
         chain_id = argv.chain_id
@@ -96,14 +106,20 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print("Only one Chain id found {} - Selected chain: {}\n".format(chain_id[0],chain_id[0]))
+                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}\n")
                 chain_id = chain_id[0]
             else:
-                raise AssertionError(
-                    "{} chain ids found specify one with -chain_id {}\n".format(len(chain_id), " or ".join(chain_id)))
+                n_chains = len(chain_id)
+                chain_string = " or ".join(chain_id)
+                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}\n")
         print("Preparing the Sequence file \n")
         # Converts the sequence file to match the format of WHISCY
-        sequence_file = seq.from_file(argv.seq_file,name,main_dir,argv.al,pdb_file,chain_id)
+        sequence_file = seq.from_file(argv.seq_file,
+                                      name,
+                                      main_dir,
+                                      argv.al,
+                                      pdb_file,
+                                      chain_id)
         alignment_format = sequence_file.format
         print("Sequence file is ready\n")
 
