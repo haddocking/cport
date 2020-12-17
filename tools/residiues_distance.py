@@ -4,7 +4,7 @@ import os
 
 def get_distance_list(distance_results):
     dist_list = []
-    for line in distance_results.split("\n"):
+    for line in distance_results.split(os.linesep):
         split_line = line.split()
         res1 = int(split_line[0])
         res2 = int(split_line[1])

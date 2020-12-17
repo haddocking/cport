@@ -20,10 +20,10 @@ class SequenceConverter:
     def dic_to_fasta(self):
         total_seq = ""
         for seq_name in self.dic.keys():
-            name = ">{}\n".format(str(seq_name))
+            name = f">{str(seq_name)}"+os.linesep
             seq = ""
             for i in range(0, len(self.dic[seq_name]), 60):
-                line = "{}\n".format(self.dic[seq_name][i:i+60])
+                line = f"{self.dic[seq_name][i:i+60]}"+os.linesep
                 seq = seq + line
             total_seq = total_seq + name+seq
         return total_seq
@@ -50,11 +50,11 @@ class SequenceConverter:
     def save_final_phylip(self, name):
         n_seq = len(self.dic)+1
         seq_length = len(self.master_sequence)
-        first_line = f"{n_seq} {seq_length}"
-        master_line = "{:10s}{}\n".format("MASTER", self.master_sequence)
+        first_line = f"{n_seq} {seq_length}"+os.linesep
+        master_line = f"{'MASTER':10s}{self.master_sequence}"+os.linesep
         rest_seq = first_line + master_line
         for seq_name in self.dic.keys():
-            line = "{:10s}{}\n".format(str(seq_name), self.dic[seq_name])
+            line = f"{str(seq_name):10s}{self.dic[seq_name]}"+os.linesep
             rest_seq = rest_seq + line
         with open(name, "w") as f:
             f.write(rest_seq)
@@ -65,7 +65,7 @@ class SequenceConverter:
 def from_clustal(seq_file):
     f = open(seq_file, "r").read()
     f = f.rstrip()
-    f = f.split("\n")
+    f = f.split(os.linesep)
     for i, line in enumerate(f):
         if len(line) == 86:
             first_line = i
@@ -123,7 +123,7 @@ def from_maf(seq_file):
 def from_phylip(seq_file):
     f = open(seq_file, "r").read()
     f = f.strip()
-    f = f.split("\n")
+    f = f.split(os.linesep)
     clean_file = f[1:]
     clean_file.append("")
     final_list = []
@@ -170,20 +170,20 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
 
     n_seq = seq.n_seq()
 
-    print(f"Sequence format: {seq_format} and number of sequences: {n_seq}\n")
+    print(f"Sequence format: {seq_format} and number of sequences: {n_seq}"+os.linesep)
 
     # If the number of sequence is larger than 1
     if n_seq > 1:
-        print("Aligning Sequences... \n")
+        print("Aligning Sequences... "+os.linesep)
         # Align the sequence
         mca_fasta = seq.save_fasta_msa_alignment(main_dir)
-        print("Sequences aligned and saved to temp folder \n")
+        print("Sequences aligned and saved to temp folder "+os.linesep)
         # Return a FASTA sequence
         final_seq = from_fasta(mca_fasta)
 
     # IF there is only one sequence
     elif n_seq == 1:
-        print("Blast sequence....\n")
+        print("Blast sequence...."+os.linesep)
         # Blast to get the multi sequence alignment
         results_handle = NCBIWWW.qblast("blastp",
                                         "nr",
@@ -196,15 +196,15 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
             blast_results = results_handle.read()
             save_file.write(blast_results)
             save_file.close()
-        print("XML file saved to the temp folder\n")
+        print("XML file saved to the temp folder"+os.linesep)
 
         # Dictionary with sequences, from the blast result (XML)
         seq = from_xml(xml_results)
-        print("Aligning Sequences... \n")
+        print("Aligning Sequences... "+os.linesep)
 
         # Align the sequences
         mca_fasta = seq.save_fasta_msa_alignment(main_dir)
-        print("Sequences aligned and saved to temp folder \n")
+        print("Sequences aligned and saved to temp folder"+os.linesep)
 
         # Return a FASTA sequence
         final_seq = from_fasta(mca_fasta)

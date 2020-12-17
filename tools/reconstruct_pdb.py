@@ -19,7 +19,7 @@ def run(init_pdb, predictors_list, main_dir):
     pdb_file = init_pdb
 
     pdb_string = ""
-    for line in pdb_file.as_string.split("\n"):
+    for line in pdb_file.as_string.split(os.linesep):
         if line.startswith("ATOM"):
             res = int(line[22:26])
             b_string = line[60:77]
@@ -31,7 +31,7 @@ def run(init_pdb, predictors_list, main_dir):
             new_line = line.replace(b_string, score)
         else:
             new_line = line
-        pdb_string = pdb_string+new_line+"\n"
+        pdb_string = pdb_string+new_line+os.linesep
 
     final_pdb = pdb.from_string(pdb_string,
                                 name="final",

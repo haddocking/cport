@@ -20,7 +20,7 @@ def wait_whiscy(url, temp_file):
             print(print_message, file=open(temp_file, "a"))
             return print_message
         if "whiscy.pdb" in html_string:
-            for line in html_string.split("\n"):
+            for line in html_string.split(os.linesep):
                 if "whiscy.pdb" in line:
                     pdb_dir = line
                     pdb_dir = pdb_dir.split('"')[-2]

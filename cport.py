@@ -65,12 +65,12 @@ def run(params, main_dir):
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
     web_servers = input_params.servers
-
-    print("Preparing the {} web servers to run in parallel\n".format(len(web_servers)))
+    n_web_servers = len(web_servers)
+    print(f"Preparing the {n_web_servers} web servers to run in parallel"+os.linesep)
 
     processes = get_processes(web_servers, predictors_dic, params, main_dir)
 
-    print("Parallel run is starting\n")
+    print("Parallel run is starting"+os.linesep)
     for p in processes:
         p.start()
 
@@ -78,7 +78,7 @@ def run(params, main_dir):
     while any([p.is_alive() for p in processes]):
         time.sleep(5)
         print_string = get_multiprocess_string(web_servers, main_dir)
-        print(print_string, end="\n")
+        print(print_string, end=os.linesep)
     return predictors_dic
 
 
@@ -154,21 +154,20 @@ if __name__ == "__main__":
 
         # Parse the input arguments in the object
         # Convert to the required formats
-        print("Preparing the input files\n")
+        print("Preparing the input files"+os.linesep)
         input_params = parser.run(cl_arguments, run_dir)
-        print("Input files are ready\n")
+        print("Input files are ready"+os.linesep)
 
         # Multiprocessing function, webservers in parallel run
         # The outcome of the predictors is stored in a list of objects
         web_results = run(input_params, main_dir=run_dir)
-        print("Number of webservers: {}\n".format(len(web_results.values())))
-
-        print("Successful predictors: {}\n".format(
-            sum([i.success for i in web_results.values()]))
-        )
+        n_web_servers = len(web_results.values())
+        print(f"Number of webservers: {n_web_servers}"+os.linesep)
+        n_success = sum([i.success for i in web_results.values()])
+        print(f"Successful predictors: {n_success}"+os.linesep)
 
         # Add the threshold values based on the successful predictors
-        print("Update the threshold values based on the successful predictors\n")
+        print("Update the threshold values based on the successful predictors"+os.linesep)
         predictors_list = threshold.run(web_results.values(),
                                         tools_dir,
                                         run_dir)
@@ -178,30 +177,30 @@ if __name__ == "__main__":
         # In some cases freesasa return N/A
         # I am not sure what I should do, for now I remove these residue
         # Freesasa needs to be installed
-        print("Calculate solvent accessible surface area\n")
+        print("Calculate solvent accessible surface area"+os.linesep)
         surface = calc_sasa.run(input_params.pdb_file)
 
         # Distance Calculations between two residues (list of tuples)
         # The tools/resdist must be recompiled
-        print("Calculate the residues distance\n")
+        print("Calculate the residues distance"+os.linesep)
         distance_list = residiues_distance.run(input_params,
                                                tools_dir)
 
         # Update the active and passive residues using filters from Cport
-        print("Filter the residues based on precalculated residues and threshold\n")
+        print("Filter the residues based on precalculated residues and threshold"+os.linesep)
 
         fpredictors = predictors.update_res(predictor_list=predictors_list,
                                             surface=surface,
                                             distance_list=distance_list)
 
         # Reconstruction of the final pdb based on the active/passive residues
-        print("Construct the final PDB\n")
+        print("Construct the final PDB"+os.linesep)
         reconstruct_pdb.run(init_pdb=input_params.pdb_file,
                             predictors_list=fpredictors,
                             main_dir=run_dir)
 
         # Final table of each predictor and the active/passive residues
-        print("Create the residues table\n")
+        print("Create the residues table"+os.linesep)
         save_csv.run(fpredictors, input_params.pdb_file, run_dir)
 
     except AssertionError as ae:

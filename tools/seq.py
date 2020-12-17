@@ -31,7 +31,7 @@ def save_seq_to_temp_dir(main_dir, seq_string, name, seq_format):
 
 
 def from_file(seq_dir, name, main_dir, seq_format, pdb_file, chain):
-    print("Converting the Sequence... \n")
+    print("Converting the Sequence..."+os.linesep)
     # Convert the sequence to PHYLSEQ (WHISCY)
     phylip_dir = sequence_convert.run(seq_dir,
                                       seq_format,
@@ -55,6 +55,6 @@ def fetch_from_id(pdb_id, main_dir, pdb_file, chain):
                                                              chain,
                                                              master_sequence,
                                                              main_dir)
-    print("HSSP is converted to phylseq and saved to temp folder\n")
+    print("HSSP is converted to phylseq and saved to temp folder"+os.linesep)
     seq_object = SeqFile(phylip_seq, name, phylip_dir, "PHYLIP")
     return seq_object

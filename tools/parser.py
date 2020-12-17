@@ -67,11 +67,11 @@ def run(argv, main_dir):
     if argv.pdb_id is not None:
 
         alignment_format = "FASTA"
-        print("Downloading the PDB file\n")
+        print("Downloading the PDB file"+os.linesep)
         pdb_file = pdb.fetch_from_id(argv.pdb_id,
                                      main_dir,
                                      argv.chain_id)
-        print("PDB file is ready\n")
+        print("PDB file is ready"+os.linesep)
         chain_id = argv.chain_id
 
         # If the chain id is not set will stop
@@ -79,26 +79,26 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}\n")
+                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"+os.linesep)
                 chain_id = chain_id[0]
             else:
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
                 raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}")
 
-        print("Downloading the Sequence file\n")
+        print("Downloading the Sequence file"+os.linesep)
         # Using HSSP file from the web returns a PHYLSEQ for WHISCY
         sequence_file = seq.fetch_from_id(argv.pdb_id,
                                           main_dir,
                                           pdb_file,
                                           chain_id)
-        print("Sequence file is ready\n")
+        print("Sequence file is ready"+os.linesep)
 
     else:
         # PDB file given
         name = os.path.basename(argv.pdb_file).split(".")[0]
         pdb_file = pdb.from_file(argv.pdb_file, name, main_dir=main_dir)
-        print("PDB file is ready\n")
+        print("PDB file is ready"+os.linesep)
         chain_id = argv.chain_id
 
         # If the chain id is not set will stop
@@ -106,13 +106,13 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}\n")
+                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"+os.linesep)
                 chain_id = chain_id[0]
             else:
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
-                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}\n")
-        print("Preparing the Sequence file \n")
+                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}"+os.linesep)
+        print("Preparing the Sequence file"+os.linesep)
         # Converts the sequence file to match the format of WHISCY
         sequence_file = seq.from_file(argv.seq_file,
                                       name,
@@ -121,7 +121,7 @@ def run(argv, main_dir):
                                       pdb_file,
                                       chain_id)
         alignment_format = sequence_file.format
-        print("Sequence file is ready\n")
+        print("Sequence file is ready"+os.linesep)
 
     threshold = argv.threshold
 

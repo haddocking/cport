@@ -19,7 +19,7 @@ def wait_spider(url, temp_file):
             print("SPPIDER: Server timeout", file=open(temp_file, "a"))
             return "http://Failed.com"
         if "pr_picture.cgi" in html_string:
-            for line in html_string.split("\n"):
+            for line in html_string.split(os.linesep):
                 if "pr_picture.cgi" in line:
                     new_url = line.split("URL=")[1]
                     new_url = new_url.split('"')[0]

@@ -46,7 +46,7 @@ def run(input_params, main_dir):
                         headers={'Content-Type': header},
                         verify=False)
 
-    for line in req.text.split("\n"):
+    for line in req.text.split(os.linesep):
         if "href" in line:
             start_tag = 'href="'
             end_tag = '">'
@@ -57,7 +57,7 @@ def run(input_params, main_dir):
     html_string = wait(url, temp_file)
 
     pdb_url = ""
-    for line in html_string.split("\n"):
+    for line in html_string.split(os.linesep):
         if ("pdb" in line) & ("http" in line):
             pdb_url = line
 

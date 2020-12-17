@@ -25,7 +25,7 @@ class PdbFile:
 
     def get_chain_ids(self):
         chains = []
-        for line in self.as_string.split("\n"):
+        for line in self.as_string.split(os.linesep):
             if line.startswith("ATOM"):
                 chain = line[20:23]
                 chains.append(chain.strip())
@@ -38,7 +38,7 @@ class PdbFile:
     """
     def return_res_number_score(self):
         res_score = []
-        for line in self.as_string.split("\n"):
+        for line in self.as_string.split(os.linesep):
             if line.startswith("ATOM"):
                 number = int(line[23:26].strip())
                 b_factor = float(line[60:77].strip())
@@ -59,28 +59,28 @@ Each time I create a pdb object, it saves the PDB as file to the temp directory
 def clear_pdb_string(pdb_string, chain=None):
     final_string = ""
     if chain is None:
-        for line in pdb_string.split("\n"):
+        for line in pdb_string.split(os.linesep):
             if (line.startswith("ATOM")
                     or line.startswith("TER")
                     or line.startswith("END")):
-                final_string += "{}\n".format(line)
+                final_string += f"{line}"+os.linesep
     else:
-        for line in pdb_string.split("\n"):
+        for line in pdb_string.split(os.linesep):
             if (line.startswith("ATOM")
                     or line.startswith("TER")):
                 chain_in_line = line[21]
                 if chain is not chain_in_line:
                     continue
-                final_string += "{}\n".format(line)
+                final_string += f"{line}"+os.linesep
             if line.startswith("END"):
-                final_string += "{}\n".format(line)
+                final_string += f"{line}"+os.linesep
     return final_string
 
 
 def save_pdb_to_temp_dir(main_dir, pdb_string, name):
     temp_dir = os.path.join(main_dir, "temp")
     string_temp_dir = os.path.join(os.path.basename(main_dir), "temp")
-    print(f"PDB {name} is saved to the temp folder {string_temp_dir}\n")
+    print(f"PDB {name} is saved to the temp folder {string_temp_dir}"+os.linesep)
     if not os.path.exists(temp_dir):
         os.mkdir(temp_dir)
     pdb_file = "{}.pdb".format(name)

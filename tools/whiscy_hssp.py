@@ -14,7 +14,7 @@ def get_from_web(pdb_code,main_dir):
     open_hssp_file = open(hssp_file,"w")
     open_hssp_file.write(plan_text)
     open_hssp_file.close()
-    print ("HSSP file is saved to the temp folder\n")
+    print ("HSSP file is saved to the temp folder"+os.linesep)
     return plan_text,hssp_file
 
 def _parse_hssp_proteins(line_buffer):
