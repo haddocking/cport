@@ -140,7 +140,7 @@ if __name__ == "__main__":
                                       Can also use range ex 1:4 (All servers)\
                                        Default value: All",
                                     nargs="+",
-                                    default="all")
+                                    default=["all"])
 
             cl_arguments = arg_parser.parse_args()
             validations.argument_assertions(cl_arguments)
