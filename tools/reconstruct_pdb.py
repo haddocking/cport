@@ -25,9 +25,9 @@ def run(init_pdb, predictors_list, main_dir):
             b_string = line[60:77]
             score = '  0.00           '
             if res in active_res:
-                score = ' 50.00           '
-            if res in passive_res:
                 score = '100.00           '
+            if res in passive_res:
+                score = ' 50.00           '
             new_line = line.replace(b_string, score)
         else:
             new_line = line
