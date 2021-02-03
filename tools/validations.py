@@ -1,5 +1,5 @@
 import os
-
+from IPython import embed
 
 servers = {
         1: "whiscy",
@@ -23,6 +23,7 @@ def argument_assertions(args):
             raise AssertionError("Please provide sequence file")
         elif (args.seq_file is not None) and (args.al is None):
             raise AssertionError("Please provide alignment format")
+
     if args.servers[0] != "all":
         for selection in args.servers:
             if ":" in selection:
@@ -30,19 +31,19 @@ def argument_assertions(args):
                     numbers = [int(n) for n in selection.split(":")]
                     check = [n for n in numbers if n in range(1, max(servers.keys())+1)]
                     if not (len(numbers) == len(check)):
-                        raise AssertionError("Invalid range numbers")
+                        raise AssertionError("Server selection: Invalid range numbers")
                 except Exception:
-                    raise AssertionError("Invalid range numbers")
+                    raise AssertionError("Server selection: Invalid range numbers")
             elif len(selection) == 1:
                 if selection.isnumeric():
                     n = int(selection)
                     if not (n in range(1, max(servers.keys())+1)):
-                        raise AssertionError(f"Number {selection} not in selection range")
+                        raise AssertionError(f"Server selection: Number {selection} not in selection range")
                 else:
-                    raise AssertionError(f"Single value {selection} is not a number")
+                    raise AssertionError(f"Server selection: Single value {selection} is not a number")
             else:
                 if selection not in servers.values():
-                    raise AssertionError(f"Server {selection} is not available")
+                    raise AssertionError(f"Server selection: Server {selection} is not in the list")
 
 
 def pdb_assertions(pdb_location):
