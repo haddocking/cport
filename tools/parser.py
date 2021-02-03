@@ -85,6 +85,7 @@ def run(argv, main_dir):
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
                 raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}")
+        pdb_file.chain_id =  chain_id
 
         print("Downloading the Sequence file"+os.linesep)
         # Using HSSP file from the web returns a PHYLSEQ for WHISCY
@@ -112,6 +113,7 @@ def run(argv, main_dir):
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
                 raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}"+os.linesep)
+        pdb_file.chain_id = chain_id
         print("Preparing the Sequence file"+os.linesep)
         # Converts the sequence file to match the format of WHISCY
         sequence_file = seq.from_file(argv.seq_file,

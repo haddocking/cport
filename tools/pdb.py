@@ -8,7 +8,7 @@ class PdbFile:
         self.as_string = string
         self.name = name
         self.pdb_dir = pdb_dir
-
+        self.pdb_id = None
     def save_file(self, pdb_dir):
         if not pdb_dir.startswith("./") and not pdb_dir.startswith("/"):
             pdb_dir = "./" + pdb_dir
