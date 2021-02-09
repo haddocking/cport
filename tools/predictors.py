@@ -1,5 +1,5 @@
 class Predictor:
-    def __init__(self, pdb, rank=None, score=None, success=None):
+    def __init__(self, pdb, name,rank=None, score=None, success=None):
         self.pdb = pdb
         self.cutoff_rank = rank
         self.cutoff_score = score
@@ -8,7 +8,7 @@ class Predictor:
         self.passive_radius = 6.5
         self.active_res = []
         self.passive_res = []
-        self.name = pdb.name
+        self.name = name
 
 
 def update_res(predictor_list, surface, distance_list):

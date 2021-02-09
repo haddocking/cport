@@ -43,7 +43,7 @@ def get_csrf_token(page):
     return token['csrf_token']
 
 
-def run(input_params, main_dir):
+def run(input_params, main_dir,pdb_name):
     url = 'https://wenmr.science.uu.nl/whiscy/'
 
     session = requests.session()
@@ -75,6 +75,6 @@ def run(input_params, main_dir):
         print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
         return predictors.Predictor(pdb=input_params.pdb_file, success=False)
     else:
-        results_pdb = pdb.from_url(final_url, name="WHISCY", main_dir=main_dir)
+        results_pdb = pdb.from_url(final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir)
         print("WHISCY: Run finished successfully", file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=results_pdb, success=True)
+        return predictors.Predictor(pdb=results_pdb,name="WHISCY", success=True)

@@ -46,15 +46,16 @@ def from_file(seq_dir, name, main_dir, seq_format, pdb_file, chain):
 def fetch_from_id(pdb_id, main_dir, pdb_file, chain):
     master_sequence = whiscy_pdbutil.get_pdb_sequence(pdb_file.pdb_dir, chain)
     # Download HSSP sequence file
-    name = pdb_id
-    (hssp_seq, hssp_dir) = whiscy_hssp.get_from_web(name, main_dir)
+    name = os.path.basename(main_dir)[:-5]
+    (hssp_seq, hssp_dir) = whiscy_hssp.get_from_web(pdb_id, main_dir)
     # Convert to PHYLSEQ (WHISCY)
-    seq_name = "{}.phylseq".format(name)
+
+    seq_name = f"{name}_final_phylip.phylseq"
     phylip_dir, phylip_seq = whiscy_hssp.hssp_file_to_phylip(hssp_dir,
                                                              seq_name,
                                                              chain,
                                                              master_sequence,
                                                              main_dir)
     print("HSSP is converted to phylseq and saved to temp folder"+os.linesep)
-    seq_object = SeqFile(phylip_seq, name, phylip_dir, "PHYLIP")
+    seq_object = SeqFile(phylip_seq, seq_name, phylip_dir, "PHYLIP")
     return seq_object

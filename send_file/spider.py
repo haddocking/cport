@@ -31,7 +31,7 @@ def wait_spider(url, temp_file):
         waiting += 5
 
 
-def run(input_params, main_dir):
+def run(input_params, main_dir,pdb_name):
 
     url = 'http://sppider.cchmc.org/cgi-bin/int_recognition.cgi'
     name = input_params.name
@@ -78,11 +78,11 @@ def run(input_params, main_dir):
             pdb_url = line.split('<a href="')[1].split('"')[0]
 
     if pdb_url != "":
-        results_pdb = pdb.from_url(pdb_url, name="SPPIDER", main_dir=main_dir)
+        results_pdb = pdb.from_url(pdb_url, name=f"{pdb_name}_SPPIDER", main_dir=main_dir)
         print("SPPIDER: Finished successfully",
               file=open(temp_file, "a"))
         return predictors.Predictor(pdb=results_pdb, success=True)
     else:
         print("SPPIDER: Failed {}".format(result_url),
               file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=input_params.pdb_file, success=False)
+        return predictors.Predictor(pdb=input_params.pdb_file,name="SPPIDER", success=False)

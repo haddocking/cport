@@ -26,7 +26,7 @@ def wait(url, temp_file):
         waiting += 5
 
 
-def run(input_params, main_dir):
+def run(input_params, main_dir,pdb_name):
     url = 'https://pipe.rcc.fsu.edu/cgi-bin/meta-ppisp/run'
     name = input_params.name
     pdb_string = input_params.pdb_file.as_string
@@ -62,9 +62,9 @@ def run(input_params, main_dir):
             pdb_url = line
 
     if pdb_url != "":
-        results_pdb = pdb.from_url(pdb_url, name="PPISP", main_dir=main_dir)
+        results_pdb = pdb.from_url(pdb_url, name=f"{pdb_name}_PPISP", main_dir=main_dir)
         print("META PPISP: Finished successfully", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=results_pdb, success=True)
     else:
         print("META PPISP: Failed", file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=input_params.pdb_file, success=False)
+        return predictors.Predictor(pdb=input_params.pdb_file,name="PPISP", success=False)

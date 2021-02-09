@@ -34,7 +34,7 @@ def run(init_pdb, predictors_list, main_dir):
         pdb_string = pdb_string+new_line+os.linesep
 
     final_pdb = pdb.from_string(pdb_string,
-                                name="final",
+                                name=f"{os.path.basename(main_dir)[:-5]}_final",
                                 main_dir=main_dir)
-    final_dir = os.path.join(main_dir, "final")
+    final_dir = os.path.join(main_dir, f"{os.path.basename(main_dir)[:-5]}_final")
     final_pdb.save_file(final_dir)

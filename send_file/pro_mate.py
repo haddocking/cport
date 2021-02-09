@@ -3,8 +3,7 @@ from urllib3 import encode_multipart_formdata
 from tools import pdb, predictors
 import os
 
-
-def run(input_params, main_dir):
+def run(input_params, main_dir,pdb_name):
     url = "http://bioinfo41.weizmann.ac.il/promate-bin/processBSF.cgi"
     name = input_params.name
     pdb_string = input_params.pdb_file.as_string
@@ -34,7 +33,7 @@ def run(input_params, main_dir):
         results_url = temp_url + "/BSFout.AA.full.pdb"
 
         results_pdb = pdb.from_url(results_url,
-                                   name="ProMate",
+                                   name=f"{pdb_name}_ProMate",
                                    main_dir=main_dir)
         print("Promate: Finished successfully", file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=results_pdb, success=True)
+        return predictors.Predictor(pdb=results_pdb,name="ProMate", success=True)

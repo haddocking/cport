@@ -18,5 +18,5 @@ def run(predictors, init_pdb, main_dir):
                 score = "-"
             final_list.append(score)
         df[pred.name] = final_list
-    final_dir = os.path.join(main_dir, "final.csv")
+    final_dir = os.path.join(main_dir, f"{os.path.basename(main_dir)[:-5]}_final.csv")
     df.to_csv(final_dir)

@@ -215,7 +215,7 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
     final_seq.add_master_sequence(pdb_file, chain)
 
     temp_dir = os.path.join(main_dir, "temp")
-    final_dir = os.path.join(temp_dir, "final_phylip.phylseq")
+    final_dir = os.path.join(temp_dir, f"{os.path.basename(main_dir)[:-5]}_final_phylip.phylseq")
     final_seq.save_final_phylip(final_dir)
     # Return the final PHYLSEQ FOR WHISCY
     return final_dir

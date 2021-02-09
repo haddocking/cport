@@ -15,24 +15,23 @@ import os
 import random
 import time
 
-
-def func1(i, predictors_dic, params, main_dir):
-    predictors_dic[i] = pro_mate.run(params, main_dir)
-
-
-def func2(i, predictors_dic, params, main_dir):
-    predictors_dic[i] = meta_ppisp.run(params, main_dir)
+def func1(i, predictors_dic, params, main_dir,pdb_name):
+    predictors_dic[i] = pro_mate.run(params, main_dir,pdb_name)
 
 
-def func3(i, predictors_dic, params, main_dir):
-    predictors_dic[i] = spider.run(params, main_dir)
+def func2(i, predictors_dic, params, main_dir,pdb_name):
+    predictors_dic[i] = meta_ppisp.run(params, main_dir,pdb_name)
 
 
-def func4(i, predictors_dic, params, main_dir):
-    predictors_dic[i] = whiscy.run(params, main_dir)
+def func3(i, predictors_dic, params, main_dir,pdb_name):
+    predictors_dic[i] = spider.run(params, main_dir,pdb_name)
 
 
-def get_processes(web_servers, predictors_dic, params, main_dir):
+def func4(i, predictors_dic, params, main_dir,pdb_name):
+    predictors_dic[i] = whiscy.run(params, main_dir,pdb_name)
+
+
+def get_processes(web_servers, predictors_dic, params, main_dir,pdb_name):
     function_dictionary = {"promate": func1,
                            "meta_ppisp": func2,
                            "spidder": func3,
@@ -42,7 +41,7 @@ def get_processes(web_servers, predictors_dic, params, main_dir):
     for i, server in enumerate(web_servers):
         target_func = function_dictionary[server]
         p = Process(target=target_func,
-                    args=(i, predictors_dic, params, main_dir))
+                    args=(i, predictors_dic, params, main_dir,pdb_name))
         processes.append(p)
 
     return processes
@@ -61,14 +60,14 @@ def get_multiprocess_string(web_servers, main_dir):
     return print_string
 
 
-def run(params, main_dir):
+def run(params, main_dir,pdb_name):
     manager = multiprocessing.Manager()
     predictors_dic = manager.dict()
     web_servers = input_params.servers
     n_web_servers = len(web_servers)
     print(f"Preparing the {n_web_servers} web servers to run in parallel"+os.linesep)
 
-    processes = get_processes(web_servers, predictors_dic, params, main_dir)
+    processes = get_processes(web_servers, predictors_dic, params, main_dir,pdb_name)
 
     print("Parallel run is starting"+os.linesep)
     for p in processes:
@@ -82,15 +81,25 @@ def run(params, main_dir):
     return predictors_dic
 
 
-def get_unique_folder(tools_folder):
+def get_unique_folder(tools_folder,cl_arguments):
+    if cl_arguments.pdb_file is not None:
+        pdb_name = f"{os.path.basename(cl_arguments.pdb_file)[:-4]}"
+        name_string = f"{pdb_name}_{cl_arguments.threshold}"
+    elif cl_arguments.pdb_id is not None:
+        pdb_name =  f"{os.path.basename(cl_arguments.pdb_id)}"
+        name_string = f"{pdb_name}_{cl_arguments.threshold}"
+    else:
+        pdb_name = "error"
+        name_string = "run_"
+
     counter = 0
     Val = True
     while Val:
         random_int = random.randint(1, 9999)
         fixed_char = format(random_int, "04d")
-        main_dir = os.path.join(tools_folder, "run_{}".format(fixed_char))
+        main_dir = os.path.join(tools_folder, f"{name_string}_{fixed_char}")
         if not os.path.exists(main_dir):
-            return main_dir
+            return pdb_name,main_dir
         if counter > 9999:
             Val = False
         raise AssertionError("Maximum number of folders reached")
@@ -100,7 +109,7 @@ if __name__ == "__main__":
 
     try:
         # Main directory of the project
-        tools_dir = os.path.dirname(os.path.realpath(__file__))
+        cport_dir = os.path.dirname(os.path.realpath(__file__))
 
         """Command-line arguments"""
         if len(sys.argv) > 1:
@@ -147,8 +156,9 @@ if __name__ == "__main__":
         else:
             raise AssertionError("Please provide pdb_id or pdb_file")
 
+
         # Generation of a random and unique directory run_*
-        run_dir = get_unique_folder(tools_dir)
+        pdb_name,run_dir = get_unique_folder(cport_dir,cl_arguments)
         if not os.path.exists(run_dir):
             os.mkdir(run_dir)
 
@@ -160,7 +170,7 @@ if __name__ == "__main__":
 
         # Multiprocessing function, webservers in parallel run
         # The outcome of the predictors is stored in a list of objects
-        web_results = run(input_params, main_dir=run_dir)
+        web_results = run(input_params, main_dir=run_dir,pdb_name=pdb_name)
         n_web_servers = len(web_results.values())
         print(f"Number of webservers: {n_web_servers}"+os.linesep)
         n_success = sum([i.success for i in web_results.values()])
@@ -169,7 +179,7 @@ if __name__ == "__main__":
         # Add the threshold values based on the successful predictors
         print("Update the threshold values based on the successful predictors"+os.linesep)
         predictors_list = threshold.run(web_results.values(),
-                                        tools_dir,
+                                        cport_dir,
                                         run_dir)
 
         # Solvent Accessible Surface Area calculations
@@ -184,7 +194,7 @@ if __name__ == "__main__":
         # The tools/resdist must be recompiled
         print("Calculate the residues distance"+os.linesep)
         distance_list = residiues_distance.run(input_params,
-                                               tools_dir)
+                                               cport_dir)
 
         # Update the active and passive residues using filters from Cport
         print("Filter the residues based on precalculated residues and threshold"+os.linesep)
@@ -202,6 +212,11 @@ if __name__ == "__main__":
         # Final table of each predictor and the active/passive residues
         print("Create the residues table"+os.linesep)
         save_csv.run(fpredictors, input_params.pdb_file, run_dir)
+
+        cmd_file = os.path.join(run_dir,"cl_cmd.txt")
+        with open(cmd_file,"w") as f:
+            f.write(" ".join(sys.argv))
+        f.close()
 
     except AssertionError as ae:
         print(ae)

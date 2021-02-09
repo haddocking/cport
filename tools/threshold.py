@@ -27,7 +27,7 @@ def run(predictors, tools_dir, main_dir):
     Based on the successful predictors I recreate this order
     """
     predictorlist = ["WHISCY", "ProMate", "PIER", "PPISP", "PINUP", "SPPIDER"]
-    succ_list = [p.pdb.name for p in predictors if p.success is True]
+    succ_list = [p.name for p in predictors if p.success is True]
     suc = []
     for i in predictorlist:
         if i in succ_list:
@@ -41,6 +41,6 @@ def run(predictors, tools_dir, main_dir):
     final_suc_predictors = []
     for pred in predictors:
         if pred.success is True:
-            pred.cutoff_rank, pred.cutoff_score = thress[pred.pdb.name]
+            pred.cutoff_rank, pred.cutoff_score = thress[pred.name]
             final_suc_predictors.append(pred)
     return final_suc_predictors
