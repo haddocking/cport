@@ -1,6 +1,3 @@
-import subprocess
-from Bio.PDB import PDBParser
-import freesasa
 from tools import haddock_calc_sasa
 
 
@@ -18,7 +15,7 @@ def parse_rsa_file(rsa_values):
     for res_id in rsa_values:
         res = rsa_values[res_id]
         name =  res['name']
-        number = int(res_id[:3])
+        number = int(res_id.strip()[:3])
         # Difference between NACCESS and freesasa output
         try:
             relative_sidechain = float(res['side_chain_rel'])
@@ -40,7 +37,6 @@ def parse_rsa_file(rsa_values):
 def run(pdb_obj):
     rsa_values = haddock_calc_sasa.get_accessibility(pdb_obj.pdb_dir)
     res = parse_rsa_file(rsa_values[pdb_obj.chain_id])
-
     surface = []
     for s in res:
         if s.relative_mainchain >= 15 or s.relative_sidechain >= 15:
