@@ -5,7 +5,6 @@ from Bio import SearchIO
 from tools import whiscy_pdbutil
 import json
 
-
 class SequenceConverter:
     def __init__(self, sequence_dict, master_sequence=None):
         self.dic = sequence_dict
@@ -60,6 +59,11 @@ class SequenceConverter:
             f.write(rest_seq)
         f.close()
         return name
+    def all_same_length(self):
+        if len(set([len(s) for s in self.dic.values()])) == 1:
+            return True
+        else:
+            return False
 
 
 def from_clustal(seq_file):
@@ -176,10 +180,13 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
     if n_seq > 1:
         print("Aligning Sequences... "+os.linesep)
         # Align the sequence
-        mca_fasta = seq.save_fasta_msa_alignment(main_dir)
-        print("Sequences aligned and saved to temp folder "+os.linesep)
-        # Return a FASTA sequence
-        final_seq = from_fasta(mca_fasta)
+        if seq.all_same_length():
+            final_seq = seq
+        else:
+            mca_fasta = seq.save_fasta_msa_alignment(main_dir)
+            print("Sequences aligned and saved to temp folder "+os.linesep)
+            # Return a FASTA sequence
+            final_seq = from_fasta(mca_fasta)
 
     # IF there is only one sequence
     elif n_seq == 1:
