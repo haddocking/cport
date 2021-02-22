@@ -41,7 +41,7 @@ class PdbFile:
         for line in self.as_string.split(os.linesep):
             if line.startswith("ATOM"):
                 number = int(line[23:26].strip())
-                b_factor = float(line[60:77].strip())
+                b_factor = float(line[60:72].strip())
                 res_score.append((number, b_factor))
         res_score = set(res_score)
         res_score = sorted(res_score, key=lambda x: x[1], reverse=True)
