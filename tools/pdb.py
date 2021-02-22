@@ -1,6 +1,6 @@
 from urllib import request
 import os
-
+from prody import *
 
 class PdbFile:
 
@@ -37,12 +37,8 @@ class PdbFile:
     the list is sorted from the larger to smaller score
     """
     def return_res_number_score(self):
-        res_score = []
-        for line in self.as_string.split(os.linesep):
-            if line.startswith("ATOM"):
-                number = int(line[23:26].strip())
-                b_factor = float(line[60:72].strip())
-                res_score.append((number, b_factor))
+        p = parsePDB(self.pdb_dir)
+        res_score = list(zip(p.getResnums(), p.getBetas()))
         res_score = set(res_score)
         res_score = sorted(res_score, key=lambda x: x[1], reverse=True)
         return res_score
