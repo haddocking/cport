@@ -217,7 +217,7 @@ if __name__ == "__main__":
         with open(cmd_file,"w") as f:
             f.write(" ".join(sys.argv))
             f.write(os.linesep)
-            f.write(f"Successful predictors: {n_success}/{n_web_servers}")
+            f.write(f"Successful predictors: {n_success}")
         f.close()
 
     except AssertionError as ae:
