@@ -64,7 +64,7 @@ def run(input_params, main_dir,pdb_name):
     if pdb_url != "":
         results_pdb = pdb.from_url(pdb_url, name=f"{pdb_name}_PPISP", main_dir=main_dir)
         print("META PPISP: Finished successfully", file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=results_pdb, success=True)
+        return predictors.Predictor(pdb=results_pdb,name="PPISP", success=True)
     else:
         print("META PPISP: Failed", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=input_params.pdb_file,name="PPISP", success=False)

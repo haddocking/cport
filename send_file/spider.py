@@ -81,7 +81,7 @@ def run(input_params, main_dir,pdb_name):
         results_pdb = pdb.from_url(pdb_url, name=f"{pdb_name}_SPPIDER", main_dir=main_dir)
         print("SPPIDER: Finished successfully",
               file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=results_pdb, success=True)
+        return predictors.Predictor(pdb=results_pdb,name="SPPIDER", success=True)
     else:
         print("SPPIDER: Failed {}".format(result_url),
               file=open(temp_file, "a"))
