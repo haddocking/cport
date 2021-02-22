@@ -216,6 +216,8 @@ if __name__ == "__main__":
         cmd_file = os.path.join(run_dir,"cl_cmd.txt")
         with open(cmd_file,"w") as f:
             f.write(" ".join(sys.argv))
+            f.write(os.linesep)
+            f.write(f"Successful predictors: {n_success}/{n_web_servers}")
         f.close()
 
     except AssertionError as ae:
