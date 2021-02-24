@@ -57,5 +57,5 @@ def run(input_params, main_dir,pdb_name):
         results_pdb = pdb.from_url(results_url,
                                    name=f"{pdb_name}_ProMate",
                                    main_dir=main_dir)
-        print("Promate: Finished successfully", file=open(temp_file, "a"))
+        print(f"Promate: Finished successfully {results_url}", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=results_pdb,name="ProMate", success=True)
