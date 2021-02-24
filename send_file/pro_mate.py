@@ -23,7 +23,7 @@ def run(input_params, main_dir,pdb_name):
     req = requests.post(url, data=content, headers={'Content-Type': header})
     print("Promate: Processing", file=open(temp_file, "a"))
     if "href" not in req.text:
-        print("Promate: Failed", file=open(temp_file, "a"))
+        print(f"Promate: Failed: {url}", file=open(temp_file, "a"))
         return predictors.Predictor(pdb=input_params.pdb_file, success=False)
     else:
         temp_url = req.url
