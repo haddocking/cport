@@ -50,6 +50,7 @@ def run(input_params, main_dir,pdb_name):
         return predictors.Predictor(pdb=input_params.pdb_file, name="ProMate", success=False)
     else:
 
+        time.sleep(10)
         temp_url = temp_url[:temp_url.rfind('/')]
 
         results_url = temp_url + "/BSFout.AA.full.pdb"
