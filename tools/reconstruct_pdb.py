@@ -2,19 +2,22 @@ import os
 from tools import pdb
 
 
-def run(init_pdb, predictors_list, main_dir):
+def run(init_pdb, predictors_list, main_dir,name=None):
     active_res = []
     passive_res = []
     for predictor in predictors_list:
         pred_active_list = predictor.active_res
-        for res in pred_active_list:
-            if res not in active_res:
-                active_res.append(res)
+        if pred_active_list:
+            for res in pred_active_list:
+                if res not in active_res:
+                    active_res.append(res)
+
         pred_passive_list = predictor.passive_res
-        for res in pred_passive_list:
-            if res in active_res:
-                continue
-            passive_res.append(res)
+        if pred_passive_list:
+            for res in pred_passive_list:
+                if res in active_res:
+                    continue
+                passive_res.append(res)
 
     pdb_file = init_pdb
 
@@ -32,9 +35,10 @@ def run(init_pdb, predictors_list, main_dir):
         else:
             new_line = line
         pdb_string = pdb_string+new_line+os.linesep
-
+    if name is None:
+        name = f"{os.path.basename(main_dir)[:-5]}_final"
     final_pdb = pdb.from_string(pdb_string,
-                                name=f"{os.path.basename(main_dir)[:-5]}_final",
+                                name=name,
                                 main_dir=main_dir)
-    final_dir = os.path.join(main_dir, f"{os.path.basename(main_dir)[:-5]}_final")
+    final_dir = os.path.join(main_dir, name)
     final_pdb.save_file(final_dir)

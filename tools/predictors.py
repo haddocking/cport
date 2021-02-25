@@ -28,6 +28,7 @@ def update_res(predictor_list, surface, distance_list):
         # (the x is determined by the threshold)
         if rank is not None:
             active_res = exposed_res[:int(rank)]
+
         # Get only the residues with score larger than the cutoff
         # (the cutoff is determined by the threshold)
         if score is not None:
@@ -41,29 +42,32 @@ def update_res(predictor_list, surface, distance_list):
         acceptable_radius = [i for i in distance_list if i[2] < pred.passive_radius]
 
         # Remove the scores (I only need the residue numbers)
-        ac_list = list(zip(*active_res))[0]
-        ex_list = list(zip(*exposed_res))[0]
+        if active_res and exposed_res:
+            ac_list = list(zip(*active_res))[0]
+            ex_list = list(zip(*exposed_res))[0]
 
-        # I copied this filter from Cport
-        passive_list = []
-        for dist in acceptable_radius:
-            if dist[0] in ac_list:
-                if dist[1] in ex_list:
-                    passive_list.append(dist[1])
-            elif dist[1] in ac_list:
-                if dist[0] in ex_list:
-                    passive_list.append(dist[0])
+            # I copied this filter from Cport
+            passive_list = []
+            for dist in acceptable_radius:
+                if dist[0] in ac_list:
+                    if dist[1] in ex_list:
+                        passive_list.append(dist[1])
+                elif dist[1] in ac_list:
+                    if dist[0] in ex_list:
+                        passive_list.append(dist[0])
 
-        passive_res = []
-        for r in passive_list:
-            if r not in ac_list:
-                passive_res.append(r)
-        passive_res = list(set(passive_res))
-        passive_res.sort()
+            passive_res = []
+            for r in passive_list:
+                if r not in ac_list:
+                    passive_res.append(r)
+            passive_res = list(set(passive_res))
+            passive_res.sort()
 
-        # Update the list of the Predictor object
-        pred.active_res = ac_list
+            # Update the list of the Predictor object
+            pred.active_res = ac_list
 
-        pred.passive_res = passive_res
-
+            pred.passive_res = passive_res
+        else:
+            pred.active_res = active_res.sort()
+            pred.passive_res = exposed_res.sort()
     return predictor_list
