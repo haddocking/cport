@@ -1,27 +1,24 @@
 import os
 
-
-def run(predictors, tools_dir, main_dir):
+def run(predictors, tools_dir, main_dir,thres):
     """
     I load the threshold files and separate each one to a dictionary
     Each threshold contains the possible combinations between the predictors
     """
-    cportthresholds = []
-    for n in (1, 2, 3):
-        f = os.path.join(tools_dir, "tools/threshold{}.stat".format(n))
-        lines = [line.split() for line in open(f).readlines()]
-        curr_thresholds = {}
-        for line in lines:
-            dic = {}
-            for predictor in line:
-                key, val1, val2 = predictor.split(":")
-                if val1 == "None":
-                    val1 = None
-                if val2 == "None":
-                    val2 = None
-                dic[key] = val1, val2
-            curr_thresholds[frozenset(dic.keys())] = dic
-        cportthresholds.append(curr_thresholds)
+
+    f = os.path.join(tools_dir, "tools/threshold{}.stat".format(thres))
+    lines = [line.split() for line in open(f).readlines()]
+    curr_thresholds = {}
+    for line in lines:
+        dic = {}
+        for predictor in line:
+            key, val1, val2 = predictor.split(":")
+            if val1 == "None":
+                val1 = None
+            if val2 == "None":
+                val2 = None
+            dic[key] = val1, val2
+        curr_thresholds[frozenset(dic.keys())] = dic
     """
     The dictionary keys are organised in a specific order
     Based on the successful predictors I recreate this order
