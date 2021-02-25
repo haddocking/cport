@@ -180,7 +180,8 @@ if __name__ == "__main__":
         print("Update the threshold values based on the successful predictors"+os.linesep)
         predictors_list = threshold.run(web_results.values(),
                                         cport_dir,
-                                        run_dir)
+                                        run_dir,
+                                        input_params.threshold)
 
         # Solvent Accessible Surface Area calculations
         # Return a list of residues and the values
