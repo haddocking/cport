@@ -9,6 +9,8 @@ def run(predictors, init_pdb, main_dir):
     df = pd.DataFrame()
     df["res"] = res
     for pred in predictors:
+        if (pred.active_res is None) and (pred.passive_res is None):
+            continue
         final_list = []
         for r in res:
             score = ""
