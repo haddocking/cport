@@ -68,20 +68,28 @@ def run(input_params, main_dir,pdb_name):
     temp_dir = os.path.join(main_dir, "temp")
     temp_file = os.path.join(temp_dir, "whiscy.status")
     print("WHISCY: Start", file=open(temp_file, "a"))
-
     results_url = req.text.split('"')[-2]
-    embed()
     final_url = wait_whiscy(results_url, temp_file)
 
     if "Status Failed" in final_url:
         print("Status: Failed, rerun WHISCY", file=open(temp_file, "a"))
-        session = requests.session()
-        init_session = session.get(url, verify=False)
+        new_session = requests.session()
+        init_session = new_session.get(url, verify=False)
         csrf_token = get_csrf_token(init_session.text)
+        pdb_file = open(input_params.pdb_file.pdb_dir)
+        seq_file = open(input_params.sequence_file.seq_dir)
+
         data["csrf_token"] = csrf_token
-        req = session.post(url=url, data=data, files=files)
+
+        files = {"pdb_file": pdb_file,
+                 "alignment_file": seq_file}
+        nreq = new_session.post(url=url, data=data, files=files)
+
         print("WHISCY: Restarting", file=open(temp_file, "a"))
-        results_url = req.text.split('"')[-2]
+
+
+        results_url = nreq.text.split('"')[-2]
+
         final_url = wait_whiscy(results_url, temp_file)
         if ("ERROR" in final_url) or ("Status: Failed" in final_url):
             print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
