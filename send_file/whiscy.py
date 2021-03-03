@@ -4,7 +4,7 @@ import requests
 import os
 import lxml.html
 from tools import pdb, predictors
-
+from IPython import embed
 
 def wait_whiscy(url, temp_file):
     waiting = 0
@@ -70,10 +70,10 @@ def run(input_params, main_dir,pdb_name):
     print("WHISCY: Start", file=open(temp_file, "a"))
 
     results_url = req.text.split('"')[-2]
-
+    embed()
     final_url = wait_whiscy(results_url, temp_file)
 
-    if "Status: Failed" in final_url:
+    if "Status Failed" in final_url:
         print("Status: Failed, rerun WHISCY", file=open(temp_file, "a"))
         session = requests.session()
         init_session = session.get(url, verify=False)
