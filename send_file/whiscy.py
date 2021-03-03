@@ -28,7 +28,7 @@ def wait_whiscy(url, temp_file):
                     print("WHISCY: URL found", file=open(temp_file, "a"))
                     return pdb_url
         else:
-            print("WHISCY: proccesing {}".format(waiting),
+            print("WHISCY: proccesing {} {}".format(waiting,url),
                   file=open(temp_file, "a"))
             # print(waiting)
             # print(html_string)
