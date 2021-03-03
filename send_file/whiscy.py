@@ -14,6 +14,10 @@ def wait_whiscy(url, temp_file):
             raise AssertionError("Url not found")
         if waiting > 120 * 60:
             raise Exception("Timeout on the whiscy server")
+        if "Status: Failed" in html_string:
+            print_message = "Status Failed URL: {}".format(url)
+            print(print_message, file=open(temp_file, "a"))
+            return print_message
         if "[ERROR]" in html_string:
             error_message = html_string.split("[ERROR]")[1].split("<br/>")[0]
             print_message = "[Error] {} URL: {}".format(error_message, url)
@@ -28,10 +32,8 @@ def wait_whiscy(url, temp_file):
                     print("WHISCY: URL found", file=open(temp_file, "a"))
                     return pdb_url
         else:
-            print("WHISCY: proccesing {} {}".format(waiting,url),
+            print("WHISCY: processing {} {}".format(waiting,url),
                   file=open(temp_file, "a"))
-            # print(waiting)
-            # print(html_string)
         time.sleep(5)
         waiting += 5
 
@@ -71,9 +73,26 @@ def run(input_params, main_dir,pdb_name):
 
     final_url = wait_whiscy(results_url, temp_file)
 
-    if "ERROR" in final_url:
+    if "Status: Failed" in final_url:
+        print("Status: Failed, rerun WHISCY", file=open(temp_file, "a"))
+        session = requests.session()
+        init_session = session.get(url, verify=False)
+        csrf_token = get_csrf_token(init_session.text)
+        data["csrf_token"] = csrf_token
+        req = session.post(url=url, data=data, files=files)
+        print("WHISCY: Restarting", file=open(temp_file, "a"))
+        results_url = req.text.split('"')[-2]
+        final_url = wait_whiscy(results_url, temp_file)
+        if ("ERROR" in final_url) or ("Status: Failed" in final_url):
+            print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
+            return predictors.Predictor(pdb=input_params.pdb_file,name="WHISCY", success=False)
+        else:
+            results_pdb = pdb.from_url(final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir)
+            print("WHISCY: Run finished successfully", file=open(temp_file, "a"))
+            return predictors.Predictor(pdb=results_pdb, name="WHISCY", success=True)
+    elif "ERROR" in final_url:
         print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=input_params.pdb_file, success=False)
+        return predictors.Predictor(pdb=input_params.pdb_file,name="WHISCY", success=False)
     else:
         results_pdb = pdb.from_url(final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir)
         print("WHISCY: Run finished successfully", file=open(temp_file, "a"))
