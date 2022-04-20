@@ -10,7 +10,6 @@ from tools import pdb, predictors
 # from IPython import embed
 
 
-
 def wait_whiscy(url, temp_file):
     waiting = 0
     while True:
