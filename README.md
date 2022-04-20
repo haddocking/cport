@@ -1,4 +1,7 @@
 # cport
+
+[![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)
+
 Repository for the backend machinery of the CPORT server
 
 ## Requirements
