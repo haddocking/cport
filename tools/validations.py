@@ -1,6 +1,6 @@
 import os
 
-from IPython import embed
+# from IPython import embed
 
 servers = {1: "whiscy", 2: "promate", 3: "meta_ppisp", 4: "spidder"}
 

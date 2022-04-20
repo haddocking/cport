@@ -1,4 +1,4 @@
 {
-"MUSCLE": "/path/to/cport/tools/muscle3",
-"NACCESS": "/path/to/cport/tools/naccess.config"
-  }
+  "MUSCLE": "tools/muscle3",
+  "NACCESS": "tools/naccess.config"
+}

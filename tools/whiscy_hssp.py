@@ -1,7 +1,8 @@
 import os
 
 import requests
-from IPython import embed
+
+# from IPython import embed
 
 
 def get_from_web(pdb_code, main_dir):

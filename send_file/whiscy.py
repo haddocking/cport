@@ -4,9 +4,11 @@ from urllib import request
 
 import lxml.html
 import requests
-from IPython import embed
 
 from tools import pdb, predictors
+
+# from IPython import embed
+
 
 
 def wait_whiscy(url, temp_file):
