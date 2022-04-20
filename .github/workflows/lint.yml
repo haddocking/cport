@@ -21,4 +21,4 @@ jobs:
           pip install black
 
       - name: black
-        run: black --experimental-string-processing  --check --diff .
+        run: black --experimental-string-processing --check --diff .
