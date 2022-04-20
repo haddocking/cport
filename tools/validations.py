@@ -1,11 +1,8 @@
 import os
+
 from IPython import embed
 
-servers = {
-        1: "whiscy",
-        2: "promate",
-        3: "meta_ppisp",
-        4: "spidder"}
+servers = {1: "whiscy", 2: "promate", 3: "meta_ppisp", 4: "spidder"}
 
 
 def argument_assertions(args):
@@ -15,7 +12,9 @@ def argument_assertions(args):
         raise AssertionError("Please choose only one argument: -pdb_id or -pdb_file")
     elif (args.pdb_id is not None) and (args.pdb_file is None):
         if (args.seq_file is not None) or (args.al is not None):
-            raise AssertionError("argument pdb_id does not need sequence file or alignment format")
+            raise AssertionError(
+                "argument pdb_id does not need sequence file or alignment format"
+            )
     elif (args.pdb_id is None) and (args.pdb_file is not None):
         if (args.seq_file is None) and (args.al is None):
             raise AssertionError("Please provide sequence file and alignment format")
@@ -29,7 +28,9 @@ def argument_assertions(args):
             if ":" in selection:
                 try:
                     numbers = [int(n) for n in selection.split(":")]
-                    check = [n for n in numbers if n in range(1, max(servers.keys())+1)]
+                    check = [
+                        n for n in numbers if n in range(1, max(servers.keys()) + 1)
+                    ]
                     if not (len(numbers) == len(check)):
                         raise AssertionError("Server selection: Invalid range numbers")
                 except Exception:
@@ -37,13 +38,20 @@ def argument_assertions(args):
             elif len(selection) == 1:
                 if selection.isnumeric():
                     n = int(selection)
-                    if not (n in range(1, max(servers.keys())+1)):
-                        raise AssertionError(f"Server selection: Number {selection} not in selection range")
+                    if not (n in range(1, max(servers.keys()) + 1)):
+                        raise AssertionError(
+                            f"Server selection: Number {selection} not in selection"
+                            " range"
+                        )
                 else:
-                    raise AssertionError(f"Server selection: Single value {selection} is not a number")
+                    raise AssertionError(
+                        f"Server selection: Single value {selection} is not a number"
+                    )
             else:
                 if selection not in servers.values():
-                    raise AssertionError(f"Server selection: Server {selection} is not in the list")
+                    raise AssertionError(
+                        f"Server selection: Server {selection} is not in the list"
+                    )
 
 
 def pdb_assertions(pdb_location):
