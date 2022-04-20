@@ -1,7 +1,7 @@
 from tools import haddock_calc_sasa
 
 
-class ResidueSASA():
+class ResidueSASA:
     def __init__(self, name, number, sd_rel, bk_rel):
         self.name = name
         self.number = number
@@ -14,22 +14,21 @@ def parse_rsa_file(rsa_values):
     residue_sasas = []
     for res_id in rsa_values:
         res = rsa_values[res_id]
-        name =  res['name']
+        name = res["name"]
         number = int(res_id.strip()[:3])
         # Difference between NACCESS and freesasa output
         try:
-            relative_sidechain = float(res['side_chain_rel'])
+            relative_sidechain = float(res["side_chain_rel"])
         except ValueError:
             relative_sidechain = -99.9
         try:
-            relative_mainchain = float(res['main_chain_rel'])
+            relative_mainchain = float(res["main_chain_rel"])
         except ValueError:
             relative_mainchain = -99.9
 
-        residue_sasas.append(ResidueSASA(name,
-                                         number,
-                                         relative_sidechain,
-                                         relative_mainchain))
+        residue_sasas.append(
+            ResidueSASA(name, number, relative_sidechain, relative_mainchain)
+        )
 
     return residue_sasas
 

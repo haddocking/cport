@@ -1,5 +1,5 @@
 class Predictor:
-    def __init__(self, pdb, name,rank=None, score=None, success=None):
+    def __init__(self, pdb, name, rank=None, score=None, success=None):
         self.pdb = pdb
         self.cutoff_rank = rank
         self.cutoff_score = score
@@ -27,7 +27,7 @@ def update_res(predictor_list, surface, distance_list):
         # Get the first x residues with the highest score
         # (the x is determined by the threshold)
         if rank is not None:
-            active_res = exposed_res[:int(rank)]
+            active_res = exposed_res[: int(rank)]
 
         # Get only the residues with score larger than the cutoff
         # (the cutoff is determined by the threshold)

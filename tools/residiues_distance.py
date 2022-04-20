@@ -1,5 +1,5 @@
-import subprocess
 import os
+import subprocess
 
 
 def get_distance_list(distance_results):

@@ -1,8 +1,9 @@
 import os
+
 from tools import pdb
 
 
-def run(init_pdb, predictors_list, main_dir,name=None):
+def run(init_pdb, predictors_list, main_dir, name=None):
     active_res = []
     passive_res = []
     for predictor in predictors_list:
@@ -26,19 +27,17 @@ def run(init_pdb, predictors_list, main_dir,name=None):
         if line.startswith("ATOM"):
             res = int(line[22:26])
             b_string = line[60:77]
-            score = '  0.00           '
+            score = "  0.00           "
             if res in active_res:
-                score = '100.00           '
+                score = "100.00           "
             if res in passive_res:
-                score = ' 50.00           '
+                score = " 50.00           "
             new_line = line.replace(b_string, score)
         else:
             new_line = line
-        pdb_string = pdb_string+new_line+os.linesep
+        pdb_string = pdb_string + new_line + os.linesep
     if name is None:
         name = f"{os.path.basename(main_dir)[:-5]}_final"
-    final_pdb = pdb.from_string(pdb_string,
-                                name=name,
-                                main_dir=main_dir)
+    final_pdb = pdb.from_string(pdb_string, name=name, main_dir=main_dir)
     final_dir = os.path.join(main_dir, name)
     final_pdb.save_file(final_dir)

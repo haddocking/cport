@@ -1,9 +1,12 @@
+import json
 import os
+
+from Bio import SearchIO
 from Bio.Align.Applications import MuscleCommandline
 from Bio.Blast import NCBIWWW
-from Bio import SearchIO
+
 from tools import whiscy_pdbutil
-import json
+
 
 class SequenceConverter:
     def __init__(self, sequence_dict, master_sequence=None):
@@ -19,12 +22,12 @@ class SequenceConverter:
     def dic_to_fasta(self):
         total_seq = ""
         for seq_name in self.dic.keys():
-            name = f">{str(seq_name)}"+os.linesep
+            name = f">{str(seq_name)}" + os.linesep
             seq = ""
             for i in range(0, len(self.dic[seq_name]), 60):
-                line = f"{self.dic[seq_name][i:i+60]}"+os.linesep
+                line = f"{self.dic[seq_name][i:i+60]}" + os.linesep
                 seq = seq + line
-            total_seq = total_seq + name+seq
+            total_seq = total_seq + name + seq
         return total_seq
 
     def save_fasta_msa_alignment(self, main_dir):
@@ -40,25 +43,24 @@ class SequenceConverter:
         with open(fin_dir, "w") as f:
             f.write(fasta_text)
         f.close()
-        muscle_cline = MuscleCommandline(muscle_dir,
-                                         input=fin_dir,
-                                         out=fout_dir)
+        muscle_cline = MuscleCommandline(muscle_dir, input=fin_dir, out=fout_dir)
         muscle_cline()
         return fout_dir
 
     def save_final_phylip(self, name):
-        n_seq = len(self.dic)+1
+        n_seq = len(self.dic) + 1
         seq_length = len(self.master_sequence)
-        first_line = f"{n_seq} {seq_length}"+os.linesep
-        master_line = f"{'MASTER':10s}{self.master_sequence}"+os.linesep
+        first_line = f"{n_seq} {seq_length}" + os.linesep
+        master_line = f"{'MASTER':10s}{self.master_sequence}" + os.linesep
         rest_seq = first_line + master_line
         for seq_name in self.dic.keys():
-            line = f"{str(seq_name):10s}{self.dic[seq_name]}"+os.linesep
+            line = f"{str(seq_name):10s}{self.dic[seq_name]}" + os.linesep
             rest_seq = rest_seq + line
         with open(name, "w") as f:
             f.write(rest_seq)
         f.close()
         return name
+
     def all_same_length(self):
         if len(set([len(s) for s in self.dic.values()])) == 1:
             return True
@@ -87,7 +89,7 @@ def from_clustal(seq_file):
     new_dic = {}
     for i, final_seq in enumerate(zip(*final_list)):
         seq = "".join([i[36:] for i in final_seq])
-        name = i+1
+        name = i + 1
         new_dic[name] = seq
     return SequenceConverter(new_dic)
 
@@ -142,7 +144,7 @@ def from_phylip(seq_file):
     new_dic = {}
     for i, final_seq in enumerate(zip(*final_list)):
         seq = "".join(["".join(i[11:].split()) for i in final_seq])
-        name = i+1
+        name = i + 1
         new_dic[name] = seq
     return SequenceConverter(new_dic)
 
@@ -174,44 +176,45 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
 
     n_seq = seq.n_seq()
 
-    print(f"Sequence format: {seq_format} and number of sequences: {n_seq}"+os.linesep)
+    print(
+        f"Sequence format: {seq_format} and number of sequences: {n_seq}" + os.linesep
+    )
 
     # If the number of sequence is larger than 1
     if n_seq > 1:
-        print("Aligning Sequences... "+os.linesep)
+        print("Aligning Sequences... " + os.linesep)
         # Align the sequence
         if seq.all_same_length():
             final_seq = seq
         else:
             mca_fasta = seq.save_fasta_msa_alignment(main_dir)
-            print("Sequences aligned and saved to temp folder "+os.linesep)
+            print("Sequences aligned and saved to temp folder " + os.linesep)
             # Return a FASTA sequence
             final_seq = from_fasta(mca_fasta)
 
     # IF there is only one sequence
     elif n_seq == 1:
-        print("Blast sequence...."+os.linesep)
+        print("Blast sequence...." + os.linesep)
         # Blast to get the multi sequence alignment
-        results_handle = NCBIWWW.qblast("blastp",
-                                        "nr",
-                                        seq.dic_to_fasta(),
-                                        hitlist_size=100)
+        results_handle = NCBIWWW.qblast(
+            "blastp", "nr", seq.dic_to_fasta(), hitlist_size=100
+        )
 
         temp_dir = os.path.join(main_dir, "temp")
         xml_results = os.path.join(temp_dir, "results.xml")
-        with open(xml_results, 'w') as save_file:
+        with open(xml_results, "w") as save_file:
             blast_results = results_handle.read()
             save_file.write(blast_results)
             save_file.close()
-        print("XML file saved to the temp folder"+os.linesep)
+        print("XML file saved to the temp folder" + os.linesep)
 
         # Dictionary with sequences, from the blast result (XML)
         seq = from_xml(xml_results)
-        print("Aligning Sequences... "+os.linesep)
+        print("Aligning Sequences... " + os.linesep)
 
         # Align the sequences
         mca_fasta = seq.save_fasta_msa_alignment(main_dir)
-        print("Sequences aligned and saved to temp folder"+os.linesep)
+        print("Sequences aligned and saved to temp folder" + os.linesep)
 
         # Return a FASTA sequence
         final_seq = from_fasta(mca_fasta)
@@ -222,7 +225,9 @@ def run(seq_dir, seq_format, pdb_file, chain, main_dir):
     final_seq.add_master_sequence(pdb_file, chain)
 
     temp_dir = os.path.join(main_dir, "temp")
-    final_dir = os.path.join(temp_dir, f"{os.path.basename(main_dir)[:-5]}_final_phylip.phylseq")
+    final_dir = os.path.join(
+        temp_dir, f"{os.path.basename(main_dir)[:-5]}_final_phylip.phylseq"
+    )
     final_seq.save_final_phylip(final_dir)
     # Return the final PHYLSEQ FOR WHISCY
     return final_dir

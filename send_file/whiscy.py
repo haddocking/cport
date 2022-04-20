@@ -1,10 +1,13 @@
+import os
 import time
 from urllib import request
-import requests
-import os
+
 import lxml.html
-from tools import pdb, predictors
+import requests
 from IPython import embed
+
+from tools import pdb, predictors
+
 
 def wait_whiscy(url, temp_file):
     waiting = 0
@@ -28,12 +31,14 @@ def wait_whiscy(url, temp_file):
                 if "whiscy.pdb" in line:
                     pdb_dir = line
                     pdb_dir = pdb_dir.split('"')[-2]
-                    pdb_url = 'https://wenmr.science.uu.nl' + pdb_dir
+                    pdb_url = "https://wenmr.science.uu.nl" + pdb_dir
                     print("WHISCY: URL found", file=open(temp_file, "a"))
                     return pdb_url
         else:
-            print("WHISCY: processing {} {}".format(waiting,url),
-                  file=open(temp_file, "a"))
+            print(
+                "WHISCY: processing {} {}".format(waiting, url),
+                file=open(temp_file, "a"),
+            )
         time.sleep(5)
         waiting += 5
 
@@ -41,12 +46,12 @@ def wait_whiscy(url, temp_file):
 def get_csrf_token(page):
     html = lxml.html.fromstring(page)
     hidden_elements = html.xpath('//form//input[@type="hidden"]')
-    token = {x.attrib['name']: x.attrib['value'] for x in hidden_elements}
-    return token['csrf_token']
+    token = {x.attrib["name"]: x.attrib["value"] for x in hidden_elements}
+    return token["csrf_token"]
 
 
-def run(input_params, main_dir,pdb_name):
-    url = 'https://wenmr.science.uu.nl/whiscy/'
+def run(input_params, main_dir, pdb_name):
+    url = "https://wenmr.science.uu.nl/whiscy/"
 
     session = requests.session()
     init_session = session.get(url, verify=False)
@@ -54,14 +59,15 @@ def run(input_params, main_dir,pdb_name):
     pdb_file = open(input_params.pdb_file.pdb_dir)
     seq_file = open(input_params.sequence_file.seq_dir)
 
-    data = {"chain": input_params.chain_id,
-            "alignment_format": input_params.sequence_file.format,
-            "interface_propensities": True,
-            "surface_smoothing": True,
-            "csrf_token": csrf_token}
+    data = {
+        "chain": input_params.chain_id,
+        "alignment_format": input_params.sequence_file.format,
+        "interface_propensities": True,
+        "surface_smoothing": True,
+        "csrf_token": csrf_token,
+    }
 
-    files = {"pdb_file": pdb_file,
-             "alignment_file": seq_file}
+    files = {"pdb_file": pdb_file, "alignment_file": seq_file}
 
     req = session.post(url=url, data=data, files=files)
 
@@ -81,27 +87,33 @@ def run(input_params, main_dir,pdb_name):
 
         data["csrf_token"] = csrf_token
 
-        files = {"pdb_file": pdb_file,
-                 "alignment_file": seq_file}
+        files = {"pdb_file": pdb_file, "alignment_file": seq_file}
         nreq = new_session.post(url=url, data=data, files=files)
 
         print("WHISCY: Restarting", file=open(temp_file, "a"))
-
 
         results_url = nreq.text.split('"')[-2]
 
         final_url = wait_whiscy(results_url, temp_file)
         if ("ERROR" in final_url) or ("Status: Failed" in final_url):
             print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
-            return predictors.Predictor(pdb=input_params.pdb_file,name="WHISCY", success=False)
+            return predictors.Predictor(
+                pdb=input_params.pdb_file, name="WHISCY", success=False
+            )
         else:
-            results_pdb = pdb.from_url(final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir)
+            results_pdb = pdb.from_url(
+                final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir
+            )
             print("WHISCY: Run finished successfully", file=open(temp_file, "a"))
             return predictors.Predictor(pdb=results_pdb, name="WHISCY", success=True)
     elif "ERROR" in final_url:
         print("WHISCY: Failed {}".format(final_url), file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=input_params.pdb_file,name="WHISCY", success=False)
+        return predictors.Predictor(
+            pdb=input_params.pdb_file, name="WHISCY", success=False
+        )
     else:
-        results_pdb = pdb.from_url(final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir)
+        results_pdb = pdb.from_url(
+            final_url, name=f"{pdb_name}_WHISCY", main_dir=main_dir
+        )
         print("WHISCY: Run finished successfully", file=open(temp_file, "a"))
-        return predictors.Predictor(pdb=results_pdb,name="WHISCY", success=True)
+        return predictors.Predictor(pdb=results_pdb, name="WHISCY", success=True)

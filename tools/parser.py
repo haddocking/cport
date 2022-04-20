@@ -1,15 +1,12 @@
-from tools import pdb, seq
 import os
+
+from tools import pdb, seq
 
 
 class InputParams:
-    def __init__(self,
-                 pdb_file,
-                 sequence_file,
-                 alignment_format,
-                 chain_id,
-                 threshold,
-                 servers):
+    def __init__(
+        self, pdb_file, sequence_file, alignment_format, chain_id, threshold, servers
+    ):
         self.pdb_file = pdb_file
         self.sequence_file = sequence_file
         self.alignment_format = alignment_format
@@ -25,15 +22,12 @@ class InputParams:
             self.chain_id,
             self.alignment_format,
             self.threshold,
-            self.servers)
+            self.servers,
+        )
 
 
 def select_servers(choice_list):
-    servers = {
-        1: "whiscy",
-        2: "promate",
-        3: "meta_ppisp",
-        4: "spidder"}
+    servers = {1: "whiscy", 2: "promate", 3: "meta_ppisp", 4: "spidder"}
 
     server_selection = []
 
@@ -49,7 +43,9 @@ def select_servers(choice_list):
                 if len(split_selection) > 1:
                     min_val = int(min(selection.split(":")))
                     max_val = int(max(selection.split(":"))) + 1
-                    server_selection.extend([servers[int(n)] for n in range(min_val, max_val)])
+                    server_selection.extend(
+                        [servers[int(n)] for n in range(min_val, max_val)]
+                    )
                 else:
                     if selection.lower() in servers.values():
                         server_selection.append(selection.lower())
@@ -67,11 +63,9 @@ def run(argv, main_dir):
     if argv.pdb_id is not None:
 
         alignment_format = "FASTA"
-        print("Downloading the PDB file"+os.linesep)
-        pdb_file = pdb.fetch_from_id(argv.pdb_id,
-                                     main_dir,
-                                     argv.chain_id)
-        print("PDB file is ready"+os.linesep)
+        print("Downloading the PDB file" + os.linesep)
+        pdb_file = pdb.fetch_from_id(argv.pdb_id, main_dir, argv.chain_id)
+        print("PDB file is ready" + os.linesep)
         chain_id = argv.chain_id
 
         # If the chain id is not set will stop
@@ -79,27 +73,30 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"+os.linesep)
+                print(
+                    f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"
+                    + os.linesep
+                )
                 chain_id = chain_id[0]
             else:
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
-                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}")
-        pdb_file.chain_id =  chain_id
+                raise AssertionError(
+                    f"{n_chains} chain ids found specify one with -chain_id"
+                    f" {chain_string}"
+                )
+        pdb_file.chain_id = chain_id
 
-        print("Downloading the Sequence file"+os.linesep)
+        print("Downloading the Sequence file" + os.linesep)
         # Using HSSP file from the web returns a PHYLSEQ for WHISCY
-        sequence_file = seq.fetch_from_id(argv.pdb_id,
-                                          main_dir,
-                                          pdb_file,
-                                          chain_id)
-        print("Sequence file is ready"+os.linesep)
+        sequence_file = seq.fetch_from_id(argv.pdb_id, main_dir, pdb_file, chain_id)
+        print("Sequence file is ready" + os.linesep)
 
     else:
         # PDB file given
         name = os.path.basename(argv.pdb_file).split(".")[0]
         pdb_file = pdb.from_file(argv.pdb_file, name, main_dir=main_dir)
-        print("PDB file is ready"+os.linesep)
+        print("PDB file is ready" + os.linesep)
         chain_id = argv.chain_id
 
         # If the chain id is not set will stop
@@ -107,31 +104,32 @@ def run(argv, main_dir):
         if chain_id is None:
             chain_id = pdb_file.get_chain_ids()
             if len(chain_id) == 1:
-                print(f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"+os.linesep)
+                print(
+                    f"Only one Chain id found {chain_id} - Selected chain: {chain_id}"
+                    + os.linesep
+                )
                 chain_id = chain_id[0]
             else:
                 n_chains = len(chain_id)
                 chain_string = " or ".join(chain_id)
-                raise AssertionError(f"{n_chains} chain ids found specify one with -chain_id {chain_string}"+os.linesep)
+                raise AssertionError(
+                    f"{n_chains} chain ids found specify one with -chain_id"
+                    f" {chain_string}"
+                    + os.linesep
+                )
         pdb_file.chain_id = chain_id
-        print("Preparing the Sequence file"+os.linesep)
+        print("Preparing the Sequence file" + os.linesep)
         # Converts the sequence file to match the format of WHISCY
-        sequence_file = seq.from_file(argv.seq_file,
-                                      name,
-                                      main_dir,
-                                      argv.al,
-                                      pdb_file,
-                                      chain_id)
+        sequence_file = seq.from_file(
+            argv.seq_file, name, main_dir, argv.al, pdb_file, chain_id
+        )
         alignment_format = sequence_file.format
-        print("Sequence file is ready"+os.linesep)
+        print("Sequence file is ready" + os.linesep)
 
     threshold = argv.threshold
 
-    input_params = InputParams(pdb_file,
-                               sequence_file,
-                               alignment_format,
-                               chain_id,
-                               threshold,
-                               servers)
+    input_params = InputParams(
+        pdb_file, sequence_file, alignment_format, chain_id, threshold, servers
+    )
 
     return input_params
