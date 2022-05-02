@@ -1,4 +1,4 @@
-from tools import haddock_calc_sasa
+from . import haddock_calc_sasa
 
 
 class ResidueSASA:

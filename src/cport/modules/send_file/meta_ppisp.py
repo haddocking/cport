@@ -6,7 +6,7 @@ from urllib import request
 import requests
 from urllib3 import encode_multipart_formdata
 
-from tools import pdb, predictors
+from . import pdb, predictors
 
 ssl._create_default_https_context = ssl._create_unverified_context
 

@@ -1,6 +1,6 @@
 import os
 
-from tools import pdb
+from . import pdb
 
 
 def run(init_pdb, predictors_list, main_dir, name=None):

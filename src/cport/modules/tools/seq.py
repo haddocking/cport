@@ -1,6 +1,6 @@
 import os
 
-from tools import sequence_convert, whiscy_hssp, whiscy_pdbutil
+from . import sequence_convert, whiscy_hssp, whiscy_pdbutil
 
 
 class SeqFile:

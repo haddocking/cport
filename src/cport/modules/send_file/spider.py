@@ -6,7 +6,7 @@ import lxml.html
 import requests
 from urllib3 import encode_multipart_formdata
 
-from tools import pdb, predictors
+from . import pdb, predictors
 
 
 def wait_spider(url, temp_file):
