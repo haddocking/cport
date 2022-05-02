@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 # FIXME: Remove this and keep all requirements in this setup file
-with open('requirements.txt') as f:
+with open("requirements.txt") as f:
     required = f.read().splitlines()
 
 setup(
