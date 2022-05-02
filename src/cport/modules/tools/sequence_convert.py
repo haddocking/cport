@@ -5,7 +5,7 @@ from Bio import SearchIO
 from Bio.Align.Applications import MuscleCommandline
 from Bio.Blast import NCBIWWW
 
-from tools import whiscy_pdbutil
+from . import whiscy_pdbutil
 
 
 class SequenceConverter:

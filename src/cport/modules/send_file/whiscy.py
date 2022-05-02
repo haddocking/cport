@@ -5,7 +5,7 @@ from urllib import request
 import lxml.html
 import requests
 
-from tools import pdb, predictors
+from . import pdb, predictors
 
 # from IPython import embed
 

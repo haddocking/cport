@@ -1,6 +1,6 @@
 import os
 
-from tools import pdb, seq
+from . import pdb, seq
 
 
 class InputParams:
@@ -114,8 +114,7 @@ def run(argv, main_dir):
                 chain_string = " or ".join(chain_id)
                 raise AssertionError(
                     f"{n_chains} chain ids found specify one with -chain_id"
-                    f" {chain_string}"
-                    + os.linesep
+                    f" {chain_string}" + os.linesep
                 )
         pdb_file.chain_id = chain_id
         print("Preparing the Sequence file" + os.linesep)

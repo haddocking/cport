@@ -4,7 +4,7 @@ import time
 import requests
 from urllib3 import encode_multipart_formdata
 
-from tools import pdb, predictors
+from . import pdb, predictors
 
 
 def wait_promate(url, content, header, temp_file):

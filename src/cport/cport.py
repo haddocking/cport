@@ -7,7 +7,7 @@ import time
 from multiprocessing import Process
 
 from send_file import meta_ppisp, pro_mate, spider, whiscy
-from tools import (
+from . import (
     calc_sasa,
     parser,
     predictors,
