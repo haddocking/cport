@@ -57,7 +57,7 @@ class Whiscy:
             error_msg
         ):  # if program gets here without having disabled error_msg something is likely wrong
             log.info(
-                "Expected server time-out due to time it takes for results to be available"
+                "Suspected server time-out due to time it takes for results to be available"
             )
 
         active_residues = browser.page.find_all(id="active_list")

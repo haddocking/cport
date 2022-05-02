@@ -1,8 +1,9 @@
 import argparse
 import logging
 
-# import os
+import os
 import sys
+from cport.modules.scriber import Scriber
 from cport.version import VERSION
 
 # from cport.modules.tools import (
@@ -42,6 +43,11 @@ ap.add_argument(
 )
 
 ap.add_argument(
+    "pdb_fasta",
+    help="",
+)
+
+ap.add_argument(
     "-v",
     "--version",
     help="show version",
@@ -70,7 +76,7 @@ def maincli():
 
 # ====================================================================================#
 # Main code
-def main(pdb_id, chain_id):
+def main(pdb_id, chain_id, pdb_fasta):
 
     # Start #=========================================================================#
     log.setLevel("DEBUG")
@@ -79,9 +85,14 @@ def main(pdb_id, chain_id):
     log.info("-" * 42)
 
     # Run whiscy
-    whiscy = Whiscy(pdb_id, chain_id)
-    whiscy_predictions = whiscy.run()
-    log.info(whiscy_predictions)
+   # whiscy = Whiscy(pdb_id, chain_id)
+   # whiscy_predictions = whiscy.run()
+   # log.info(whiscy_predictions)
+
+    # Run SCRIBER
+    scriber = Scriber(os.path.abspath(pdb_fasta))
+    scriber_predictions = scriber.run()
+    log.info(scriber_predictions)
 
     # try:
     #     # Main directory of the project
