@@ -1,4 +1,4 @@
-# Test if the pdb_fasta function is working
+"""Test the utility functions."""
 import os
 from cport.modules.utils import get_fasta_from_pdbid
 
