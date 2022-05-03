@@ -15,9 +15,9 @@ def get_pdb_fasta(pdb_id, chain_id):
         + "/download"
     )
 
-    # response = requests.get(target_url).text
     temp_fasta = requests.get(target_url).text
 
+    # https://regex101.com/r/DEQghW/1
     pattern = "(>.*auth " + chain_id[0].capitalize() + ".*\n[A-Z].*)"
 
     pdb_fasta_string = re.match("%s" % pattern, temp_fasta)[0]

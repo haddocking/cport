@@ -33,11 +33,13 @@ log.addHandler(ch)
 # Define arguments
 ap = argparse.ArgumentParser()
 ap.add_argument(
-    "pdb_id", help="",
+    "pdb_id",
+    help="",
 )
 
 ap.add_argument(
-    "chain_id", help="",
+    "chain_id",
+    help="",
 )
 
 

@@ -10,10 +10,15 @@ def scriber():
 
 
 def test_run_scriber(scriber):
-    """Test the execution of the whiscy predictions."""
+    """Test the execution of the scriber predictions."""
     observed_predictions = scriber.run()
     expected_predictions = {
-        "active": [19, 24, 76, 211,],
+        "active": [
+            19,
+            24,
+            76,
+            211,
+        ],
         "passive": [
             1,
             2,
