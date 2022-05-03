@@ -1,11 +1,14 @@
-import time
 import logging
-import pandas as pd
 import re
-import mechanicalsoup as ms
+import tempfile
+import time
 from urllib import request
-from cport.url import SCRIBER_URL
+
+import pandas as pd
+
 import cport.modules.tools.pdb_fasta as pdb_fasta
+import mechanicalsoup as ms
+from cport.url import SCRIBER_URL
 
 log = logging.getLogger("cportlog")
 
@@ -67,27 +70,26 @@ class Scriber:
 
         browser.close()
 
-        # replace path to be functional on local machine
-        # had to use request instead of mechanicalsoup due to link issues
+        # Initialize temporary file to store the csv
+        temp_file = tempfile.NamedTemporaryFile(delete=False)
+        request.urlretrieve(download_link, temp_file.name)
 
-        request.urlretrieve(
-            url=download_link,
-            filename="/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
-        )
-
+        # Read back the .csv file and store it in a pandas dataframe
+        #  due to the structuring of the .csv file the header for these columns had to be skipped
         final_predictions = pd.read_csv(
-            "/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
+            temp_file.name,
             skiprows=2,
             usecols=[
                 0,
                 1,
-            ],  # due to the structuring of the .csv file the header for these columns had to be skipped
+            ],
         )
 
+        # manually added header names back
         final_predictions.columns = [
             "ResidueNumber",
             "ResidueType",
-        ]  # manually added header names back
+        ]
 
         for row in final_predictions.itertuples():
             if str.isupper(
