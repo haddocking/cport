@@ -26,7 +26,7 @@ class Whiscy:
 
         form = browser.select_form(nr=1)
         form.set(name="pdb_id", value=self.pdb_id)
-        form.set(name="chain", value=self.chain_id)
+        form.set(name="chain", value=self.chain_id.capitalize())
         form.set(name="hssp_id", value=self.pdb_id)
         form.set(name="alignment_format", value="FASTA")
 
@@ -56,9 +56,7 @@ class Whiscy:
         if (
             error_msg
         ):  # if program gets here without having disabled error_msg something is likely wrong
-            log.info(
-                "Expected server time-out due to time it takes for results to be available"
-            )
+            log.error("Suspected server time-out after 10 minutes")
 
         active_residues = browser.page.find_all(id="active_list")
         passive_residues = browser.page.find_all(id="passive_list")

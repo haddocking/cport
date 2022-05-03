@@ -1,8 +1,9 @@
 import argparse
 import logging
 
-# import os
+import os
 import sys
+from cport.modules.scriber import Scriber
 from cport.version import VERSION
 
 # from cport.modules.tools import (
@@ -40,6 +41,7 @@ ap.add_argument(
     "chain_id",
     help="",
 )
+
 
 ap.add_argument(
     "-v",
@@ -82,6 +84,11 @@ def main(pdb_id, chain_id):
     whiscy = Whiscy(pdb_id, chain_id)
     whiscy_predictions = whiscy.run()
     log.info(whiscy_predictions)
+
+    # Run SCRIBER
+    scriber = Scriber(pdb_id, chain_id)
+    scriber_predictions = scriber.run()
+    log.info(scriber_predictions)
 
     # try:
     #     # Main directory of the project
