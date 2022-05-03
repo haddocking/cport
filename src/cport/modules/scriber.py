@@ -6,8 +6,8 @@ from urllib import request
 
 import pandas as pd
 
-import cport.modules.tools.pdb_fasta as pdb_fasta
 import mechanicalsoup as ms
+from cport.modules.utils import get_fasta_from_pdbid
 from cport.url import SCRIBER_URL
 
 log = logging.getLogger("cportlog")
@@ -20,14 +20,17 @@ class Scriber:
         self.prediction_dict = {"active": [], "passive": []}
 
     def run(self):
+        """Execute the Scriber prediction."""
         mail_address = ""  # not as required as they make you believe
 
-        # to allow for multiple requests, a list could be implemented as input, but server only allows for 10 at a time
-        # so should split the list in subsets of 10 and check if the list is empty after every run, if not add new subset to queue
+        # to allow for multiple requests, a list could be implemented as input,
+        #  but server only allows for 10 at a time
+        # so should split the list in subsets of 10 and check if the list is
+        #  empty after every run, if not add new subset to queue
 
         error_msg = True
 
-        fasta_string = pdb_fasta.get_pdb_fasta(self.pdb_id, self.chain_id)
+        fasta_string = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
 
         browser = ms.StatefulBrowser()
         browser.open(SCRIBER_URL)

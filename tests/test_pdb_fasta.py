@@ -1,17 +1,18 @@
 # Test if the pdb_fasta function is working
-from cport.modules.tools import pdb_fasta
-
-import pytest
-
-
-@pytest.fixture
-def pdb_to_fasta():
-    yield pdb_fasta.get_pdb_fasta("1PPE", "E")
+import os
+from cport.modules.utils import get_fasta_from_pdbid
 
 
-def test_run_pdb_fasta(pdb_to_fasta):
+def test_get_fasta_from_pdbid():
     """Test the execution of the pdb_fasta function."""
-    observed_predictions = pdb_to_fasta
-    expected_predictions = ">1PPE_1|Chain A[auth E]|TRYPSIN|Bos taurus (9913)\nIVGGYTCGANTVPYQVSLNSGYHFCGGSLINSQWVVSAAHCYKSGIQVRLGEDNINVVEGNEQFISASKSIVHPSYNSNTLNNDIMLIKLKSAASLNSRVASISLPTSCASAGTQCLISGWGNTKSSGTSYPDVLKCLKAPILSDSSCKSAYPGQITSNMFCAGYLEGGKDSCQGDSGGPVVCSGKLQGIVSWGSGCAQKNKPGVYTKVCNYVSWIKQTIASN"
+    observed_fasta = get_fasta_from_pdbid("1PPE", "E")
+    expected_fasta = (
+        ">1PPE_1|Chain A[auth E]|TRYPSIN|Bos taurus (9913)"
+        f"{os.linesep}IVGGYTCGANTVPYQVSLNSGYHFCGGSLINSQWVVS"
+        "AAHCYKSGIQVRLGEDNINVVEGNEQFISASKSIVHPSYNSNTLNNDIML"
+        "IKLKSAASLNSRVASISLPTSCASAGTQCLISGWGNTKSSGTSYPDVLKC"
+        "LKAPILSDSSCKSAYPGQITSNMFCAGYLEGGKDSCQGDSGGPVVCSGKL"
+        "QGIVSWGSGCAQKNKPGVYTKVCNYVSWIKQTIASN"
+    )
 
-    assert observed_predictions == expected_predictions
+    assert observed_fasta == expected_fasta
