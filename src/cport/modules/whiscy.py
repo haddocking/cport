@@ -56,7 +56,7 @@ class Whiscy:
         if (
             error_msg
         ):  # if program gets here without having disabled error_msg something is likely wrong
-            log.info("ERROR: Suspected server time-out after 10 minutes")
+            log.error("Suspected server time-out after 10 minutes")
 
         active_residues = browser.page.find_all(id="active_list")
         passive_residues = browser.page.find_all(id="passive_list")
