@@ -1,4 +1,4 @@
-import regex as re
+import re
 import logging
 import requests
 
