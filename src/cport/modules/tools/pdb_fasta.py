@@ -6,6 +6,7 @@ log = logging.getLogger("cportlog")
 
 
 def get_pdb_fasta(pdb_id, chain_id):
+    """Retrieve the Fasta string file given PDB/Chain ."""
     target_url = (
         "https://www.rcsb.org/fasta/entry/"
         + pdb_id[0]
