@@ -26,7 +26,7 @@ class Whiscy:
 
         form = browser.select_form(nr=1)
         form.set(name="pdb_id", value=self.pdb_id)
-        form.set(name="chain", value=self.chain_id)
+        form.set(name="chain", value=self.chain_id.capitalize())
         form.set(name="hssp_id", value=self.pdb_id)
         form.set(name="alignment_format", value="FASTA")
 

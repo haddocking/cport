@@ -1,4 +1,3 @@
-import os
 import time
 import logging
 import pandas as pd
@@ -6,28 +5,26 @@ import regex as re
 import mechanicalsoup as ms
 from urllib import request
 from cport.url import SCRIBER_URL
+import cport.modules.tools.pdb_fasta as pdb_fasta
 
 log = logging.getLogger("cportlog")
 
 class Scriber:
-    def __init__(self, pdb_fasta):
-        self.pdb_fasta = pdb_fasta,
+    def __init__(self, pdb_id, chain_id):
+        self.pdb_id = pdb_id,
+        self.chain_id = chain_id,
         self.prediction_dict = {"active": [], "passive": []}
 
-    def run(self):
-        # placeholder FASTA code for 1PPE chain E
-        #FASTA_identifier = ">1PPE_1|Chain A[auth E]|TRYPSIN|Bos taurus (9913)"
-        #FASTA_code = "IVGGYTCGANTVPYQVSLNSGYHFCGGSLINSQWVVSAAHCYKSGIQVRLGEDNINVVEGNEQFISASKSIVHPSYNSNTLNNDIMLIKLKSAASLNSRVASISLPTSCASAGTQCLISGWGNTKSSGTSYPDVLKCLKAPILSDSSCKSAYPGQITSNMFCAGYLEGGKDSCQGDSGGPVVCSGKLQGIVSWGSGCAQKNKPGVYTKVCNYVSWIKQTIASN"
-        mail_address = "a.a.w.vandennieuwendijk@students.uu.nl"  # should be changed to a specially created mail
 
-        # to allow for multiple requests, a list should be implemented as input, but server only allows for 10 at a time
+    def run(self):
+        mail_address = ""  # not as required as they make you believe
+
+        # to allow for multiple requests, a list could be implemented as input, but server only allows for 10 at a time
         # so should split the list in subsets of 10 and check if the list is empty after every run, if not add new subset to queue
 
-        #FASTA_comb = FASTA_identifier + "\n" + FASTA_code
         error_msg = True
 
-        with open(self.pdb_fasta[0]) as file:
-            fasta_string = file.read()
+        fasta_string = pdb_fasta.get_pdb_fasta(self.pdb_id, self.chain_id)
 
         browser = ms.StatefulBrowser()
         browser.open(SCRIBER_URL)
@@ -36,7 +33,7 @@ class Scriber:
         form_FASTA.set(name="email1", value=mail_address)
         browser.submit_selected(btnName="Button1")
 
-        # this section is to allow for browser.refresh without continually sending the same request
+        # new page link to prevent resubmitting the same request
         links = browser.links()
         new_url = re.search(
             r"(http:.*)\"", str(links)
@@ -52,7 +49,7 @@ class Scriber:
         ):  # SCRIBER is rather fast so runs should take no longer than 10 minutes for single entries, re-evaluate for multiple requests
             if (
                 re.search(r"(http:.*csv)", str(browser.page)) != None
-            ):  # checks for the .csv download link, only there if the run is finished
+            ):  # checks for the .csv download link, only present if the run is finished
                 sleep = 700
                 log.info(
                     "Results are ready"
@@ -86,13 +83,13 @@ class Scriber:
         final_predictions = pd.read_csv(
             "/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
             skiprows = 2,
-            usecols=[0,1]
+            usecols=[0,1] # due to the structuring of the .csv file the header for these columns had to be skipped
             )
 
 
         for index, row in final_predictions.iterrows():
-            if str.isupper(row["Unnamed: 1"]):
-                self.prediction_dict["active"].append(row["Unnamed: 0"])
+            if str.isupper(row["Unnamed: 1"]): # unnamed 1 holds the ResidueType, which is capitalized if it is a protein binding residue
+                self.prediction_dict["active"].append(row["Unnamed: 0"]) # unnamed 0 holds the ResidueNumber, which is added to the correct list
             elif str.islower(row["Unnamed: 1"]):
                 self.prediction_dict["passive"].append(row["Unnamed: 0"])
             else:

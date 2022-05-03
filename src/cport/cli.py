@@ -42,10 +42,6 @@ ap.add_argument(
     help="",
 )
 
-ap.add_argument(
-    "pdb_fasta",
-    help="",
-)
 
 ap.add_argument(
     "-v",
@@ -76,7 +72,7 @@ def maincli():
 
 # ====================================================================================#
 # Main code
-def main(pdb_id, chain_id, pdb_fasta):
+def main(pdb_id, chain_id):
 
     # Start #=========================================================================#
     log.setLevel("DEBUG")
@@ -85,12 +81,12 @@ def main(pdb_id, chain_id, pdb_fasta):
     log.info("-" * 42)
 
     # Run whiscy
-   # whiscy = Whiscy(pdb_id, chain_id)
-   # whiscy_predictions = whiscy.run()
-   # log.info(whiscy_predictions)
+    whiscy = Whiscy(pdb_id, chain_id)
+    whiscy_predictions = whiscy.run()
+    log.info(whiscy_predictions)
 
     # Run SCRIBER
-    scriber = Scriber(os.path.abspath(pdb_fasta))
+    scriber = Scriber(pdb_id, chain_id)
     scriber_predictions = scriber.run()
     log.info(scriber_predictions)
 
