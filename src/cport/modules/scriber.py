@@ -15,8 +15,8 @@ log = logging.getLogger("cportlog")
 
 class Scriber:
     def __init__(self, pdb_id, chain_id):
-        self.pdb_id = (pdb_id,)
-        self.chain_id = (chain_id,)
+        self.pdb_id = pdb_id
+        self.chain_id = chain_id
         self.prediction_dict = {"active": [], "passive": []}
 
     def run(self):
