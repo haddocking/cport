@@ -8,9 +8,10 @@ import pytest
 def scriber():
     yield Scriber("1PPE", "E")
 
-def test_run_whiscy(whiscy):
+
+def test_run_scriber(Scriber):
     """Test the execution of the whiscy predictions."""
-    observed_predictions = whiscy.run()
+    observed_predictions = Scriber.run()
     expected_predictions = {
         "active": [
             19, 

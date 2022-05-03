@@ -65,7 +65,7 @@ class Scriber:
 
         if error_msg:
             log.info(
-                "Suspected server time-out due to time it takes for results to be available"
+                "ERROR: Suspected server time-out after 10 minutes"
                 )
 
         download_link = re.search(r"(http:.*csv)", str(browser.page))[0]
@@ -75,6 +75,7 @@ class Scriber:
 
         # replace path to be functional on local machine
         # had to use request instead of mechanicalsoup due to link issues
+
         request.urlretrieve(
             url=download_link,
             filename="/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
@@ -86,12 +87,13 @@ class Scriber:
             usecols=[0,1] # due to the structuring of the .csv file the header for these columns had to be skipped
             )
 
+        final_predictions.columns = ["ResidueNumber", "ResidueType"] # manually added header names back
 
-        for index, row in final_predictions.iterrows():
-            if str.isupper(row["Unnamed: 1"]): # unnamed 1 holds the ResidueType, which is capitalized if it is a protein binding residue
-                self.prediction_dict["active"].append(row["Unnamed: 0"]) # unnamed 0 holds the ResidueNumber, which is added to the correct list
-            elif str.islower(row["Unnamed: 1"]):
-                self.prediction_dict["passive"].append(row["Unnamed: 0"])
+        for row in final_predictions.itertuples():
+            if str.isupper(row.ResidueType): # uppercase denotes a predicted interaction
+                self.prediction_dict["active"].append(row.ResidueNumber)
+            elif str.islower(row.ResidueType):
+                self.prediction_dict["passive"].append(row.ResidueNumber)
             else:
                 log.info(
                     f"There appears that residue {row} is either empty or unprocessable"
