@@ -1,7 +1,7 @@
 import time
 import logging
 import pandas as pd
-import regex as re
+import re
 import mechanicalsoup as ms
 from urllib import request
 from cport.url import SCRIBER_URL
