@@ -17,9 +17,5 @@ setup(
     classifiers=[],
     python_requires=">=3.6, <4",
     install_requires=required,
-    entry_points={
-        "console_scripts": [
-            "cport=cport.cli:maincli",
-        ],
-    },
+    entry_points={"console_scripts": ["cport=cport.cli:maincli",],},
 )

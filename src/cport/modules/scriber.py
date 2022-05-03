@@ -9,12 +9,12 @@ import cport.modules.tools.pdb_fasta as pdb_fasta
 
 log = logging.getLogger("cportlog")
 
+
 class Scriber:
     def __init__(self, pdb_id, chain_id):
-        self.pdb_id = pdb_id,
-        self.chain_id = chain_id,
+        self.pdb_id = (pdb_id,)
+        self.chain_id = (chain_id,)
         self.prediction_dict = {"active": [], "passive": []}
-
 
     def run(self):
         mail_address = ""  # not as required as they make you believe
@@ -51,22 +51,16 @@ class Scriber:
                 re.search(r"(http:.*csv)", str(browser.page)) != None
             ):  # checks for the .csv download link, only present if the run is finished
                 sleep = 700
-                log.info(
-                    "Results are ready"
-                    )
+                log.info("Results are ready")
                 error_msg = False
             else:
                 time.sleep(10)  # server only refreshes every 10 seconds
                 sleep += 10
-                log.info(
-                    f"Waiting for {sleep} seconds"
-                    )
+                log.info(f"Waiting for {sleep} seconds")
                 browser.refresh()  # without the refresh it does not detect the new .csv when its added
 
         if error_msg:
-            log.info(
-                "ERROR: Suspected server time-out after 10 minutes"
-                )
+            log.info("ERROR: Suspected server time-out after 10 minutes")
 
         download_link = re.search(r"(http:.*csv)", str(browser.page))[0]
         log.info(download_link)
@@ -80,23 +74,31 @@ class Scriber:
             url=download_link,
             filename="/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
         )
-        
+
         final_predictions = pd.read_csv(
             "/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/test_SCRIBER.csv",
-            skiprows = 2,
-            usecols=[0,1] # due to the structuring of the .csv file the header for these columns had to be skipped
-            )
+            skiprows=2,
+            usecols=[
+                0,
+                1,
+            ],  # due to the structuring of the .csv file the header for these columns had to be skipped
+        )
 
-        final_predictions.columns = ["ResidueNumber", "ResidueType"] # manually added header names back
+        final_predictions.columns = [
+            "ResidueNumber",
+            "ResidueType",
+        ]  # manually added header names back
 
         for row in final_predictions.itertuples():
-            if str.isupper(row.ResidueType): # uppercase denotes a predicted interaction
+            if str.isupper(
+                row.ResidueType
+            ):  # uppercase denotes a predicted interaction
                 self.prediction_dict["active"].append(row.ResidueNumber)
             elif str.islower(row.ResidueType):
                 self.prediction_dict["passive"].append(row.ResidueNumber)
             else:
                 log.info(
                     f"There appears that residue {row} is either empty or unprocessable"
-                    )
-        
+                )
+
         return self.prediction_dict

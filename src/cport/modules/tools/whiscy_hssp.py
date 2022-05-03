@@ -10,8 +10,8 @@ def get_from_web(pdb_code, main_dir):
     url = "https://mrs.cmbi.umcn.nl/search?db=hssp&q={}&count=3".format(pdb_code)
     r = requests.get(url)
     url_id = r.url.split("nr=")[-1].split("&rq")[0]
-    download_url = (
-        "https://mrs.cmbi.umcn.nl/download?db=hssp&nr={}&format=plain".format(url_id)
+    download_url = "https://mrs.cmbi.umcn.nl/download?db=hssp&nr={}&format=plain".format(
+        url_id
     )
     plan_text = requests.get(download_url).text
     hssp_file = os.path.join(temp_dir, "{}.hssp".format(pdb_code))
