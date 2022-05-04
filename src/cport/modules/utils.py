@@ -1,9 +1,12 @@
+import pdb
 import re
 import os
 import sys
 import logging
 import requests
-from cport.url import PDB_URL
+import tempfile
+from urllib import request
+from cport.url import PDB_FASTA_URL, PDB_URL
 
 log = logging.getLogger("cportlog")
 
@@ -13,7 +16,7 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
     # https://regex101.com/r/qjjIih/1
     chain_regex = r"Chain\s(\S)|auth\s(\S)"
 
-    target_url = f"{PDB_URL}{pdb_id}#{chain_id}/download"
+    target_url = f"{PDB_FASTA_URL}{pdb_id}#{chain_id}/download"
     fasta_seqs = requests.get(target_url).text
 
     seq_dic = {}
@@ -32,6 +35,16 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
         sys.exit()
     else:
         return seq_dic[chain_id]
+
+
+def get_pdb_from_pdbid(pdb_id):
+    """Retrieve the PDB file from a given PDBid"""
+
+    target_url = f"{PDB_URL}{pdb_id}.pdb"
+    temp_file = tempfile.NamedTemporaryFile(delete=False)
+    request.urlretrieve(target_url, temp_file.name)
+
+    return temp_file.name
 
 
 # def func1(i, predictors_dic, params, main_dir, pdb_name):

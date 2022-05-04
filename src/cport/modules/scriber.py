@@ -15,7 +15,7 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 6
+NUM_RETRIES = 15
 
 
 class Scriber:
@@ -43,7 +43,7 @@ class Scriber:
 
         submitted_url = re.findall(r"(http:.*)\"", str(links))[0]
         if not submitted_url:
-            log.error("SCRIBE submission failed")
+            log.error("SCRIBER submission failed")
             sys.exit()
 
         return submitted_url
