@@ -34,6 +34,9 @@ class Ispred4:
         input_form = browser.select_form(nr=0)
         input_form.set(name="structure", value=pdb_file)
         input_form.set(name="ispred_chain", value=self.chain_id)
+        input_form.set(
+            name="ispred_rsath", value="0.20"
+        )  # this is the default value, could be changed for analysis later
         browser.submit_selected()
 
         # https://regex101.com/r/KFLLil/1
