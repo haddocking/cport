@@ -1,4 +1,10 @@
 {
   "MUSCLE": "tools/muscle3",
-  "NACCESS": "tools/naccess.config"
+  "NACCESS": "tools/naccess.config",
+  "predictors": [
+    "whiscy",
+    "scriber",
+    "ispred4",
+    "placeholder"
+  ]
 }
