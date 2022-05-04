@@ -37,16 +37,16 @@ class Ispred4:
         browser.submit_selected()
 
         # https://regex101.com/r/KFLLil/1
-        self.job_id = re.findall(r"Jobid:.*?;\">(.*?)</div>", str(browser.page))[0]
+        job_id = re.findall(r"Jobid:.*?;\">(.*?)</div>", str(browser.page))[0]
 
-        if not self.job_id:
+        if not job_id:
             log.error("ISPRED4 submission failed")
             sys.exit()
 
         browser.close()
 
         # once the job_id is available for a successfull submission, it can be used for future urls
-        summary_url = f"{ISPRED4_URL}job_summary?jobid={self.job_id}"
+        summary_url = f"{ISPRED4_URL}job_summary?jobid={job_id}"
 
         return summary_url
 
@@ -59,6 +59,9 @@ class Ispred4:
             browser.open_fake_page(page_text=page_text)
         else:
             browser.open(url)
+
+        # https://regex101.com/r/ulO1lf/1
+        job_id = re.findall(r"id=(.*)", str(url))[0]
 
         completed = False
         while not completed:
@@ -79,7 +82,7 @@ class Ispred4:
                 log.error(f"ISPRED4 server is not responding, url was {url}")
                 sys.exit()
 
-        download_url = f"{ISPRED4_URL}downloadjob?jobid={self.job_id}"
+        download_url = f"{ISPRED4_URL}downloadjob?jobid={job_id}"
 
         return download_url
 
