@@ -19,6 +19,7 @@ from cport.version import VERSION
 from cport.modules.whiscy import Whiscy
 from cport.modules.scriber import Scriber
 from cport.modules.ispred4 import Ispred4
+from cport.modules.sppider import Sppider
 
 
 # Setup logging
@@ -80,7 +81,7 @@ def main(pdb_id, chain_id):
     log.info("-" * 42)
     log.info(f"          Welcome to CPORT v{VERSION}")
     log.info("-" * 42)
-
+    """
     # Run whiscy
     whiscy = Whiscy(pdb_id, chain_id)
     whiscy_predictions = whiscy.run()
@@ -95,6 +96,12 @@ def main(pdb_id, chain_id):
     ispred4 = Ispred4(pdb_id, chain_id)
     ispred4_predictions = ispred4.run()
     log.info(ispred4_predictions)
+    """
+
+    # Run SPPIDER
+    sppider = Sppider(pdb_id, chain_id)
+    sppider_predictions = sppider.run()
+    log.info(sppider_predictions)
 
     # try:
     #     # Main directory of the project
