@@ -1,26 +1,27 @@
-import time
-import re
 import logging
+import re
+import sys
+import time
+
 import mechanicalsoup as ms
 from cport.url import WHISCY_URL
 
-
 log = logging.getLogger("cportlog")
+
+# Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
+WAIT_INTERVAL = 10  # seconds
+NUM_RETRIES = 6
 
 
 class Whiscy:
     def __init__(self, pdb_id, chain_id):
         self.pdb_id = pdb_id
         self.chain_id = chain_id
-        self.prediction_dict = {"active": [], "passive": []}
+        self.wait = WAIT_INTERVAL
+        self.tries = NUM_RETRIES
 
-    def run(self):
-        """Run the prediction."""
-        # replace with input
-        # url = "https://wenmr.science.uu.nl/whiscy/"
-        # pdb_name = "1PPE"
-        # chain_id = "E"
-        # align_type = "FASTA"
+    def submit(self):
+        """Make a submission to WHISCY."""
         browser = ms.StatefulBrowser()
         browser.open(WHISCY_URL)
 
@@ -37,42 +38,59 @@ class Whiscy:
 
         # https://regex101.com/r/rwcIl8/1
         new_url = re.findall(r"(https:.*)\"", page_text_list)[0]
-        log.info(f"Run URL: {new_url}")
-        browser.open(new_url)
-
-        error_msg = True
-        sleep = 0
-        while sleep < 600:
-            if browser.page.find_all(id="active_list"):
-                sleep = 700
-                log.info("Results are ready")
-                error_msg = False
-            else:
-                time.sleep(5)
-                sleep += 5
-                log.info(f"Waiting for {sleep} seconds")
-                browser.refresh()
-
-        if (
-            error_msg
-        ):  # if program gets here without having disabled error_msg something is likely wrong
-            log.error("Suspected server time-out after 10 minutes")
-
-        active_residues = browser.page.find_all(id="active_list")
-        passive_residues = browser.page.find_all(id="passive_list")
 
         browser.close()
 
-        # takes just the residue lists from the page and splits them into lists
+        return new_url
+
+    def retrieve_prediction(self, url=None, page_text=None):
+        """Retrieve the results."""
+        prediction_dict = {"active": [], "passive": []}
+        browser = ms.StatefulBrowser()
+
+        if page_text:
+            # this is used in the testing
+            browser.open_fake_page(page_text=page_text)
+        else:
+            browser.open(url)
+
+        completed = False
+        while not completed:
+            # Check if there's a list of active reisued in the page
+            if browser.page.find_all(id="active_list"):
+                completed = True
+            else:
+                # still running, wait a bit
+                log.debug(f"Waiting for WHISCY to finish... {self.tries}")
+                time.sleep(self.wait)
+                browser.refresh()
+                self.tries -= 1
+
+            if self.tries == 0:
+                # if tries is 0, then the server is not responding
+                log.error(f"WHISCY server is not responding, url was {url}")
+                sys.exit()
+
         active_residues_list = re.split(
-            r"\,", re.search(r"\">(.*)</", str(active_residues))[1]
+            r"\,",
+            re.search(r"\">(.*)</", str(browser.page.find_all(id="active_list")))[1],
         )
         passive_residues_list = re.split(
-            r"\,", re.search(r"\">(.*)</", str(passive_residues))[1]
+            r"\,",
+            re.search(r"\">(.*)</", str(browser.page.find_all(id="passive_list")))[1],
         )
 
-        # residues_list are strings, make them into integers
-        self.prediction_dict["active"] = list(map(int, active_residues_list))
-        self.prediction_dict["passive"] = list(map(int, passive_residues_list))
+        prediction_dict["active"] = list(map(int, active_residues_list))
+        prediction_dict["passive"] = list(map(int, passive_residues_list))
 
-        return self.prediction_dict
+        browser.close()
+
+        return prediction_dict
+
+    def run(self):
+        """Run the whiscy predictor."""
+
+        submitted_url = self.submit()
+        prediction_dict = self.retrieve_prediction(url=submitted_url)
+
+        return prediction_dict
