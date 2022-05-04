@@ -3,7 +3,6 @@ import logging
 
 import os
 import sys
-from cport.modules.scriber import Scriber
 from cport.version import VERSION
 
 # from cport.modules.tools import (
@@ -18,6 +17,8 @@ from cport.version import VERSION
 # )
 # from cport.modules.utils import get_unique_folder, run
 from cport.modules.whiscy import Whiscy
+from cport.modules.scriber import Scriber
+from cport.modules.ispred4 import Ispred4
 
 
 # Setup logging
@@ -89,6 +90,11 @@ def main(pdb_id, chain_id):
     scriber = Scriber(pdb_id, chain_id)
     scriber_predictions = scriber.run()
     log.info(scriber_predictions)
+
+    # Run ISPRED4
+    ispred4 = Ispred4(pdb_id, chain_id)
+    ispred4_predictions = ispred4.run()
+    log.info(ispred4_predictions)
 
     # try:
     #     # Main directory of the project

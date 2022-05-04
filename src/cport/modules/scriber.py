@@ -43,7 +43,7 @@ class Scriber:
 
         submitted_url = re.findall(r"(http:.*)\"", str(links))[0]
         if not submitted_url:
-            log.error("SCRIBE submission failed")
+            log.error("SCRIBER submission failed")
             sys.exit()
 
         return submitted_url
