@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from cport.modules.ispred4 import Ispred4
+from cport.url import ISPRED4_URL
 
 
 @pytest.fixture
@@ -22,11 +23,10 @@ def test_submit():
 
 
 def test_retrieve_prediction_link(ispred4):
-    test_url = "https://ispred4.biocomp.unibo.it/ispred/default/job_summary?jobid=c789-edt-093c"
-    page_text = "Truly anything that does not represent the webpage without results"
-    observed_link = ispred4.retrieve_prediction_link(url=test_url, page_text=page_text)
-    expected_link = "https://ispred4.biocomp.unibo.it/ispred/default/downloadjob?jobid=c789-edt-093c"
-    assert observed_link == expected_link
+    page_text = "https://ispred4.biocomp.unibo.it/ispred/default/job_summary?jobid=c789-edt-093c"
+    observed_download_url = ispred4.retrieve_prediction_link(page_text=page_text)
+    expected_download_url = f"{ISPRED4_URL}downloadjob?jobid=c789-edt-093c"
+    assert observed_download_url == expected_download_url
 
 
 @pytest.mark.skip("Cannot test the download")

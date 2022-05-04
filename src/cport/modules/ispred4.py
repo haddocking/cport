@@ -60,11 +60,12 @@ class Ispred4:
         if page_text:
             # this is used in the testing
             browser.open_fake_page(page_text=page_text)
+            # https://regex101.com/r/ulO1lf/1
+            job_id = re.findall(r"id=(.*)", str(page_text))[0]
         else:
             browser.open(url)
-
-        # https://regex101.com/r/ulO1lf/1
-        job_id = re.findall(r"id=(.*)", str(url))[0]
+            # https://regex101.com/r/ulO1lf/1
+            job_id = re.findall(r"id=(.*)", str(url))[0]
 
         completed = False
         while not completed:
@@ -110,8 +111,6 @@ class Ispred4:
                 prediction_dict["active"].append(row.ResNum)
             elif row.Inter == "no":
                 prediction_dict["passive"].append(row.ResNum)
-            else:
-                None
 
         return prediction_dict
 
