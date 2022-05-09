@@ -1,6 +1,5 @@
 import logging
 import re
-import tempfile
 import time
 import sys
 
@@ -53,7 +52,6 @@ class Sppider:
         else:
             browser.open(url)
 
-        log.info(f"Request url is {url}")
         completed = False
         while not completed:
             # if match is True, the results are not yet ready
@@ -77,6 +75,7 @@ class Sppider:
 
         # the page contains the correct link, which automatically opens in a browser
         # soup browser is an exception so url needs to be extracted and opened to function
+        # https://regex101.com/r/Izy7PR/1
         new_url = re.findall(r"URL=(.*?=int)", str(browser.page))
 
         browser.close()
