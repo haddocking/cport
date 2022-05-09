@@ -77,20 +77,24 @@ class Sppider:
 
         # the page contains the correct link, which automatically opens in a browser
         # soup browser is an exception so url needs to be extracted and opened to function
-        browser.refresh()
         new_url = re.findall(r"URL=(.*?=int)", str(browser.page))
 
         browser.close()
 
         return new_url[0]
 
-    def parse_prediction(self, url):
+    def parse_prediction(self, url=None, page_text=None):
         prediction_dict = {
             "active": [],
             "passive": [],
         }  # sppider only provides a list of active residues
         browser = ms.StatefulBrowser()
-        browser.open(url)
+
+        if page_text:
+            # this is used in the testing
+            browser.open_fake_page(page_text=page_text)
+        else:
+            browser.open(url)
 
         # https://regex101.com/r/iNn3FK/1 as an example, used DOTALL to include \n in results for flexibility
         page_search = re.findall(
