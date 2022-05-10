@@ -1,0 +1,8 @@
+List of interacting residues predicted by SPPIDER:
+(criteria used: network majority count >= 5)
+G38,Y39,H57,S61,G62,N74,V75,P92,S93,S96,L114,R117,A119,S120,I121,S122,T125,S127,A132,G133,
+Q135,L137,Y151,K159,S202,G203,S236,K239,Q240
+
+
+Output format is the following:
+1st line -> residue numeration
