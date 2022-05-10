@@ -1,0 +1,252 @@
+Submission name: 1ppeE 
+Job submitted  : Tue May 10 11:42:31 UTC 2022
+Job done       : Tue May 10 11:44:34 UTC 2022
+
+Prediction by cons-PPISP : consensus Protein-Protein Interaction Site Predictor
+Column 1: AA (Amino Acid code)
+Column 2: Ch (Chain ID)
+Column 3: AA# (Amino Acid number)
+Column 4: Score (neural network score)
+Column 5: Prediction of whether the residue contacts
+	  (P = Positive; N = Negative; - = Burried and not predicted)
+*************************************************************************
+AA Ch  AA#  Score   Prediction
+I  E   16    0.000        -
+V  E   17    0.000        -
+G  E   18    0.031        N
+G  E   19    0.011        N
+Y  E   20    0.043        N
+T  E   21    0.020        N
+C  E   22    0.018        N
+G  E   23    0.006        N
+A  E   24    0.028        N
+N  E   25    0.025        N
+T  E   26    0.016        N
+V  E   27    0.000        -
+P  E   28    0.007        N
+Y  E   29    0.708        P
+Q  E   30    0.000        -
+V  E   31    0.000        -
+S  E   32    0.000        -
+L  E   33    0.000        -
+N  E   34    0.106        N
+S  E   37    0.132        N
+G  E   38    0.022        N
+Y  E   39    0.023        N
+H  E   40    0.212        N
+F  E   41    0.976        P
+C  E   42    0.000        -
+G  E   43    0.000        -
+G  E   44    0.000        -
+S  E   45    0.000        -
+L  E   46    0.000        -
+I  E   47    0.976        P
+N  E   48    0.015        N
+S  E   49    0.004        N
+Q  E   50    0.006        N
+W  E   51    0.000        -
+V  E   52    0.000        -
+V  E   53    0.000        -
+S  E   54    0.000        -
+A  E   55    0.000        -
+A  E   56    0.000        -
+H  E   57    0.886        P
+C  E   58    0.000        -
+Y  E   59    0.983        P
+K  E   60    0.149        N
+S  E   61    0.068        N
+G  E   62    0.021        N
+I  E   63    0.000        -
+Q  E   64    0.007        N
+V  E   65    0.000        -
+R  E   66    0.064        N
+L  E   67    0.000        -
+G  E   69    0.000        -
+E  E   70    0.000        -
+D  E   71    0.000        -
+N  E   72    0.006        N
+I  E   73    0.076        N
+N  E   74    0.021        N
+V  E   75    0.004        N
+V  E   76    0.004        N
+E  E   77    0.028        N
+G  E   78    0.005        N
+N  E   79    0.006        N
+E  E   80    0.037        N
+Q  E   81    0.032        N
+F  E   82    0.018        N
+I  E   83    0.013        N
+S  E   84    0.003        N
+A  E   85    0.003        N
+S  E   86    0.005        N
+K  E   87    0.008        N
+S  E   88    0.137        N
+I  E   89    0.984        P
+V  E   90    0.990        P
+H  E   91    0.907        P
+P  E   92    0.959        P
+S  E   93    0.088        N
+Y  E   94    0.945        P
+N  E   95    0.055        N
+S  E   96    0.014        N
+N  E   97    0.005        N
+T  E   98    0.101        N
+L  E   99    0.065        N
+N  E  100    0.013        N
+N  E  101    0.045        N
+D  E  102    0.000        -
+I  E  103    0.000        -
+M  E  104    0.000        -
+L  E  105    0.000        -
+I  E  106    0.000        -
+K  E  107    0.009        N
+L  E  108    0.000        -
+K  E  109    0.003        N
+S  E  110    0.002        N
+A  E  111    0.002        N
+A  E  112    0.000        -
+S  E  113    0.005        N
+L  E  114    0.023        N
+N  E  115    0.004        N
+S  E  116    0.004        N
+R  E  117    0.008        N
+V  E  118    0.000        -
+A  E  119    0.106        N
+S  E  120    0.216        N
+I  E  121    0.956        P
+S  E  122    0.703        P
+L  E  123    0.973        P
+P  E  124    0.000        -
+T  E  125    0.165        N
+S  E  127    0.021        N
+C  E  128    0.016        N
+A  E  129    0.009        N
+S  E  130    0.015        N
+A  E  132    0.064        N
+G  E  133    0.024        N
+T  E  134    0.010        N
+Q  E  135    0.100        N
+C  E  136    0.000        -
+L  E  137    0.116        N
+I  E  138    0.000        -
+S  E  139    0.000        -
+G  E  140    0.000        -
+W  E  141    0.000        -
+G  E  142    0.000        -
+N  E  143    0.000        -
+T  E  144    0.007        N
+K  E  145    0.065        N
+S  E  146    0.009        N
+S  E  147    0.040        N
+G  E  148    0.008        N
+T  E  149    0.005        N
+S  E  150    0.004        N
+Y  E  151    0.014        N
+P  E  152    0.008        N
+D  E  153    0.004        N
+V  E  154    0.005        N
+L  E  155    0.000        -
+K  E  156    0.045        N
+C  E  157    0.000        -
+L  E  158    0.000        -
+K  E  159    0.073        N
+A  E  160    0.000        -
+P  E  161    0.040        N
+I  E  162    0.000        -
+L  E  163    0.077        N
+S  E  164    0.050        N
+D  E  165    0.007        N
+S  E  166    0.009        N
+S  E  167    0.013        N
+C  E  168    0.000        -
+K  E  169    0.039        N
+S  E  170    0.047        N
+A  E  171    0.000        -
+Y  E  172    0.000        -
+P  E  173    0.052        N
+G  E  174    0.057        N
+Q  E  175    0.085        N
+I  E  176    0.006        N
+T  E  177    0.008        N
+S  E  178    0.006        N
+N  E  179    0.056        N
+M  E  180    0.000        -
+F  E  181    0.000        -
+C  E  182    0.000        -
+A  E  183    0.000        -
+G  E  184A   0.000        -
+Y  E  184    0.093        N
+L  E  185    0.079        N
+E  E  186    0.007        N
+G  E  187    0.008        N
+G  E  188A   0.055        N
+K  E  188    0.029        N
+D  E  189    0.000        -
+S  E  190    0.000        -
+C  E  191    0.000        -
+Q  E  192    0.964        P
+G  E  193    0.942        P
+D  E  194    0.000        -
+S  E  195    0.988        P
+G  E  196    0.000        -
+G  E  197    0.000        -
+P  E  198    0.000        -
+V  E  199    0.000        -
+V  E  200    0.000        -
+C  E  201    0.000        -
+S  E  202    0.101        N
+G  E  203    0.038        N
+K  E  204    0.036        N
+L  E  209    0.000        -
+Q  E  210    0.000        -
+G  E  211    0.000        -
+I  E  212    0.000        -
+V  E  213    0.000        -
+S  E  214    0.000        -
+W  E  215    0.096        N
+G  E  216    0.117        N
+S  E  217    0.089        N
+G  E  219    0.052        N
+C  E  220    0.000        -
+A  E  221A   0.000        -
+Q  E  221    0.069        N
+K  E  222    0.017        N
+N  E  223    0.091        N
+K  E  224    0.060        N
+P  E  225    0.000        -
+G  E  226    0.000        -
+V  E  227    0.000        -
+Y  E  228    0.000        -
+T  E  229    0.000        -
+K  E  230    0.049        N
+V  E  231    0.000        -
+C  E  232    0.092        N
+N  E  233    0.073        N
+Y  E  234    0.000        -
+V  E  235    0.749        P
+S  E  236    0.808        P
+W  E  237    0.699        P
+I  E  238    0.000        -
+K  E  239    0.898        P
+Q  E  240    0.047        N
+T  E  241    0.000        -
+I  E  242    0.853        P
+A  E  243    0.928        P
+S  E  244    0.033        N
+N  E  245    0.105        N
+------------------------------------------------------------------------
+The positive predictions above were from a clustering process.
+Other clusters may have been filtered. Filtered clusters, if any,
+are appended here for your information.
+Cluster 1 (confid=57)
+123 239 121 236 122 243 237 235  29 242  91  92  47  90  94  89  57  59 195  41 193 192 
+TOTAL CLUSTERS 1, min_confid=28
+FILTERED CLUSTERS: 
+*************************************************************************
+If there is no prediction printed above this asterisks line, you should 
+go back and check your submission input. The structure must be in 
+PDB format and chain IDs of protein must be entered.
+
+This is an automated email, please do not reply.
+Please contact pi2pe.fsu@gmail.com if you have questions or suggestions.
+http://pipe.sc.fsu.edu

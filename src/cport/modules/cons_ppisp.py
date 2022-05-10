@@ -16,7 +16,9 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 18
+NUM_RETRIES = (
+    18  # any request should never take more than 15min so theoretical max is 90 retries
+)
 
 
 class Cons_ppisp:
@@ -25,7 +27,6 @@ class Cons_ppisp:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_url = "https://pipe.rcc.fsu.edu/showresults/mail.message.040000240"
 
     def submit(self):
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
@@ -33,7 +34,7 @@ class Cons_ppisp:
         browser = ms.StatefulBrowser()
         browser.open(
             CONS_PPISP_URL, verify=False
-        )  # SSL request fails, try to find alternative solution
+        )  # SSL request fails, try to find alternative solution as this would save a lot of code
 
         input_form = browser.select_form(nr=0)
         input_form.set(name="submitter", value=str(self.pdb_id + self.chain_id))
@@ -56,13 +57,13 @@ class Cons_ppisp:
         if page_text:
             # this is used in the testing
             browser.open_fake_page(page_text=page_text)
+            url = page_text
         else:
             browser.open(url, verify=False)
 
         completed = False
         while not completed:
-            # Check if there is a link to the result page
-            # https://regex101.com/r/8am6cs/1
+            # Check if the result page exists
             match = re.search(r"404 Not Found", str(browser.page))
             if not match:
                 completed = True
@@ -84,21 +85,35 @@ class Cons_ppisp:
     def download_result(download_link):
         """Download the results."""
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.name = requests.get(download_link, verify=False).content
+        temp_file.name = requests.get(
+            download_link, verify=False
+        ).content  # needed a way to disable verification for SSL
         return temp_file.name
 
-    def parse_prediction(self, url=None):
+    def parse_prediction(self, url=None, test_file=None):
         prediction_dict = {"active": [], "passive": []}
 
-        file = self.download_result(url)
-        final_predictions = pd.read_csv(
-            io.StringIO(file.decode("utf-8")),
-            skiprows=13,
-            delim_whitespace=True,
-            names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
-            header=0,
-            skipfooter=16,
-        )
+        if test_file:
+            final_predictions = pd.read_csv(
+                test_file,
+                skiprows=13,
+                delim_whitespace=True,
+                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
+                header=0,
+                skipfooter=16,
+            )
+        else:
+            file = self.download_result(
+                url
+            )  # direct reading of page with read_csv is impossible due to the same SSL error
+            final_predictions = pd.read_csv(
+                io.StringIO(file.decode("utf-8")),
+                skiprows=13,
+                delim_whitespace=True,
+                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
+                header=0,
+                skipfooter=16,
+            )
 
         for row in final_predictions.itertuples():
             if row.Prediction == "P":  # positive for interaction
