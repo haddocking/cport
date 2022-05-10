@@ -5,6 +5,7 @@ from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
 from cport.modules.scriber import Scriber
 from cport.modules.whiscy import Whiscy
+from cport.modules.sppider import Sppider
 
 log = logging.getLogger("cportlog")
 
@@ -30,6 +31,13 @@ def run_scriber(pdb_id, chain_id):
     log.info(scriber_predictions)
 
 
+def run_sppider(pdb_id, chain_id):
+    """Run the sppider predictor."""
+    sppider = Sppider(pdb_id, chain_id)
+    sppider_predictions = sppider.run()
+    log.info(sppider_predictions)
+
+
 def run_placeholder(fasta_str):
     """Run the placeholder predictor."""
     log.info("Placeholder predictor")
@@ -40,6 +48,7 @@ PDB_PREDICTORS = {
     "whiscy": run_whiscy,
     "scriber": run_scriber,
     "ispred4": run_ispred4,
+    "sppider": run_sppider,
 }
 
 FASTA_PREDICTORS = {"placeholder": run_placeholder}
