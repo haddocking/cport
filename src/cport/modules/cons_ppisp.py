@@ -29,6 +29,7 @@ class Cons_ppisp:
         self.tries = NUM_RETRIES
 
     def submit(self):
+        """Makes a submission to the cons-PPISP server"""
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
 
         browser = ms.StatefulBrowser()
@@ -38,7 +39,7 @@ class Cons_ppisp:
 
         input_form = browser.select_form(nr=0)
         input_form.set(name="submitter", value=str(self.pdb_id + self.chain_id))
-        input_form.set(name="emailAddr", value="royaj88419@bunlets.com")
+        input_form.set(name="emailAddr", value="validmail@trustme.yes")
         input_form.set(name="pChain", value=self.chain_id)
         input_form.set(name="userfile", value=pdb_file)
         browser.submit_selected()
@@ -91,6 +92,7 @@ class Cons_ppisp:
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
+        """Takes the results extracts the active and passive residue predictions"""
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
