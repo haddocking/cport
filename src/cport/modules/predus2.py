@@ -15,8 +15,8 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 18
-# fast for 1ppe E, others appear to take longer likely due to no stored results
+NUM_RETRIES = 6
+# first run of a protein takes longer, repeat runs use stored data
 
 
 class Predus2:
@@ -51,7 +51,11 @@ class Predus2:
         """Waits until the prediction has finished and returns url for results"""
 
         browser = ms.StatefulBrowser()
-        browser.open(url, verify=False)
+
+        if page_text:
+            browser.open_fake_page(page_text=page_text)
+        else:
+            browser.open(url, verify=False)
 
         completed = False
         while not completed:
@@ -88,13 +92,21 @@ class Predus2:
         """Takes the results extracts the active and passive residue predictions"""
         prediction_dict = {"active": [], "passive": []}
 
-        file = self.download_result(url)
-        final_predictions = pd.read_csv(
-            io.StringIO(file.decode("utf-8")),
-            delim_whitespace=True,
-            header=0,
-            names=["Residue", "Score"],
-        )
+        if test_file:
+            final_predictions = pd.read_csv(
+                test_file,
+                delim_whitespace=True,
+                header=0,
+                names=["Residue", "Score"],
+            )
+        else:
+            file = self.download_result(url)
+            final_predictions = pd.read_csv(
+                io.StringIO(file.decode("utf-8")),
+                delim_whitespace=True,
+                header=0,
+                names=["Residue", "Score"],
+            )
 
         for row in final_predictions.itertuples():
             if row.Score >= 0:  # positive score indicates potential for interaction
