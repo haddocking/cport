@@ -7,6 +7,7 @@ from cport.modules.scriber import Scriber
 from cport.modules.whiscy import Whiscy
 from cport.modules.sppider import Sppider
 from cport.modules.cons_ppisp import Cons_ppisp
+from cport.modules.predus2 import Predus2
 
 log = logging.getLogger("cportlog")
 
@@ -46,6 +47,13 @@ def run_cons_ppisp(pdb_id, chain_id):
     log.info(cons_ppisp_predictions)
 
 
+def run_predus2(pdb_id, chain_id):
+    """Run the PredUs2 predictor."""
+    predus2 = Predus2(pdb_id, chain_id)
+    predus2_predictions = predus2.run()
+    log.info(predus2_predictions)
+
+
 def run_placeholder(fasta_str):
     """Run the placeholder predictor."""
     log.info("Placeholder predictor")
@@ -58,6 +66,7 @@ PDB_PREDICTORS = {
     "ispred4": run_ispred4,
     "sppider": run_sppider,
     "cons_ppisp": run_cons_ppisp,
+    "predus2": run_predus2,
 }
 
 FASTA_PREDICTORS = {"placeholder": run_placeholder}
