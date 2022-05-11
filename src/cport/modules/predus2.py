@@ -7,8 +7,8 @@ import requests
 import io
 
 import pandas as pd
-
 import mechanicalsoup as ms
+
 from cport.url import PREDUS2_URL
 
 log = logging.getLogger("cportlog")
@@ -29,14 +29,14 @@ class Predus2:
     def submit(self):
         """Makes a submission to the PredUs2 server"""
         browser = ms.StatefulBrowser()
-
         browser.open(PREDUS2_URL, verify=False)
-        input_form = browser.select_form(nr=0)
 
+        input_form = browser.select_form(nr=0)
         input_form.set(name="pdbid", value=self.pdb_id)
         input_form.set(name="chain", value=self.chain_id)
         browser.submit_selected()
 
+        # finds the submission url from the many links present on the page
         # https://regex101.com/r/Do6b51/1
         submission_url = re.findall(
             r"Result page:.*?\n.*?href=\"(.*?)\">Click to access results",
@@ -49,10 +49,10 @@ class Predus2:
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """Waits until the prediction has finished and returns url for results"""
-
         browser = ms.StatefulBrowser()
 
         if page_text:
+            # used for testing
             browser.open_fake_page(page_text=page_text)
         else:
             browser.open(url, verify=False)
@@ -77,15 +77,16 @@ class Predus2:
 
         final_url = f"https://honiglab.c2b2.columbia.edu/hfpd/tmp/{self.pdb_id}_{self.chain_id.capitalize()}.pd2.txt"
 
+        browser.close()
+
         return final_url
 
     @staticmethod
     def download_result(download_link):
-        """Download the results."""
+        """Download the results while avoiding SSL errors"""
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.name = requests.get(
-            download_link, verify=False
-        ).content  # needed a way to disable verification for SSL
+        temp_file.name = requests.get(download_link, verify=False).content
+
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
@@ -93,6 +94,7 @@ class Predus2:
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
+            # for testing purposes
             final_predictions = pd.read_csv(
                 test_file,
                 delim_whitespace=True,
