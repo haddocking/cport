@@ -15,13 +15,13 @@ Consensus Prediction Of interface Residues in Transient complexes (CPORT) is an 
 | [WHISCY](https://wenmr.science.uu.nl/whiscy/) | 🟢 | ✔️ |
 | [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/) | 🟢 | ✔️ |
 | [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢 | ✔️ |
-| [BSpred](https://zhanggroup.org/BSpred/) | 🟢 |  |
-| [DELPHI](https://delphi.csd.uwo.ca) | 🟢 |  |
+| [BSpred](https://zhanggroup.org/BSpred/) | 🟠 |  |
+| [DELPHI](https://delphi.csd.uwo.ca) | 🟠 |  |
 | [MASIF-site](https://github.com/LPDI-EPFL/masif) | 🟢 |  |
 | [SPPIDER](https://sppider.cchmc.org) | 🟢 | ✔️ |
-| [ProMate](http://bioportal.weizmann.ac.il/promate/) | 🟢 |  |
+| [ProMate](http://bioportal.weizmann.ac.il/promate/) | 🔴 |  |
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html) | 🟢 |  |
-| [PredUs2](http://honig.c2b2.columbia.edu/predus) | 🟢 |  |
+| [PredUs2](http://honig.c2b2.columbia.edu/predus) | 🟢 | ✔️ |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html) | 🟢 | ✔️ |
 | [PredictProtein](https://predictprotein.org) | 🟢 |  |
 
