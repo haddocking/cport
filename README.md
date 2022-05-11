@@ -18,11 +18,11 @@ Consensus Prediction Of interface Residues in Transient complexes (CPORT) is an 
 | [BSpred](https://zhanggroup.org/BSpred/) | 🟢 |  |
 | [DELPHI](https://delphi.csd.uwo.ca) | 🟢 |  |
 | [MASIF-site](https://github.com/LPDI-EPFL/masif) | 🟢 |  |
-| [SPPIDER](https://sppider.cchmc.org) | 🟢 |  |
+| [SPPIDER](https://sppider.cchmc.org) | 🟢 | ✔️ |
 | [ProMate](http://bioportal.weizmann.ac.il/promate/) | 🟢 |  |
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html) | 🟢 |  |
 | [PredUs2](http://honig.c2b2.columbia.edu/predus) | 🟢 |  |
-| [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html) | 🟢 |  |
+| [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html) | 🟢 | ✔️ |
 | [PredictProtein](https://predictprotein.org) | 🟢 |  |
 
 ## Installation
