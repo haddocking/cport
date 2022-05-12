@@ -1,12 +1,26 @@
-# CPORT
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)
+[![unittests](https://github.com/haddocking/cport/actions/workflows/unittests.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/unittests.yml)
+[![codecov](https://codecov.io/gh/haddocking/cport/branch/main/graph/badge.svg?token=18GQSVO3PF)](https://codecov.io/gh/haddocking/cport)
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)[![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)[![unittests](https://github.com/haddocking/cport/actions/workflows/unittests.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/unittests.yml)
+# CPORT: Consensus Prediction Of interface Residues in Transient complexes
 
-## Introduction
+*CPORT is an algorithm for the prediction of protein-protein interface residues.*
 
-Consensus Prediction Of interface Residues in Transient complexes (CPORT) is an algorithm for the prediction of protein-protein interface residues. This repository is an unpublished (and untested) update of the original CPORT, please check the original publication:
+***
+
+## DISCLAIMER
+
+This repository contains an **ongoing development** of the next version of CPORT, and as such it is not stable yet. The codebase might change drastically in the future.
+
+For the current stable version, please access the web service at [https://alcazar.science.uu.nl/services/CPORT](https://alcazar.science.uu.nl/services/CPORT/).
+
+Please also refer to the original publication:
 
 - de Vries, S. J. & Bonvin, A. M. J. J. [CPORT: A Consensus Interface Predictor and Its Performance in Prediction-Driven Docking with HADDOCK](https://doi.org/10.1371/journal.pone.0017695). PLoS ONE vol. 6 e17695 (2011).
+
+***
 
 ## Predictors
 
