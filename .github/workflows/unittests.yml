@@ -1,7 +1,6 @@
 name: unittests
 
-on:
-  ['pull_request']
+on: ["push", "pull_request"]
 
 jobs:
   build:
@@ -27,18 +26,12 @@ jobs:
         pip install -r requirements.txt pytest pytest-cov coverage hypothesis
 
     - name: Test
-      if: always()
-      run: pytest --cov --cov-report=term-missing --cov-append --cov-config=.coveragerc -v --hypothesis-show-statistics
-
-    # from https://github.com/codecov/codecov-action
-    - name: Generate coverage report
-      if: ${{ success() }}
       run: |
-          coverage xml
+        pytest --cov=./ --cov-report=xml -v
 
-    - name: Upload coverage to Codecov
+    - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v2
       with:
-        files: ./coverage.xml
         fail_ci_if_error: false
-        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
