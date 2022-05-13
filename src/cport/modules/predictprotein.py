@@ -37,7 +37,7 @@ class Predictprotein:
         driver = webdriver.Safari()
         driver.get(PREDICTPROTEIN_URL)
 
-        # identifies the textarea 
+        # identifies the textarea
         elem = driver.find_element_by_id("sequence")
         elem.clear()
         elem.send_keys(fasta_code)
