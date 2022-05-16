@@ -5,6 +5,8 @@ import os
 import zipfile
 import glob
 import pandas as pd
+import tempfile
+import shutil
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -26,10 +28,6 @@ class Predictprotein:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_result_html = "https://predictprotein.org/visual_results?req_id=$1$0xeBp0R9$LnGQjDhYiCNTRQqkzios7/"
-        self.test_path = (
-            r"/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/"
-        )
 
     def submit(self):
         """Makes a submission to the PredictProtein server"""
@@ -58,6 +56,7 @@ class Predictprotein:
             "a.btn.btn-submit.btn-primary.btn-large"
         ).click()
 
+        # sleep so that the page is properly loaded before continuing
         time.sleep(5)
 
         html = driver.current_url
@@ -65,19 +64,17 @@ class Predictprotein:
         return html
 
     def retrieve_prediction_link(self, url=None):
-        download_path = (
-            r"/Users/aldovandennieuwendijk/Documents/CPORT/test_output_requests/"
-        )
+        temp_dir = tempfile.mkdtemp()
         options = Options()
         options.add_experimental_option(
             "prefs",
             {
-                "download.default_directory": download_path,
+                "download.default_directory": temp_dir,
                 "profile.default_content_setting_values.automatic_downloads": 2,
             },
         )
         driver = webdriver.Chrome(chrome_options=options)
-        driver.get(self.test_result_html)
+        driver.get(url)
 
         time.sleep(5)
 
@@ -97,7 +94,9 @@ class Predictprotein:
                 log.error(f"Predict Protein server is not responding, url was {url}")
                 sys.exit()
 
+        # finds buttons / elements by xpath
         driver.find_element_by_xpath('//*[@id="binding"]/a').send_keys(Keys.ENTER)
+        # sleep to allow the next page to load as to avoid buttons not being seen
         time.sleep(5)
 
         driver.find_element_by_xpath('//*[@id="Binding"]/div[2]/div/ul/li/a').send_keys(
@@ -110,19 +109,22 @@ class Predictprotein:
         ).click()
         time.sleep(5)
 
-        return download_path
+        return temp_dir
 
-    def parse_prediction(self, path=None):
+    def parse_prediction(self, dir=None):
         prediction_dict = {"active": [], "passive": []}
 
-        zip_file = glob.glob(f"{path}*.zip")[0]
+        # returns a list of all zip files, will only be 1
+        zip_file = glob.glob(f"{dir}/*.zip")[0]
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(path)
+            zip_ref.extractall(f"{dir}/")
 
         os.remove(zip_file)
 
+        result_file = glob.glob(f"{dir}/*.prona")[0]
+
         final_predictions = pd.read_csv(
-            f"{path}query.prona",
+            result_file,
             skiprows=11,
             usecols=[0, 3],
             names=["Residue_Number", "Protein_Pred"],
@@ -139,7 +141,8 @@ class Predictprotein:
                     f"There appears that residue {row} is either empty or unprocessable"
                 )
 
-        os.remove(f"{path}query.prona")
+        os.remove(f"{dir}/query.prona")
+        shutil.rmtree(dir)
 
         return prediction_dict
 
@@ -149,7 +152,7 @@ class Predictprotein:
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
         submitted_url = self.submit()
-        result_path = self.retrieve_prediction_link(submitted_url)
-        self.prediction_dict = self.parse_prediction(path=result_path)
+        temp_dir = self.retrieve_prediction_link(submitted_url)
+        self.prediction_dict = self.parse_prediction(dir=temp_dir)
 
         return self.prediction_dict
