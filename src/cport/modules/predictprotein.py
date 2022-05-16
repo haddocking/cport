@@ -1,4 +1,3 @@
-from ast import Continue
 import logging
 import time
 import sys
@@ -47,7 +46,7 @@ class Predictprotein:
 
         # headless so that browser windows are not visually opened and closed
         options = Options()
-        # options.add_argument("headless")
+        options.add_argument("headless")
 
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(PREDICTPROTEIN_URL)
@@ -91,7 +90,7 @@ class Predictprotein:
                 "profile.default_content_setting_values.automatic_downloads": 2,
             },
         )
-        # options.add_argument("headless")
+        options.add_argument("headless")
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(url)
 
