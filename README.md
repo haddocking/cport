@@ -37,7 +37,7 @@ Please also refer to the original publication:
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html) | 🟢 |  |
 | [PredUs2](http://honig.c2b2.columbia.edu/predus) | 🟢 | ✔️ |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html) | 🟢 | ✔️ |
-| [PredictProtein](https://predictprotein.org) | 🟢 |  |
+| [PredictProtein](https://predictprotein.org) | 🟢 | ✔️ |
 
 ## Installation
 

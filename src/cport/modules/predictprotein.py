@@ -34,20 +34,11 @@ class Predictprotein:
         """Makes a submission to the PredictProtein server"""
         fasta_code = utils.get_fasta_from_pdbid(self.pdb_id, self.chain_id)
 
-        """
-        This is so far the only page which has javascript elements which
-        have to be interacted with to submit the submission.
-        This forces the use of selenium, as this is the only package capable
-        of interacting with javascript on a page.
-        Unsure of how viable this is to run on a server.
-        Currently able to fill in the fasta_code and press the submit
-        button, but following to the result page is still proving elusive.
-        """
-
         # headless so that browser windows are not visually opened and closed
         options = Options()
         options.add_argument("headless")
 
+        # chrome has the most flexibility and ease-of-use
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(PREDICTPROTEIN_URL)
 
@@ -64,8 +55,10 @@ class Predictprotein:
         # sleep so that the page is properly loaded before continuing
         time.sleep(5)
 
+        # if the submission occurred before the result page will be presented
         html = driver.current_url
 
+        # if the submission has never occurred before a link will be shown to await results
         try:
             new_link = driver.find_element_by_xpath(
                 '//*[@id="job-monitor-feedback"]/a/span'
@@ -81,8 +74,10 @@ class Predictprotein:
         return html
 
     def retrieve_prediction_file(self, url=None):
+        """Waits for results if necessary and downloads the result file"""
         temp_dir = tempfile.mkdtemp()
         options = Options()
+        # options to allow pop-up-less downloads
         options.add_experimental_option(
             "prefs",
             {
@@ -116,15 +111,18 @@ class Predictprotein:
         log.info(f"Retreiving the Predict Protein results")
 
         # finds buttons / elements by xpath as css identifier did not work
+        # enter used as click did not work
         driver.find_element_by_xpath('//*[@id="binding"]/a').send_keys(Keys.ENTER)
         # sleep to allow the next page to load as to avoid buttons not being seen
         time.sleep(5)
 
+        # clicks drop down button for download menu
         driver.find_element_by_xpath('//*[@id="Binding"]/div[2]/div/ul/li/a').send_keys(
             Keys.ENTER
         )
         time.sleep(5)
 
+        # clicks raw data download, as opposed to JSON download
         driver.find_element_by_xpath(
             '//*[@id="Binding"]/div[2]/div/ul/li/ul/li[1]/a'
         ).click()
@@ -135,18 +133,18 @@ class Predictprotein:
         return temp_dir
 
     def parse_prediction(self, dir=None, test_file=None):
+        """Takes the result file and parses them into the prediction dictionary"""
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
+            # for testing purposes
             result_file = test_file
         else:
-            # returns a list of all zip files, will only be 1
+            # returns a list of all zip files, need to specify use of first one
             zip_file = glob.glob(f"{dir}/*.zip")[0]
             with zipfile.ZipFile(zip_file, "r") as zip_ref:
                 zip_ref.extractall(f"{dir}/")
-
             os.remove(zip_file)
-
             result_file = glob.glob(f"{dir}/*.prona")[0]
 
         final_predictions = pd.read_csv(
@@ -158,15 +156,16 @@ class Predictprotein:
         )
 
         for row in final_predictions.itertuples():
-            if row.Protein_Pred == 1:  # uppercase denotes a predicted interaction
+            if row.Protein_Pred == 1:  # 1 indicates interaction
                 prediction_dict["active"].append(row[0])
-            elif row.Protein_Pred == 0:
+            elif row.Protein_Pred == 0:  # 0 indicates no interaction
                 prediction_dict["passive"].append(row[0])
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"
                 )
 
+        # mkdtemp requires manual removal after use
         if not test_file:
             os.remove(f"{dir}/query.prona")
             shutil.rmtree(dir)
