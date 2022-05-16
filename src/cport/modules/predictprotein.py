@@ -1,3 +1,4 @@
+from ast import Continue
 import logging
 import time
 import sys
@@ -11,6 +12,7 @@ import shutil
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 from cport.url import PREDICTPROTEIN_URL
 from cport.modules import utils
@@ -19,7 +21,7 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 6
+NUM_RETRIES = 12
 
 
 class Predictprotein:
@@ -43,7 +45,11 @@ class Predictprotein:
         button, but following to the result page is still proving elusive.
         """
 
-        driver = webdriver.Chrome()
+        # headless so that browser windows are not visually opened and closed
+        options = Options()
+        # options.add_argument("headless")
+
+        driver = webdriver.Chrome(chrome_options=options)
         driver.get(PREDICTPROTEIN_URL)
 
         # identifies the textarea
@@ -61,9 +67,21 @@ class Predictprotein:
 
         html = driver.current_url
 
+        try:
+            new_link = driver.find_element_by_xpath(
+                '//*[@id="job-monitor-feedback"]/a/span'
+            )
+            html = new_link.get_attribute("innerHTML")
+        except NoSuchElementException:
+            None
+
+        driver.close()
+
+        log.info(f"Submitted the FASTA sequence to Predict Protein")
+
         return html
 
-    def retrieve_prediction_link(self, url=None):
+    def retrieve_prediction_file(self, url=None):
         temp_dir = tempfile.mkdtemp()
         options = Options()
         options.add_experimental_option(
@@ -73,6 +91,7 @@ class Predictprotein:
                 "profile.default_content_setting_values.automatic_downloads": 2,
             },
         )
+        # options.add_argument("headless")
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(url)
 
@@ -81,9 +100,10 @@ class Predictprotein:
         completed = False
         while not completed:
             # checks for the binding site button
-            if driver.find_element_by_xpath('//*[@id="binding"]/a') != None:
+            try:
+                driver.find_element_by_xpath('//*[@id="binding"]/a')
                 completed = True
-            else:
+            except NoSuchElementException:
                 # still running, wait a bit
                 log.debug(f"Waiting for Predict Protein to finish... {self.tries}")
                 time.sleep(self.wait)
@@ -94,7 +114,9 @@ class Predictprotein:
                 log.error(f"Predict Protein server is not responding, url was {url}")
                 sys.exit()
 
-        # finds buttons / elements by xpath
+        log.info(f"Retreiving the Predict Protein results")
+
+        # finds buttons / elements by xpath as css identifier did not work
         driver.find_element_by_xpath('//*[@id="binding"]/a').send_keys(Keys.ENTER)
         # sleep to allow the next page to load as to avoid buttons not being seen
         time.sleep(5)
@@ -109,19 +131,24 @@ class Predictprotein:
         ).click()
         time.sleep(5)
 
+        driver.close()
+
         return temp_dir
 
-    def parse_prediction(self, dir=None):
+    def parse_prediction(self, dir=None, test_file=None):
         prediction_dict = {"active": [], "passive": []}
 
-        # returns a list of all zip files, will only be 1
-        zip_file = glob.glob(f"{dir}/*.zip")[0]
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(f"{dir}/")
+        if test_file:
+            result_file = test_file
+        else:
+            # returns a list of all zip files, will only be 1
+            zip_file = glob.glob(f"{dir}/*.zip")[0]
+            with zipfile.ZipFile(zip_file, "r") as zip_ref:
+                zip_ref.extractall(f"{dir}/")
 
-        os.remove(zip_file)
+            os.remove(zip_file)
 
-        result_file = glob.glob(f"{dir}/*.prona")[0]
+            result_file = glob.glob(f"{dir}/*.prona")[0]
 
         final_predictions = pd.read_csv(
             result_file,
@@ -141,8 +168,9 @@ class Predictprotein:
                     f"There appears that residue {row} is either empty or unprocessable"
                 )
 
-        os.remove(f"{dir}/query.prona")
-        shutil.rmtree(dir)
+        if not test_file:
+            os.remove(f"{dir}/query.prona")
+            shutil.rmtree(dir)
 
         return prediction_dict
 
@@ -152,7 +180,7 @@ class Predictprotein:
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
         submitted_url = self.submit()
-        temp_dir = self.retrieve_prediction_link(submitted_url)
+        temp_dir = self.retrieve_prediction_file(submitted_url)
         self.prediction_dict = self.parse_prediction(dir=temp_dir)
 
         return self.prediction_dict
