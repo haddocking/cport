@@ -21,6 +21,7 @@ log = logging.getLogger("cportlog")
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
 NUM_RETRIES = 12
+ELEMENT_LOAD_WAIT = 5  # seconds
 
 
 class Predictprotein:
@@ -53,19 +54,17 @@ class Predictprotein:
         ).click()
 
         # sleep so that the page is properly loaded before continuing
-        time.sleep(5)
+        time.sleep(ELEMENT_LOAD_WAIT)
 
-        # if the submission occurred before the result page will be presented
-        html = driver.current_url
-
-        # if the submission has never occurred before a link will be shown to await results
-        try:
-            new_link = driver.find_element_by_xpath(
-                '//*[@id="job-monitor-feedback"]/a/span'
-            )
-            html = new_link.get_attribute("innerHTML")
-        except NoSuchElementException:
-            None
+        # returns list that is either empty or contains a matching element for the wait link
+        check_link = driver.find_elements_by_xpath(
+            '//*[@id="job-monitor-feedback"]/a/span'
+        )
+        # checks if the list is empty, if empty the url will already be the result url
+        if check_link:
+            html = check_link[0].get_attribute("innerHTML")
+        else:
+            html = driver.current_url
 
         driver.close()
 
@@ -73,9 +72,8 @@ class Predictprotein:
 
         return html
 
-    def retrieve_prediction_file(self, url=None):
+    def retrieve_prediction_file(self, url=None, temp_dir=None):
         """Waits for results if necessary and downloads the result file"""
-        temp_dir = tempfile.mkdtemp()
         options = Options()
         # options to allow pop-up-less downloads
         options.add_experimental_option(
@@ -88,8 +86,6 @@ class Predictprotein:
         options.add_argument("headless")
         driver = webdriver.Chrome(chrome_options=options)
         driver.get(url)
-
-        time.sleep(5)
 
         completed = False
         while not completed:
@@ -110,23 +106,25 @@ class Predictprotein:
 
         log.info(f"Retreiving the Predict Protein results")
 
+        time.sleep(ELEMENT_LOAD_WAIT)
+
         # finds buttons / elements by xpath as css identifier did not work
         # enter used as click did not work
         driver.find_element_by_xpath('//*[@id="binding"]/a').send_keys(Keys.ENTER)
-        # sleep to allow the next page to load as to avoid buttons not being seen
-        time.sleep(5)
+        # sleep to allow the next elements to load as to avoid buttons not being seen
+        time.sleep(ELEMENT_LOAD_WAIT)
 
         # clicks drop down button for download menu
         driver.find_element_by_xpath('//*[@id="Binding"]/div[2]/div/ul/li/a').send_keys(
             Keys.ENTER
         )
-        time.sleep(5)
+        time.sleep(ELEMENT_LOAD_WAIT)
 
         # clicks raw data download, as opposed to JSON download
         driver.find_element_by_xpath(
             '//*[@id="Binding"]/div[2]/div/ul/li/ul/li[1]/a'
         ).click()
-        time.sleep(5)
+        time.sleep(ELEMENT_LOAD_WAIT)
 
         driver.close()
 
@@ -165,11 +163,6 @@ class Predictprotein:
                     f"There appears that residue {row} is either empty or unprocessable"
                 )
 
-        # mkdtemp requires manual removal after use
-        if not test_file:
-            os.remove(f"{dir}/query.prona")
-            shutil.rmtree(dir)
-
         return prediction_dict
 
     def run(self, test=False):
@@ -178,7 +171,10 @@ class Predictprotein:
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
         submitted_url = self.submit()
-        temp_dir = self.retrieve_prediction_file(submitted_url)
-        self.prediction_dict = self.parse_prediction(dir=temp_dir)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_dir_prediction = self.retrieve_prediction_file(
+                url=submitted_url, temp_dir=temp_dir
+            )
+            self.prediction_dict = self.parse_prediction(dir=temp_dir_prediction)
 
         return self.prediction_dict
