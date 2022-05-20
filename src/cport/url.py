@@ -3,6 +3,7 @@ SCRIBER_URL = "http://biomine.cs.vcu.edu/servers/SCRIBER/"
 ISPRED4_URL = "https://ispred4.biocomp.unibo.it/ispred/default/"
 SPPIDER_URL = "https://sppider.cchmc.org"
 CONS_PPISP_URL = "https://pipe.rcc.fsu.edu/ppisp.html"
+META_PPISP_URL = "https://pipe.rcc.fsu.edu/meta-ppisp.html"
 PREDUS2_URL = "https://honiglab.c2b2.columbia.edu/hfpd/html/predus.html"
 PREDICTPROTEIN_URL = "https://predictprotein.org"
 
