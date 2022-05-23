@@ -18,6 +18,13 @@ log = logging.getLogger("cportlog")
 WAIT_INTERVAL = 10  # seconds
 NUM_RETRIES = 6
 
+"""
+This predictor takes around 2 hours to complete,
+so should be first to be examined if the output
+increases accuracy of CPORT, if it does not
+this predictor should be scrapped
+"""
+
 
 class Meta_ppisp:
     def __init__(self, pdb_id, chain_id):
@@ -25,10 +32,9 @@ class Meta_ppisp:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_url = "https://pipe.rcc.fsu.edu/meta-ppisp/mail.message.000029333"
 
     def submit(self):
-        """Makes a submission to the cons-PPISP server"""
+        """Makes a submission to the meta-PPISP server"""
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
 
         browser = ms.StatefulBrowser()
@@ -69,14 +75,14 @@ class Meta_ppisp:
                 completed = True
             else:
                 # still running, wait a bit
-                log.debug(f"Waiting for cons-PPISP to finish... {self.tries}")
+                log.debug(f"Waiting for meta-PPISP to finish... {self.tries}")
                 time.sleep(self.wait)
                 browser.refresh()
                 self.tries -= 1
 
             if self.tries == 0:
                 # if tries is 0, then the server is not responding
-                log.error(f"cons-PPISP server is not responding, url was {url}")
+                log.error(f"meta-PPISP server is not responding, url was {url}")
                 sys.exit()
 
         return url
