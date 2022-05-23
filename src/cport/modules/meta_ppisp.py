@@ -138,7 +138,9 @@ class Meta_ppisp:
 
         for row in final_predictions.itertuples():
             if row.Prediction == "P":  # positive for interaction
-                prediction_dict["active"].append(row.AA_nr)
+                # save confidence of prediction
+                score = [row.AA_nr, row.meta_ppisp]
+                prediction_dict["active"].append(score)
             elif row.Prediction == "N":
                 prediction_dict["passive"].append(row.AA_nr)
 
