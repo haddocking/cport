@@ -27,6 +27,7 @@ class Meta_ppisp:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
+        self.test_url = "https://pipe.rcc.fsu.edu/meta-ppisp/mail.message.000029333"
 
     def submit(self):
         """Makes a submission to the cons-PPISP server"""
@@ -98,11 +99,21 @@ class Meta_ppisp:
         if test_file:
             final_predictions = pd.read_csv(
                 test_file,
-                skiprows=13,
+                skiprows=11,
                 delim_whitespace=True,
-                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
+                names=[
+                    "AA",
+                    "Ch",
+                    "AA_nr",
+                    "cons_ppisp",
+                    "PINUP",
+                    "Promate",
+                    "meta_ppisp",
+                    "Prediction",
+                ],
                 header=0,
-                skipfooter=16,
+                skipfooter=12,
+                index_col=False,
             )
         else:
             file = self.download_result(
@@ -110,11 +121,21 @@ class Meta_ppisp:
             )  # direct reading of page with read_csv is impossible due to the same SSL error
             final_predictions = pd.read_csv(
                 io.StringIO(file.decode("utf-8")),
-                skiprows=13,
+                skiprows=11,
                 delim_whitespace=True,
-                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
+                names=[
+                    "AA",
+                    "Ch",
+                    "AA_nr",
+                    "cons_ppisp",
+                    "PINUP",
+                    "Promate",
+                    "meta_ppisp",
+                    "Prediction",
+                ],
                 header=0,
-                skipfooter=16,
+                skipfooter=12,
+                index_col=False,
             )
 
         for row in final_predictions.itertuples():
@@ -126,8 +147,8 @@ class Meta_ppisp:
         return prediction_dict
 
     def run(self, test=False):
-        """Execute the cons-PPISP prediction."""
-        log.info("Running cons-PPISP")
+        """Execute the meta-PPISP prediction."""
+        log.info("Running meta-PPISP")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
         submitted_url = self.submit()
