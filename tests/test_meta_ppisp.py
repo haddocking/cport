@@ -1,10 +1,9 @@
-# Test if the meta_ppisp prediction is working
+"""Test if the meta_ppisp prediction is working"""
 from pathlib import Path
 
 import pytest
 
 from cport.modules.meta_ppisp import Meta_ppisp
-from cport.url import META_PPISP_URL
 
 
 @pytest.fixture

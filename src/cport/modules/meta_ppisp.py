@@ -1,16 +1,16 @@
+import io
 import logging
 import re
-import time
 import sys
-import requests
 import tempfile
-import io
+import time
 
 import mechanicalsoup as ms
 import pandas as pd
+import requests
 
-from cport.url import META_PPISP_URL
 from cport.modules.utils import get_pdb_from_pdbid
+from cport.url import META_PPISP_URL
 
 log = logging.getLogger("cportlog")
 
