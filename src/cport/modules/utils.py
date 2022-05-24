@@ -1,11 +1,13 @@
+import logging
+import os
 import pdb
 import re
-import os
 import sys
-import logging
-import requests
 import tempfile
 from urllib import request
+
+import requests
+
 from cport.url import PDB_FASTA_URL, PDB_URL
 
 log = logging.getLogger("cportlog")

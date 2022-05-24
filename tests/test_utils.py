@@ -1,7 +1,8 @@
 """Test the utility functions."""
-import os
 import filecmp
+import os
 from pathlib import Path
+
 from cport.modules.utils import get_fasta_from_pdbid, get_pdb_from_pdbid
 
 

@@ -1,7 +1,7 @@
 # Test if the whiscy prediction is working
-from cport.modules.whiscy import Whiscy
-
 import pytest
+
+from cport.modules.whiscy import Whiscy
 
 
 @pytest.fixture

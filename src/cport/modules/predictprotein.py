@@ -1,20 +1,20 @@
-import logging
-import time
-import sys
-import os
-import zipfile
 import glob
-import pandas as pd
-import tempfile
+import logging
+import os
 import shutil
+import sys
+import tempfile
+import time
+import zipfile
 
+import pandas as pd
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
-from cport.url import PREDICTPROTEIN_URL
 from cport.modules import utils
+from cport.url import PREDICTPROTEIN_URL
 
 log = logging.getLogger("cportlog")
 

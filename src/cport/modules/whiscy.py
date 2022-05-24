@@ -4,6 +4,7 @@ import sys
 import time
 
 import mechanicalsoup as ms
+
 from cport.url import WHISCY_URL
 
 log = logging.getLogger("cportlog")
