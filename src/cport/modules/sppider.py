@@ -1,9 +1,10 @@
 import logging
 import re
-import time
 import sys
+import time
 
 import mechanicalsoup as ms
+
 from cport.url import SPPIDER_URL
 
 log = logging.getLogger("cportlog")

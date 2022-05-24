@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # FIXME: Remove this and keep all requirements in this setup file
 with open("requirements.txt") as f:

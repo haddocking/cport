@@ -1,13 +1,13 @@
 import logging
 import re
+import sys
 import tempfile
 import time
-import sys
 from urllib import request
 
+import mechanicalsoup as ms
 import pandas as pd
 
-import mechanicalsoup as ms
 from cport.modules.utils import get_fasta_from_pdbid
 from cport.url import SCRIBER_URL
 

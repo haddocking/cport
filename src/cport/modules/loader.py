@@ -1,14 +1,14 @@
 import logging
 from functools import partial
 
+from cport.modules.cons_ppisp import Cons_ppisp
 from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
-from cport.modules.scriber import Scriber
-from cport.modules.whiscy import Whiscy
-from cport.modules.sppider import Sppider
-from cport.modules.cons_ppisp import Cons_ppisp
-from cport.modules.predus2 import Predus2
 from cport.modules.predictprotein import Predictprotein
+from cport.modules.predus2 import Predus2
+from cport.modules.scriber import Scriber
+from cport.modules.sppider import Sppider
+from cport.modules.whiscy import Whiscy
 
 log = logging.getLogger("cportlog")
 

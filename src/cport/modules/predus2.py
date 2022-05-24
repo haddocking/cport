@@ -1,13 +1,13 @@
+import io
 import logging
 import re
+import sys
 import tempfile
 import time
-import sys
-import requests
-import io
 
-import pandas as pd
 import mechanicalsoup as ms
+import pandas as pd
+import requests
 
 from cport.url import PREDUS2_URL
 
