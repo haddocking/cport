@@ -34,7 +34,7 @@ Please also refer to the original publication:
 | [MASIF-site](https://github.com/LPDI-EPFL/masif) | 🟢 |  |
 | [SPPIDER](https://sppider.cchmc.org) | 🟢 | ✔️ |
 | [ProMate](http://bioportal.weizmann.ac.il/promate/) | 🔴 |  |
-| [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html) | 🟢 |  |
+| [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html) | 🟢 | ✔️ |
 | [PredUs2](http://honig.c2b2.columbia.edu/predus) | 🟢 | ✔️ |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html) | 🟢 | ✔️ |
 | [PredictProtein](https://predictprotein.org) | 🟢 | ✔️ |

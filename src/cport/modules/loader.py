@@ -1,14 +1,15 @@
 import logging
 from functools import partial
 
+from cport.modules.cons_ppisp import Cons_ppisp
 from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
-from cport.modules.scriber import Scriber
-from cport.modules.whiscy import Whiscy
-from cport.modules.sppider import Sppider
-from cport.modules.cons_ppisp import Cons_ppisp
-from cport.modules.predus2 import Predus2
+from cport.modules.meta_ppisp import Meta_ppisp
 from cport.modules.predictprotein import Predictprotein
+from cport.modules.predus2 import Predus2
+from cport.modules.scriber import Scriber
+from cport.modules.sppider import Sppider
+from cport.modules.whiscy import Whiscy
 
 log = logging.getLogger("cportlog")
 
@@ -48,6 +49,13 @@ def run_cons_ppisp(pdb_id, chain_id):
     log.info(cons_ppisp_predictions)
 
 
+def run_meta_ppisp(pdb_id, chain_id):
+    """Run the meta-ppisp predictor"""
+    meta_ppisp = Meta_ppisp(pdb_id, chain_id)
+    meta_ppisp_predictions = meta_ppisp.run()
+    log.info(meta_ppisp_predictions)
+
+
 def run_predus2(pdb_id, chain_id):
     """Run the PredUs2 predictor."""
     predus2 = Predus2(pdb_id, chain_id)
@@ -69,13 +77,14 @@ def run_placeholder(fasta_str):
 
 
 PDB_PREDICTORS = {
-    "whiscy": run_whiscy,
-    "scriber": run_scriber,
-    "ispred4": run_ispred4,
-    "sppider": run_sppider,
     "cons_ppisp": run_cons_ppisp,
-    "predus2": run_predus2,
+    "ispred4": run_ispred4,
+    "meta_ppisp": run_meta_ppisp,
     "predictprotein": run_predictprotein,
+    "predus2": run_predus2,
+    "scriber": run_scriber,
+    "sppider": run_sppider,
+    "whiscy": run_whiscy,
 }
 
 FASTA_PREDICTORS = {"placeholder": run_placeholder}
