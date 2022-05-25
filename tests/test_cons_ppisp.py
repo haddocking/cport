@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from cport.modules.cons_ppisp import Cons_ppisp
-from cport.url import CONS_PPISP_URL
 
 
 @pytest.fixture
@@ -25,7 +24,7 @@ def test_submit():
 def test_retrieve_prediction_link(cons_ppisp):
     page_text = "This is a page that exists and will have results"
     observed_download_url = cons_ppisp.retrieve_prediction_link(page_text=page_text)
-    expected_download_url = f"This is a page that exists and will have results"
+    expected_download_url = "This is a page that exists and will have results"
     assert observed_download_url == expected_download_url
 
 

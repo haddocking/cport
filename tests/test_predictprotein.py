@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from cport.modules.predictprotein import Predictprotein
-from cport.url import PREDICTPROTEIN_URL
 
 
 @pytest.fixture

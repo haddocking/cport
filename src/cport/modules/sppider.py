@@ -11,7 +11,8 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 12  # results take up to 5 minutes for 1ppe E, but are usually ready within 2 minutes
+# results take up to 5 minutes for 1ppe E, but are usually ready within 2 minutes
+NUM_RETRIES = 12
 
 
 class Sppider:
@@ -22,6 +23,15 @@ class Sppider:
         self.tries = NUM_RETRIES
 
     def submit(self):
+        """
+        Makes a submission to the SPPIDER server.
+
+        Returns
+        -------
+        submitted_url : str
+            The url to the submitted page.
+
+        """
         browser = ms.StatefulBrowser()
         browser.open(SPPIDER_URL)
 
@@ -45,6 +55,22 @@ class Sppider:
         return submitted_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
+        """
+        Retrieves the link to the SPIDER prediction page.
+
+        Parameters
+        ----------
+        url : str
+            The url of the SPIDER processing page.
+        page_text : str
+            The text of the SPIDER processing page.
+
+        Returns
+        -------
+        new_url : str
+            The url of the prediction obtained SPIDER prediction page.
+
+        """
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -57,7 +83,8 @@ class Sppider:
         while not completed:
             # if match is True, the results are not yet ready
             match = re.search(
-                r"(Refresh page manually or it will be reloaded automatically in 5 minutes)",
+                r"(Refresh page manually or it will be reloaded "
+                r"automatically in 5 minutes)",
                 str(browser.page),
             )
             if not match:
@@ -75,19 +102,35 @@ class Sppider:
                 sys.exit()
 
         # the page contains the correct link, which automatically opens in a browser
-        # soup browser is an exception so url needs to be extracted and opened to function
+        #  soup browser is an exception so url needs to be extracted and opened
+        #  to function
         # https://regex101.com/r/Izy7PR/1
-        new_url = re.findall(r"URL=(.*?=int)", str(browser.page))
+        new_url = re.findall(r"URL=(.*?=int)", str(browser.page))[0]
 
         browser.close()
 
-        return new_url[0]
+        return new_url
 
     def parse_prediction(self, url=None, page_text=None):
-        prediction_dict = {
-            "active": [],
-            "passive": [],
-        }  # sppider only provides a list of active residues
+        """
+        Takes the results extracts the active and passive residue predictions.
+
+        Parameters
+        ----------
+        url : str
+            The url to the results.
+        page_text : str
+            The file to parse.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
+        # sppider only provides a list of active residues
+        prediction_dict = {"active": [], "passive": []}
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -96,9 +139,11 @@ class Sppider:
         else:
             browser.open(url)
 
-        # https://regex101.com/r/iNn3FK/1 as an example, used DOTALL to include \n in results for flexibility
+        # https://regex101.com/r/iNn3FK/1 as an example, used DOTALL to include \n in
+        #  results for flexibility
         page_search = re.findall(
-            r"List of interacting residues predicted by SPPIDER:\n\(criteria used: network majority count .*?= 5\)\n(.*?)\n\n",
+            r"List of interacting residues predicted by SPPIDER:\n\(criteria"
+            r" used: network majority count .*?= 5\)\n(.*?)\n\n",
             str(browser.page),
             re.DOTALL,
         )
@@ -113,8 +158,16 @@ class Sppider:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the SPPIDER prediction."""
+    def run(self):
+        """
+        Execute the SPPIDER prediction.
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the active and passive residue predictions.
+
+        """
         log.info("Running SPPIDER")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

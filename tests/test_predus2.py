@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from cport.modules.predus2 import Predus2
-from cport.url import PREDUS2_URL
 
 
 @pytest.fixture
@@ -25,9 +24,7 @@ def test_submit():
 def test_retrieve_prediction_link(predus2):
     page_text = "PredUs2.0 result file:"
     observed_download_url = predus2.retrieve_prediction_link(page_text=page_text)
-    expected_download_url = (
-        f"https://honiglab.c2b2.columbia.edu/hfpd/tmp/1ppe_E.pd2.txt"
-    )
+    expected_download_url = "https://honiglab.c2b2.columbia.edu/hfpd/tmp/1ppe_E.pd2.txt"
     assert observed_download_url == expected_download_url
 
 

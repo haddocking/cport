@@ -27,7 +27,15 @@ class Predus2:
         self.tries = NUM_RETRIES
 
     def submit(self):
-        """Makes a submission to the PredUs2 server"""
+        """
+        Makes a submission to the PredUs2 server.
+
+        Returns
+        -------
+        submission_url : str
+            The url of the submitted job.
+
+        """
         browser = ms.StatefulBrowser()
         browser.open(PREDUS2_URL, verify=False)
 
@@ -48,7 +56,22 @@ class Predus2:
         return submission_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
-        """Waits until the prediction has finished and returns url for results"""
+        """
+        Retrieve the results.
+
+        Parameters
+        ----------
+        url : str
+            The url to the result results.
+        page_text : str
+            The text of the page to parse - used for testing.
+
+        Returns
+        -------
+        final_url : str
+            The link to the results file.
+
+        """
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -75,7 +98,11 @@ class Predus2:
                 log.error(f"PredUs2 server is not responding, url was {url}")
                 sys.exit()
 
-        final_url = f"https://honiglab.c2b2.columbia.edu/hfpd/tmp/{self.pdb_id}_{self.chain_id.capitalize()}.pd2.txt"
+        capital_chain_id = self.chain_id.capitalize()
+        final_url = (
+            "https://honiglab.c2b2.columbia.edu/hfpd/tmp/"
+            f"{self.pdb_id}_{capital_chain_id}.pd2.txt"
+        )
 
         browser.close()
 
@@ -83,14 +110,43 @@ class Predus2:
 
     @staticmethod
     def download_result(download_link):
-        """Download the results while avoiding SSL errors"""
+        """
+        Download the results.
+
+        Parameters
+        ----------
+        download_link : str
+            The link to the results file.
+
+        Returns
+        -------
+        temp_file.name : str
+            The path to the results file.
+
+        """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
         temp_file.name = requests.get(download_link, verify=False).content
 
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
-        """Takes the results extracts the active and passive residue predictions"""
+        """
+        Takes the results extracts the active and passive residue predictions.
+
+        Parameters
+        ----------
+        url : str
+            The url to the results.
+        test_file : str
+            The file to parse.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
@@ -118,8 +174,16 @@ class Predus2:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the PredUs2 prediction."""
+    def run(self):
+        """
+        Execute the PredUs2 prediction.
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the raw prediction results.
+
+        """
         log.info("Running PredUs2")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

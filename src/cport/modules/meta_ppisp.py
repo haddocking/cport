@@ -34,13 +34,21 @@ class Meta_ppisp:
         self.tries = NUM_RETRIES
 
     def submit(self):
-        """Makes a submission to the meta-PPISP server"""
+        """
+        Makes a submission to the meta-PPISP server.
+
+        Returns
+        -------
+        processing_url : str
+            The url of the meta-PPISP processing page.
+
+        """
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
 
         browser = ms.StatefulBrowser()
-        browser.open(
-            META_PPISP_URL, verify=False
-        )  # SSL request fails, try to find alternative solution as this would save a lot of code
+        # SSL request fails, try to find alternative solution as this would save
+        # a lot of code
+        browser.open(META_PPISP_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
         input_form.set(name="submitter", value=str(self.pdb_id + self.chain_id))
@@ -58,6 +66,22 @@ class Meta_ppisp:
         return processing_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
+        """
+        Retrieves the link to the meta-PPISP prediction page.
+
+        Parameters
+        ----------
+        url : str
+            The url of the meta-PPISP processing page.
+        page_text : str
+            The text of the meta-PPISP processing page.
+
+        Returns
+        -------
+        url : str
+            The url of the obtained meta-PPISP prediction page.
+
+        """
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -89,7 +113,20 @@ class Meta_ppisp:
 
     @staticmethod
     def download_result(download_link):
-        """Download the results."""
+        """
+        Download the results.
+
+        Parameters
+        ----------
+        download_link : str
+            The url of the meta-PPISP result page.
+
+        Returns
+        -------
+        temp_file.name : str
+            The name of the temporary file containing the results.
+
+        """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
         temp_file.name = requests.get(
             download_link, verify=False
@@ -97,7 +134,22 @@ class Meta_ppisp:
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
-        """Takes the results extracts the active and passive residue predictions"""
+        """
+        Takes the results extracts the active and passive residue predictions.
+
+        Parameters
+        ----------
+        url : str
+            The url of the meta-PPISP result page.
+        test_file : str
+            A file containing the text present in the result page
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the active and passive residue predictions.
+
+        """
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
@@ -120,9 +172,9 @@ class Meta_ppisp:
                 index_col=False,
             )
         else:
-            file = self.download_result(
-                url
-            )  # direct reading of page with read_csv is impossible due to the same SSL error
+            # direct reading of page with read_csv is impossible due to the
+            #  same SSL error
+            file = self.download_result(url)
             final_predictions = pd.read_csv(
                 io.StringIO(file.decode("utf-8")),
                 skiprows=11,
@@ -152,8 +204,16 @@ class Meta_ppisp:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the meta-PPISP prediction."""
+    def run(self):
+        """
+        Execute the meta-PPISP prediction.
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the active and passive residue predictions.
+
+        """
         log.info("Running meta-PPISP")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

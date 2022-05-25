@@ -15,63 +15,151 @@ log = logging.getLogger("cportlog")
 
 
 def run_whiscy(pdb_id, chain_id):
-    """Run the WHISCY predictor."""
+    """
+    Run the WHISCY predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     whiscy = Whiscy(pdb_id, chain_id)
     whiscy_predictions = whiscy.run()
     log.info(whiscy_predictions)
 
 
 def run_ispred4(pdb_id, chain_id):
-    """Run the ispred4 predictor."""
+    """
+    Run the ISPRED4 predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     ispred4 = Ispred4(pdb_id, chain_id)
     ispred4_predictions = ispred4.run()
     log.info(ispred4_predictions)
 
 
 def run_scriber(pdb_id, chain_id):
-    """Run the scriber predictor."""
+    """
+    Run the SCRIBER predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     scriber = Scriber(pdb_id, chain_id)
     scriber_predictions = scriber.run()
     log.info(scriber_predictions)
 
 
 def run_sppider(pdb_id, chain_id):
-    """Run the sppider predictor."""
+    """
+    Run the WHISCY predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     sppider = Sppider(pdb_id, chain_id)
     sppider_predictions = sppider.run()
     log.info(sppider_predictions)
 
 
 def run_cons_ppisp(pdb_id, chain_id):
-    """Run the cons-ppisp predictor"""
+    """
+    Run the CONS-PPISP predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     cons_ppisp = Cons_ppisp(pdb_id, chain_id)
     cons_ppisp_predictions = cons_ppisp.run()
     log.info(cons_ppisp_predictions)
 
 
 def run_meta_ppisp(pdb_id, chain_id):
-    """Run the meta-ppisp predictor"""
+    """
+    Run the META-PPISP predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     meta_ppisp = Meta_ppisp(pdb_id, chain_id)
     meta_ppisp_predictions = meta_ppisp.run()
     log.info(meta_ppisp_predictions)
 
 
 def run_predus2(pdb_id, chain_id):
-    """Run the PredUs2 predictor."""
+    """
+    Run the WHISCY predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     predus2 = Predus2(pdb_id, chain_id)
     predus2_predictions = predus2.run()
     log.info(predus2_predictions)
 
 
 def run_predictprotein(pdb_id, chain_id):
-    """Run the Predict Protein predictor"""
+    """
+    Run the PREDICTPROTEIN predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    """
     predictprotein = Predictprotein(pdb_id, chain_id)
     predictprotein_predictions = predictprotein.run()
     log.info(predictprotein_predictions)
 
 
 def run_placeholder(fasta_str):
-    """Run the placeholder predictor."""
+    """
+    Run the PLACEHOLDER predictor.
+
+    Parameters
+    ----------
+    fasta_str : str
+        Fasta string.
+
+    """
     log.info("Placeholder predictor")
     log.info(f"fasta_str: {fasta_str}")
 
@@ -91,7 +179,25 @@ FASTA_PREDICTORS = {"placeholder": run_placeholder}
 
 
 def run_prediction(prediction_method, **kwargs):
-    """Select predictors to run."""
+    """
+    Select predictors to run.
+
+    Parameters
+    ----------
+    prediction_method : str
+        Prediction method to be run.
+    kwargs : dict
+        Keyword arguments.
+
+
+    Raises
+    ------
+    IncompleteInputError
+        If the input is incomplete.
+    ValueError
+        If the prediction method is not supported.
+
+    """
     if prediction_method in PDB_PREDICTORS:
         if not kwargs["pdb_id"]:
             raise IncompleteInputError(

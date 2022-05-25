@@ -56,14 +56,37 @@ ap.add_argument(
 
 
 def load_args(ap):
-    """Load argument parser"""
+    """
+    Load argument parser.
+
+    Parameters
+    ----------
+    ap : argparse.ArgumentParser
+        Argument parser.
+
+    Returns
+    -------
+    cmd : argparse.Namespace
+        Parsed command-line arguments.
+
+    """
     return ap.parse_args()
 
 
 # ====================================================================================#
 # Define CLI
 def cli(ap, main):
-    """Command-line interface entry point."""
+    """
+    Command-line interface entry point.
+
+    Parameters
+    ----------
+    ap : argparse.ArgumentParser
+        Argument parser.
+    main : function
+        Main function.
+
+    """
     cmd = load_args(ap)
     main(**vars(cmd))
 
@@ -76,6 +99,21 @@ def maincli():
 # ====================================================================================#
 # Main code
 def main(pdb_id, chain_id, pred, fasta_file):
+    """
+    Main function.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+    pred : list
+        List of predictors to run.
+    fasta_file : str
+        Fasta file.
+
+    """
 
     # Start #=========================================================================#
     log.setLevel("DEBUG")
