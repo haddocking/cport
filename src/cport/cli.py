@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from cport.modules.loader import run_prediction
+from cport.modules.utils import format_output
 from cport.version import VERSION
 
 # Setup logging
@@ -123,17 +124,22 @@ def main(pdb_id, chain_id, pred, fasta_file):
 
     # Run predictors #================================================================#
     data = {"pdb_id": pdb_id, "chain_id": chain_id, "fasta_file": fasta_file}
+    result_dic = {}
 
     if "all" in pred:
         pred = CONFIG["predictors"]
 
     for predictor in pred:
         try:
-            run_prediction(predictor, **data)
+            predictions = run_prediction(predictor, **data)
+            result_dic[predictor] = predictions
         except Exception as e:
             log.error(f"Error running {predictor}")
             log.error(e)
             sys.exit()
+
+    # Ouput results #==================================================================#
+    format_output(result_dic, output_fname="cport.csv")
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+import itertools
 import logging
 import os
 import re
@@ -5,6 +6,7 @@ import sys
 import tempfile
 from urllib import request
 
+import pandas as pd
 import requests
 
 from cport.url import PDB_FASTA_URL, PDB_URL
@@ -78,3 +80,71 @@ def get_pdb_from_pdbid(pdb_id):
     pdb_fname = temp_file.name
 
     return pdb_fname
+
+
+def format_output(result_dic, output_fname):
+    """
+    Format the results into a human-readable format.
+
+    Parameters
+    ----------
+    result_dic : dict
+        The results dictionary.
+    output_fname : str or pathlib.PosixPath
+        The output file name.
+
+    """
+
+    reslist = get_residue_range(result_dic)
+    data = []
+    for pred in result_dic:
+        row = [pred]
+        for res in reslist:
+            is_passive = None
+            is_active = None
+
+            if res in result_dic[pred]["passive"]:
+                is_passive = True
+
+            if res in result_dic[pred]["active"]:
+                is_active = True
+
+            if is_active and is_passive:
+                row.append("AP")
+            elif is_active:
+                row.append("A")
+            elif is_passive:
+                row.append("P")
+            else:
+                row.append("-")
+        # print(row)
+        data.append(row)
+
+    df = pd.DataFrame(data, columns=["predictor"] + reslist)
+    df.to_csv(output_fname, index=False)
+
+
+def get_residue_range(result_dic):
+    """
+    Retrieve a range of residues considering a dictionary of predictions.
+
+    Parameters
+    ----------
+    result_dic : dict
+        The results dictionary.
+
+    Returns
+    -------
+    absolute_range : list
+        The list of residues.
+
+    """
+    passive_reslist = list(
+        itertools.chain(*[result_dic[e]["passive"] for e in result_dic])
+    )
+    active_reslist = list(
+        itertools.chain(*[result_dic[e]["active"] for e in result_dic])
+    )
+    reslist = passive_reslist + active_reslist
+    absolute_range = list(range(min(reslist), max(reslist)))
+    return absolute_range
