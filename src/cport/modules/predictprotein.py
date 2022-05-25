@@ -193,10 +193,13 @@ class Predictprotein:
         )
 
         for row in final_predictions.itertuples():
-            if row.Protein_Pred == 1:  # 1 indicates interaction
-                prediction_dict["active"].append(row[0])
-            elif row.Protein_Pred == 0:  # 0 indicates no interaction
-                prediction_dict["passive"].append(row[0])
+            # 1 indicates interaction
+            interaction = True if row.Protein_Pred == 1 else False
+            residue_number = int(row.Residue_Number.split('_')[-1])
+            if interaction:
+                prediction_dict["active"].append(residue_number)
+            elif not interaction:
+                prediction_dict["passive"].append(residue_number)
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"

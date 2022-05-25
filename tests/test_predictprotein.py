@@ -32,6 +32,9 @@ def test_parse_prediction(predictprotein, precalc_result):
     assert "active" in observed_result_dic
     assert "passive" in observed_result_dic
 
+    assert 0 not in observed_result_dic["active"]
+    assert 0 not in observed_result_dic["passive"]
+
     assert len(observed_result_dic["active"]) == 29
     assert len(observed_result_dic["passive"]) == 194
 
