@@ -25,10 +25,16 @@ def run_whiscy(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     whiscy = Whiscy(pdb_id, chain_id)
-    whiscy_predictions = whiscy.run()
-    log.info(whiscy_predictions)
+    predictions = whiscy.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_ispred4(pdb_id, chain_id):
@@ -42,10 +48,15 @@ def run_ispred4(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
     """
     ispred4 = Ispred4(pdb_id, chain_id)
-    ispred4_predictions = ispred4.run()
-    log.info(ispred4_predictions)
+    predictions = ispred4.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_scriber(pdb_id, chain_id):
@@ -59,10 +70,16 @@ def run_scriber(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     scriber = Scriber(pdb_id, chain_id)
-    scriber_predictions = scriber.run()
-    log.info(scriber_predictions)
+    predictions = scriber.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_sppider(pdb_id, chain_id):
@@ -76,10 +93,16 @@ def run_sppider(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     sppider = Sppider(pdb_id, chain_id)
-    sppider_predictions = sppider.run()
-    log.info(sppider_predictions)
+    predictions = sppider.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_cons_ppisp(pdb_id, chain_id):
@@ -93,10 +116,16 @@ def run_cons_ppisp(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     cons_ppisp = Cons_ppisp(pdb_id, chain_id)
-    cons_ppisp_predictions = cons_ppisp.run()
-    log.info(cons_ppisp_predictions)
+    predictions = cons_ppisp.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_meta_ppisp(pdb_id, chain_id):
@@ -110,10 +139,16 @@ def run_meta_ppisp(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     meta_ppisp = Meta_ppisp(pdb_id, chain_id)
-    meta_ppisp_predictions = meta_ppisp.run()
-    log.info(meta_ppisp_predictions)
+    predictions = meta_ppisp.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_predus2(pdb_id, chain_id):
@@ -127,10 +162,16 @@ def run_predus2(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     predus2 = Predus2(pdb_id, chain_id)
-    predus2_predictions = predus2.run()
-    log.info(predus2_predictions)
+    predictions = predus2.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_predictprotein(pdb_id, chain_id):
@@ -144,10 +185,16 @@ def run_predictprotein(pdb_id, chain_id):
     chain_id : str
         Chain identifier.
 
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
     """
     predictprotein = Predictprotein(pdb_id, chain_id)
-    predictprotein_predictions = predictprotein.run()
-    log.info(predictprotein_predictions)
+    predictions = predictprotein.run()
+    log.info(predictions)
+    return predictions
 
 
 def run_placeholder(fasta_str):
@@ -189,6 +236,11 @@ def run_prediction(prediction_method, **kwargs):
     kwargs : dict
         Keyword arguments.
 
+    Returns
+    -------
+    result : dict
+        Dictionary containing the predictions
+
 
     Raises
     ------
@@ -227,4 +279,7 @@ def run_prediction(prediction_method, **kwargs):
         raise ValueError(f"Unknown prediction method: {prediction_method}")
 
     log.info(f"Running method: {prediction_method}")
-    predictor_func()
+
+    result = predictor_func()
+
+    return result
