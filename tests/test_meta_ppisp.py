@@ -24,7 +24,7 @@ def test_submit():
 def test_retrieve_prediction_link(meta_ppisp):
     page_text = "This is a page that exists and will have results"
     observed_download_url = meta_ppisp.retrieve_prediction_link(page_text=page_text)
-    expected_download_url = f"This is a page that exists and will have results"
+    expected_download_url = "This is a page that exists and will have results"
     assert observed_download_url == expected_download_url
 
 

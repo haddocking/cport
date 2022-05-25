@@ -23,7 +23,10 @@ def test_submit():
 
 
 def test_retrieve_prediction_link(ispred4):
-    page_text = "https://ispred4.biocomp.unibo.it/ispred/default/job_summary?jobid=c789-edt-093c"
+    page_text = (
+        "https://ispred4.biocomp.unibo.it/ispred/default/"
+        "job_summary?jobid=c789-edt-093c"
+    )
     observed_download_url = ispred4.retrieve_prediction_link(page_text=page_text)
     expected_download_url = f"{ISPRED4_URL}downloadjob?jobid=c789-edt-093c"
     assert observed_download_url == expected_download_url

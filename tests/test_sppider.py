@@ -22,9 +22,16 @@ def test_submit():
 
 
 def test_retrieve_prediction_link(sppider):
-    page_text = "<meta http-equiv=Refresh content=0;URL=http://polyview.cchmc.org/cgi-bin/pr_picture.cgi?PDBName=1ppe&FName=387265&AddInfo=int>"
+    page_text = (
+        "<meta http-equiv=Refresh content=0;"
+        "URL=http://polyview.cchmc.org/cgi-bin/pr_picture.cgi?"
+        "PDBName=1ppe&FName=387265&AddInfo=int>"
+    )
     observed_download_url = sppider.retrieve_prediction_link(page_text=page_text)
-    expected_download_url = "http://polyview.cchmc.org/cgi-bin/pr_picture.cgi?PDBName=1ppe&amp;FName=387265&amp;AddInfo=int"
+    expected_download_url = (
+        "http://polyview.cchmc.org/cgi-bin/pr_picture.cgi?"
+        "PDBName=1ppe&amp;FName=387265&amp;AddInfo=int"
+    )
     assert observed_download_url == expected_download_url
 
 

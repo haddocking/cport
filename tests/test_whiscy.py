@@ -11,12 +11,10 @@ def whiscy():
 
 @pytest.mark.skip("Cannot test the submission")
 def test_submit(whiscy):
-    """Test the submission of the form."""
     pass
 
 
 def test_retrieve_prediction(whiscy):
-    """Test the retrieval of the prediction."""
     page_text = (
         '<textarea class="form-control" cols="100" id="active_list" name="active_list"'
         ' rows="3">20, 22, 25, 28, 39, 41, 64, 66, 70, 72, 73, 74, 75, 76, 77, 78, 79,'
@@ -39,5 +37,4 @@ def test_retrieve_prediction(whiscy):
 
 @pytest.mark.skip("Overlaps with previous")
 def test_run(whiscy):
-    """Test the execution of the module."""
     pass
