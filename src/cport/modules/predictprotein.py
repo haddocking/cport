@@ -195,7 +195,7 @@ class Predictprotein:
         for row in final_predictions.itertuples():
             # 1 indicates interaction
             interaction = True if row.Protein_Pred == 1 else False
-            residue_number = int(row.Residue_Number.split('_')[-1])
+            residue_number = int(row.Residue_Number.split("_")[-1])
             if interaction:
                 prediction_dict["active"].append(residue_number)
             elif not interaction:
