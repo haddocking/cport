@@ -116,7 +116,8 @@ class Cons_ppisp:
 
         Returns
         -------
-        str
+        temp_file.name : str
+            The path to the results file.
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)

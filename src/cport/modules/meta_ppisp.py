@@ -79,7 +79,7 @@ class Meta_ppisp:
         Returns
         -------
         url : str
-            The url of the prediction obtained meta-PPISP prediction page.
+            The url of the obtained meta-PPISP prediction page.
 
         """
         browser = ms.StatefulBrowser()
