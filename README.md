@@ -1,15 +1,10 @@
+# CPORT: Consensus Prediction Of interface Residues in Transient complexes
+
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)
 [![unittests](https://github.com/haddocking/cport/actions/workflows/unittests.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/unittests.yml)
 [![codecov](https://codecov.io/gh/haddocking/cport/branch/main/graph/badge.svg?token=18GQSVO3PF)](https://codecov.io/gh/haddocking/cport)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6074/badge)](https://bestpractices.coreinfrastructure.org/projects/6074)
-
-
-# CPORT: Consensus Prediction Of interface Residues in Transient complexes
-
-*CPORT is an algorithm for the prediction of protein-protein interface residues.*
-
-***
 
 ## DISCLAIMER
 
@@ -54,3 +49,11 @@ cport
 ```text
 cport 1PPE E
 ```
+
+## How to contribute
+
+Please have a look at [CONTRIBUTE](CONTRIBUTE.md)
+
+## How to get Support
+
+If you encounter a bug or would like to request a feature, please open an ISSUE or a PR.
