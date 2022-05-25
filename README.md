@@ -49,7 +49,7 @@ cport 1PPE E
 
 ## How to contribute
 
-Please have a look at [CONTRIBUTE](CONTRIBUTE.md)
+Please have a look at [CONTRIBUTE](CONTRIBUTING.md)
 
 ## How to get Support
 
