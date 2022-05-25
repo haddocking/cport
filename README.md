@@ -38,12 +38,7 @@ Please also refer to the original publication:
 
 ## Installation
 
-```text
-git clone https://github.com/haddocking/cport.git
-cd cport
-python setup.py develop
-cport
-```
+Please refer to [INSTALL.md](INSTALL.md) for installation instructions.
 
 ## Example
 
