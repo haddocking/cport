@@ -26,6 +26,15 @@ class Ispred4:
         self.tries = NUM_RETRIES
 
     def submit(self):
+        """
+        Submit the ISPRED4 prediction.
+
+        Returns
+        -------
+        summary_url : str
+            The url to the summary page.
+
+        """
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
 
         browser = ms.StatefulBrowser()
@@ -48,13 +57,28 @@ class Ispred4:
 
         browser.close()
 
-        # once the job_id is available for a successfull submission, it can be used for future urls
+        # once the job_id is available for a successfull submission, it can be
+        #   used for future urls
         summary_url = f"{ISPRED4_URL}job_summary?jobid={job_id}"
 
         return summary_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
-        """Retrieve the results."""
+        """
+        Retrieve the results.
+
+        Parameters
+        ----------
+        url : str
+            The url to the result results.
+        page_text : str
+            The text of the page to parse - used for testing.
+
+        Returns
+        -------
+        download_link : str
+            The link to the results file.
+        """
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -92,20 +116,48 @@ class Ispred4:
 
     @staticmethod
     def download_result(download_link):
-        """Download the results."""
+        """
+        Download the results.
+
+        Parameters
+        ----------
+        download_link : str
+            The link to the results file.
+
+        Returns
+        -------
+        temp_file.name : str
+            The path to the results file.
+
+        """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
         request.urlretrieve(download_link, temp_file.name)
         return temp_file.name
 
     @staticmethod
     def parse_prediction(result_file):
-        """Parse the ISPRED4 prediction."""
+        """
+        Parse the ISPRED4 prediction.
+
+        Parameters
+        ----------
+        result_file : str
+            The path to the results file.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
         prediction_dict = {"active": [], "passive": []}
 
         # textfile with whitespaces as delimiter
         final_predictions = pd.read_csv(result_file, skiprows=15, delim_whitespace=True)
 
-        # only surface residues have a yes or no in the Inter column, all skipped residues are buried
+        # only surface residues have a yes or no in the Inter column, all skipped
+        #  residues are buried
         for row in final_predictions.itertuples():
             if row.Inter == "yes":  # indicates high likelihood of interaction
                 prediction_dict["active"].append(row.ResNum)
@@ -114,8 +166,16 @@ class Ispred4:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the ISPRED4 prediction."""
+    def run(self):
+        """
+        Execute the ISPRED4 prediction.
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the raw prediction.
+
+        """
         log.info("Running ISPRED4")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

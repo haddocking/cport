@@ -1,7 +1,6 @@
 import glob
 import logging
 import os
-import shutil
 import sys
 import tempfile
 import time
@@ -32,7 +31,15 @@ class Predictprotein:
         self.tries = NUM_RETRIES
 
     def submit(self):
-        """Makes a submission to the PredictProtein server"""
+        """
+        Makes a submission to the PredictProtein server.
+
+        Returns
+        -------
+        html : str
+            The html of the submission page.
+
+        """
         fasta_code = utils.get_fasta_from_pdbid(self.pdb_id, self.chain_id)
 
         # headless so that browser windows are not visually opened and closed
@@ -56,7 +63,8 @@ class Predictprotein:
         # sleep so that the page is properly loaded before continuing
         time.sleep(ELEMENT_LOAD_WAIT)
 
-        # returns list that is either empty or contains a matching element for the wait link
+        # returns list that is either empty or contains a matching element for
+        #  the wait link
         check_link = driver.find_elements_by_xpath(
             '//*[@id="job-monitor-feedback"]/a/span'
         )
@@ -68,12 +76,27 @@ class Predictprotein:
 
         driver.close()
 
-        log.info(f"Submitted the FASTA sequence to Predict Protein")
+        log.info("Submitted the FASTA sequence to Predict Protein")
 
         return html
 
     def retrieve_prediction_file(self, url=None, temp_dir=None):
-        """Waits for results if necessary and downloads the result file"""
+        """
+        Waits for results if necessary and downloads the result file.
+
+        Parameters
+        ----------
+        url : str
+            The url of the prediction.
+        temp_dir : str
+            The path to a temporary directory.
+
+        Returns
+        -------
+        temp_dir : str
+            The path to the temporary directory containing the precition files.
+
+        """
         options = Options()
         # options to allow pop-up-less downloads
         options.add_experimental_option(
@@ -104,7 +127,7 @@ class Predictprotein:
                 log.error(f"Predict Protein server is not responding, url was {url}")
                 sys.exit()
 
-        log.info(f"Retreiving the Predict Protein results")
+        log.info("Retreiving the Predict Protein results")
 
         time.sleep(ELEMENT_LOAD_WAIT)
 
@@ -131,7 +154,23 @@ class Predictprotein:
         return temp_dir
 
     def parse_prediction(self, dir=None, test_file=None):
-        """Takes the result file and parses them into the prediction dictionary"""
+        """
+        Takes the result file and parses them into the prediction dictionary.
+
+        Parameters
+        ----------
+        dir : str
+            The path to the directory containing the prediction files.
+        test_file : str
+            The path to the test file.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
@@ -165,8 +204,19 @@ class Predictprotein:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the PredictProtein prediction."""
+    def run(self):
+        """
+        Execute the PredictProtein prediction.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the raw prediction results.
+
+        """
         log.info("Running PredictProtein")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

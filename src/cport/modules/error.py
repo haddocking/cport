@@ -13,6 +13,9 @@ class IncompleteInputError(Error):
 
     def __str__(self):
         if self.missing:
-            return f"{self.message} {self.predictor_name} predictor, missing: {self.missing}"
+            return (
+                f"{self.message} {self.predictor_name} predictor, "
+                f"missing: {self.missing}"
+            )
         else:
             return f"{self.message} {self.predictor_name}"

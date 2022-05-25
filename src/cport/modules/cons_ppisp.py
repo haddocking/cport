@@ -16,9 +16,8 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = (
-    18  # any request should never take more than 15min so theoretical max is 90 retries
-)
+# any request should never take more than 15min so theoretical max is 90 retries
+NUM_RETRIES = 18
 
 
 class Cons_ppisp:
@@ -29,13 +28,21 @@ class Cons_ppisp:
         self.tries = NUM_RETRIES
 
     def submit(self):
-        """Makes a submission to the cons-PPISP server"""
+        """
+        Makes a submission to the cons-PPISP server.
+
+        Returns
+        -------
+        processing_url : str
+            The url to the processing page.
+
+        """
         pdb_file = get_pdb_from_pdbid(self.pdb_id)
 
+        # SSL request fails, try to find alternative solution as this
+        #   would save a lot of code
         browser = ms.StatefulBrowser()
-        browser.open(
-            CONS_PPISP_URL, verify=False
-        )  # SSL request fails, try to find alternative solution as this would save a lot of code
+        browser.open(CONS_PPISP_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
         input_form.set(name="submitter", value=str(self.pdb_id + self.chain_id))
@@ -53,6 +60,21 @@ class Cons_ppisp:
         return processing_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
+        """
+        Retrieves the link to the result page.
+
+        Parameters
+        ----------
+        url : str
+            The url to the result results.
+        page_text : str
+            The text of the page to parse - used for testing.
+
+        Returns
+        -------
+        url : str
+            The url to the prediction page.
+        """
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -84,7 +106,19 @@ class Cons_ppisp:
 
     @staticmethod
     def download_result(download_link):
-        """Download the results."""
+        """
+        Download the results.
+
+        Parameters
+        ----------
+        download_link : str
+            The link to the results.
+
+        Returns
+        -------
+        str
+
+        """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
         temp_file.name = requests.get(
             download_link, verify=False
@@ -92,7 +126,23 @@ class Cons_ppisp:
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
-        """Takes the results extracts the active and passive residue predictions"""
+        """
+        Takes the results extracts the active and passive residue predictions.
+
+        Parameters
+        ----------
+        url : str
+            The url to the results.
+        test_file : str
+            The file to parse.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
         prediction_dict = {"active": [], "passive": []}
 
         if test_file:
@@ -105,9 +155,9 @@ class Cons_ppisp:
                 skipfooter=16,
             )
         else:
-            file = self.download_result(
-                url
-            )  # direct reading of page with read_csv is impossible due to the same SSL error
+            # direct reading of page with read_csv is impossible due to
+            #  the same SSL error
+            file = self.download_result(url)
             final_predictions = pd.read_csv(
                 io.StringIO(file.decode("utf-8")),
                 skiprows=13,
@@ -125,8 +175,16 @@ class Cons_ppisp:
 
         return prediction_dict
 
-    def run(self, test=False):
-        """Execute the cons-PPISP prediction."""
+    def run(self):
+        """
+        Execute the cons-PPISP prediction.
+
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the raw prediction.
+
+        """
         log.info("Running cons-PPISP")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 

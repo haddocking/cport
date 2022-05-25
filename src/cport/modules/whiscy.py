@@ -22,7 +22,15 @@ class Whiscy:
         self.tries = NUM_RETRIES
 
     def submit(self):
-        """Make a submission to WHISCY."""
+        """
+        Make a submission to WHISCY.
+
+        Returns
+        -------
+        new_url : str
+            The url to the processing page.
+
+        """
         browser = ms.StatefulBrowser()
         browser.open(WHISCY_URL)
 
@@ -45,7 +53,23 @@ class Whiscy:
         return new_url
 
     def retrieve_prediction(self, url=None, page_text=None):
-        """Retrieve the results."""
+        """
+        Retrieve the results.
+
+        Parameters
+        ----------
+        url : str
+            The url to the results.
+        page_text : str
+            The text of the page to parse - used for testing.
+
+        Returns
+        -------
+        prediction_dict : dict
+            The dictionary containing the parsed prediction results with active
+            and passive sites.
+
+        """
         prediction_dict = {"active": [], "passive": []}
         browser = ms.StatefulBrowser()
 
@@ -89,8 +113,15 @@ class Whiscy:
         return prediction_dict
 
     def run(self):
-        """Run the whiscy predictor."""
+        """
+        Run the whiscy predictor.
 
+        Returns
+        -------
+        prediction_dict : dict
+            A dictionary containing the raw prediction.
+
+        """
         submitted_url = self.submit()
         prediction_dict = self.retrieve_prediction(url=submitted_url)
 
