@@ -4,7 +4,8 @@
 [![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)
 [![unittests](https://github.com/haddocking/cport/actions/workflows/unittests.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/unittests.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c4dd6c7da85847e1832b9668beb6de31)](https://www.codacy.com/gh/haddocking/cport/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=haddocking/cport&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/haddocking/cport/branch/main/graph/badge.svg?token=18GQSVO3PF)](https://codecov.io/gh/haddocking/cport)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c4dd6c7da85847e1832b9668beb6de31)](https://www.codacy.com/gh/haddocking/cport/dashboard?utm_source=github.com&utm_medium=referral&utm_content=haddocking/cport&utm_campaign=Badge_Coverage)
+
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6074/badge)](https://bestpractices.coreinfrastructure.org/projects/6074)
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B%20%20%E2%97%8B%20%20%E2%97%8F-orange)](https://fair-software.eu)
 
