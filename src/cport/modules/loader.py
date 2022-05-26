@@ -1,10 +1,11 @@
+"""Load predictors to run."""
 import logging
 from functools import partial
 
-from cport.modules.cons_ppisp import Cons_ppisp
+from cport.modules.cons_ppisp import ConsPPISP
 from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
-from cport.modules.meta_ppisp import Meta_ppisp
+from cport.modules.meta_ppisp import MetaPPISP
 from cport.modules.predictprotein import Predictprotein
 from cport.modules.predus2 import Predus2
 from cport.modules.scriber import Scriber
@@ -52,6 +53,7 @@ def run_ispred4(pdb_id, chain_id):
     -------
     predictions : dict
         Dictionary containing the predictions
+
     """
     ispred4 = Ispred4(pdb_id, chain_id)
     predictions = ispred4.run()
@@ -122,7 +124,7 @@ def run_cons_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    cons_ppisp = Cons_ppisp(pdb_id, chain_id)
+    cons_ppisp = ConsPPISP(pdb_id, chain_id)
     predictions = cons_ppisp.run()
     log.info(predictions)
     return predictions
@@ -145,7 +147,7 @@ def run_meta_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    meta_ppisp = Meta_ppisp(pdb_id, chain_id)
+    meta_ppisp = MetaPPISP(pdb_id, chain_id)
     predictions = meta_ppisp.run()
     log.info(predictions)
     return predictions

@@ -1,3 +1,4 @@
+"""Main CLI."""
 import argparse
 import json
 import logging
@@ -22,23 +23,23 @@ CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
 
 # ===========================================================================================================
 # Define arguments
-ap = argparse.ArgumentParser()
-ap.add_argument(
+argument_parser = argparse.ArgumentParser()
+argument_parser.add_argument(
     "pdb_id",
     help="",
 )
 
-ap.add_argument(
+argument_parser.add_argument(
     "chain_id",
     help="",
 )
 
-ap.add_argument(
+argument_parser.add_argument(
     "--fasta_file",
     help="",
 )
 
-ap.add_argument(
+argument_parser.add_argument(
     "--pred",
     nargs="+",
     default=["all"],
@@ -47,22 +48,22 @@ ap.add_argument(
 )
 
 
-ap.add_argument(
+argument_parser.add_argument(
     "-v",
     "--version",
     help="show version",
     action="version",
-    version=f"Running {ap.prog} v{VERSION}",
+    version=f"Running {argument_parser.prog} v{VERSION}",
 )
 
 
-def load_args(ap):
+def load_args(arguments):
     """
     Load argument parser.
 
     Parameters
     ----------
-    ap : argparse.ArgumentParser
+    arguments : argparse.ArgumentParser
         Argument parser.
 
     Returns
@@ -71,37 +72,37 @@ def load_args(ap):
         Parsed command-line arguments.
 
     """
-    return ap.parse_args()
+    return arguments.parse_args()
 
 
 # ====================================================================================#
 # Define CLI
-def cli(ap, main):
+def cli(arguments, main_func):
     """
     Command-line interface entry point.
 
     Parameters
     ----------
-    ap : argparse.ArgumentParser
+    arguments : argparse.ArgumentParser
         Argument parser.
-    main : function
+    main_func : function
         Main function.
 
     """
-    cmd = load_args(ap)
-    main(**vars(cmd))
+    cmd = load_args(arguments)
+    main_func(**vars(cmd))
 
 
 def maincli():
     """Execute main client."""
-    cli(ap, main)
+    cli(argument_parser, main)
 
 
 # ====================================================================================#
 # Main code
 def main(pdb_id, chain_id, pred, fasta_file):
     """
-    Main function.
+    Execute main function.
 
     Parameters
     ----------
@@ -115,7 +116,6 @@ def main(pdb_id, chain_id, pred, fasta_file):
         Fasta file.
 
     """
-
     # Start #=========================================================================#
     log.setLevel("DEBUG")
     log.info("-" * 42)
@@ -133,9 +133,9 @@ def main(pdb_id, chain_id, pred, fasta_file):
         try:
             predictions = run_prediction(predictor, **data)
             result_dic[predictor] = predictions
-        except Exception as e:
+        except Exception as thrown_exception:
             log.error(f"Error running {predictor}")
-            log.error(e)
+            log.error(thrown_exception)
             sys.exit()
 
     # Ouput results #==================================================================#

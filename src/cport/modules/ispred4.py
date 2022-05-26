@@ -1,3 +1,4 @@
+"""ISPRED4 module."""
 import logging
 import re
 import sys
@@ -19,7 +20,10 @@ NUM_RETRIES = 6
 
 
 class Ispred4:
+    """ISPRED4 class."""
+
     def __init__(self, pdb_id, chain_id):
+        """Initialize the class."""
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
@@ -78,6 +82,7 @@ class Ispred4:
         -------
         download_link : str
             The link to the results file.
+
         """
         browser = ms.StatefulBrowser()
 
@@ -182,6 +187,6 @@ class Ispred4:
         submitted_url = self.submit()
         prediction_link = self.retrieve_prediction_link(url=submitted_url)
         result_file = self.download_result(prediction_link)
-        self.prediction_dict = self.parse_prediction(result_file)
+        prediction_dict = self.parse_prediction(result_file)
 
-        return self.prediction_dict
+        return prediction_dict

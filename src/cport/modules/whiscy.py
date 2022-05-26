@@ -1,3 +1,4 @@
+"""Whiscy module."""
 import logging
 import re
 import sys
@@ -15,7 +16,10 @@ NUM_RETRIES = 6
 
 
 class Whiscy:
+    """Whiscy class."""
+
     def __init__(self, pdb_id, chain_id):
+        """Initialize the Whiscy class."""
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
@@ -53,8 +57,7 @@ class Whiscy:
         return new_url
 
     def retrieve_prediction(self, url=None, page_text=None):
-        """
-        Retrieve the results.
+        """Retrieve the results.
 
         Parameters
         ----------
@@ -86,14 +89,14 @@ class Whiscy:
                 completed = True
             else:
                 # still running, wait a bit
-                log.debug(f"Waiting for WHISCY to finish... {self.tries}")
+                log.debug("Waiting for WHISCY to finish... %s", self.tries)
                 time.sleep(self.wait)
                 browser.refresh()
                 self.tries -= 1
 
             if self.tries == 0:
                 # if tries is 0, then the server is not responding
-                log.error(f"WHISCY server is not responding, url was {url}")
+                log.error("WHISCY server is not responding, url was %s", url)
                 sys.exit()
 
         active_residues_list = re.split(

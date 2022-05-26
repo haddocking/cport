@@ -1,3 +1,4 @@
+"""PREDUS2 module."""
 import io
 import logging
 import re
@@ -20,15 +21,19 @@ NUM_RETRIES = 6
 
 
 class Predus2:
+    """Predus2 class."""
+
     def __init__(self, pdb_id, chain_id):
+        """Initialize the PredUs2 class."""
         self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
 
     def submit(self):
         """
-        Makes a submission to the PredUs2 server.
+        Make a submission to the PredUs2 server.
 
         Returns
         -------
@@ -131,7 +136,7 @@ class Predus2:
 
     def parse_prediction(self, url=None, test_file=None):
         """
-        Takes the results extracts the active and passive residue predictions.
+        Take the results extracts the active and passive residue predictions.
 
         Parameters
         ----------

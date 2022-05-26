@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cport.modules.meta_ppisp import Meta_ppisp
+from cport.modules.meta_ppisp import MetaPPISP
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def meta_ppisp():
-    yield Meta_ppisp("1PPE", "E")
+    yield MetaPPISP("1PPE", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the meta-PPISP server is up")

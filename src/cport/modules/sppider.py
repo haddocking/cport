@@ -1,3 +1,4 @@
+"""SPPIDER module."""
 import logging
 import re
 import sys
@@ -16,7 +17,10 @@ NUM_RETRIES = 12
 
 
 class Sppider:
+    """SPPIDER class."""
+
     def __init__(self, pdb_id, chain_id):
+        """Initialize the SPPIDER class."""
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
@@ -24,7 +28,7 @@ class Sppider:
 
     def submit(self):
         """
-        Makes a submission to the SPPIDER server.
+        Make a submission to the SPPIDER server.
 
         Returns
         -------
@@ -56,7 +60,7 @@ class Sppider:
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """
-        Retrieves the link to the SPIDER prediction page.
+        Retrieve the link to the SPIDER prediction page.
 
         Parameters
         ----------
@@ -91,14 +95,14 @@ class Sppider:
                 completed = True
             else:
                 # still running, wait a bit
-                log.debug(f"Waiting for SPPIDER to finish... {self.tries}")
+                log.debug("Waiting for SPPIDER to finish... %s", self.tries)
                 time.sleep(self.wait)
                 browser.refresh()
                 self.tries -= 1
 
             if self.tries == 0:
                 # if tries is 0, then the server is not responding
-                log.error(f"SPPIDER server is not responding, url was {url}")
+                log.error("SPPIDER server is not responding, url was %s", url)
                 sys.exit()
 
         # the page contains the correct link, which automatically opens in a browser
@@ -111,9 +115,10 @@ class Sppider:
 
         return new_url
 
-    def parse_prediction(self, url=None, page_text=None):
+    @staticmethod
+    def parse_prediction(url=None, page_text=None):
         """
-        Takes the results extracts the active and passive residue predictions.
+        Take the results extracts the active and passive residue predictions.
 
         Parameters
         ----------
@@ -169,10 +174,14 @@ class Sppider:
 
         """
         log.info("Running SPPIDER")
-        log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
+        log.info(
+            "Will try %s times waiting %ss between tries",
+            self.tries,
+            self.wait,
+        )
 
         submitted_url = self.submit()
         prediction_url = self.retrieve_prediction_link(url=submitted_url)
-        self.prediction_dict = self.parse_prediction(url=prediction_url)
+        prediction_dict = self.parse_prediction(url=prediction_url)
 
-        return self.prediction_dict
+        return prediction_dict

@@ -1,3 +1,4 @@
+"""CONS-PPISP module."""
 import io
 import logging
 import re
@@ -20,8 +21,11 @@ WAIT_INTERVAL = 10  # seconds
 NUM_RETRIES = 18
 
 
-class Cons_ppisp:
+class ConsPPISP:
+    """CONS-PPISP class."""
+
     def __init__(self, pdb_id, chain_id):
+        """Initialize the class."""
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
@@ -29,7 +33,7 @@ class Cons_ppisp:
 
     def submit(self):
         """
-        Makes a submission to the cons-PPISP server.
+        Make a submission to the cons-PPISP server.
 
         Returns
         -------
@@ -61,7 +65,7 @@ class Cons_ppisp:
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """
-        Retrieves the link to the result page.
+        Retrieve the link to the result page.
 
         Parameters
         ----------
@@ -74,6 +78,7 @@ class Cons_ppisp:
         -------
         url : str
             The url to the prediction page.
+
         """
         browser = ms.StatefulBrowser()
 
@@ -128,7 +133,7 @@ class Cons_ppisp:
 
     def parse_prediction(self, url=None, test_file=None):
         """
-        Takes the results extracts the active and passive residue predictions.
+        Take the results extracts the active and passive residue predictions.
 
         Parameters
         ----------
@@ -191,6 +196,6 @@ class Cons_ppisp:
 
         submitted_url = self.submit()
         prediction_url = self.retrieve_prediction_link(url=submitted_url)
-        self.prediction_dict = self.parse_prediction(url=prediction_url)
+        prediction_dict = self.parse_prediction(url=prediction_url)
 
-        return self.prediction_dict
+        return prediction_dict
