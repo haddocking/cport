@@ -154,6 +154,9 @@ cython_debug/
 # VScode
 .vscode/
 
+# Macstuff
+.DS_Store
+
 # Project-specific
 1PPE_E*
 1PPE_3*
