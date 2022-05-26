@@ -1,3 +1,4 @@
+"""Setup CPORT."""
 from setuptools import find_packages, setup
 
 # FIXME: Remove this and keep all requirements in this setup file

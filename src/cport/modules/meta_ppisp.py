@@ -1,3 +1,8 @@
+"""META-PPISP module."""
+# This predictor takes around 2 hours to complete,
+# so should be first to be examined if the output
+# increases accuracy of CPORT, if it does not
+# this predictor should be scrapped
 import io
 import logging
 import re
@@ -18,24 +23,31 @@ log = logging.getLogger("cportlog")
 WAIT_INTERVAL = 10  # seconds
 NUM_RETRIES = 6
 
-"""
-This predictor takes around 2 hours to complete,
-so should be first to be examined if the output
-increases accuracy of CPORT, if it does not
-this predictor should be scrapped
-"""
 
+class MetaPPISP:
+    """Meta-PPISP class."""
 
-class Meta_ppisp:
     def __init__(self, pdb_id, chain_id):
+        """
+        Initialize the class.
+
+        Parameters
+        ----------
+        pdb_id : str
+            Protein data bank identification code.
+        chain_id : str
+            Chain identifier.
+
+        """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
 
     def submit(self):
         """
-        Makes a submission to the meta-PPISP server.
+        Make a submission to the meta-PPISP server.
 
         Returns
         -------
@@ -67,7 +79,7 @@ class Meta_ppisp:
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """
-        Retrieves the link to the meta-PPISP prediction page.
+        Retrieve the link to the meta-PPISP prediction page.
 
         Parameters
         ----------
@@ -135,7 +147,7 @@ class Meta_ppisp:
 
     def parse_prediction(self, url=None, test_file=None):
         """
-        Takes the results extracts the active and passive residue predictions.
+        Take the results extracts the active and passive residue predictions.
 
         Parameters
         ----------

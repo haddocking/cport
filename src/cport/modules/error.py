@@ -1,5 +1,8 @@
+"""Error modules."""
+
+
 class Error(Exception):
-    """Base class for other exceptions"""
+    """Base class for other exceptions."""
 
 
 class IncompleteInputError(Error):
@@ -17,5 +20,5 @@ class IncompleteInputError(Error):
                 f"{self.message} {self.predictor_name} predictor, "
                 f"missing: {self.missing}"
             )
-        else:
-            return f"{self.message} {self.predictor_name}"
+
+        return f"{self.message} {self.predictor_name}"
