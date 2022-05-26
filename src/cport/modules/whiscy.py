@@ -19,7 +19,17 @@ class Whiscy:
     """Whiscy class."""
 
     def __init__(self, pdb_id, chain_id):
-        """Initialize the Whiscy class."""
+        """
+        Initialize the class.
+
+        Parameters
+        ----------
+        pdb_id : str
+            Protein data bank identification code.
+        chain_id : str
+            Chain identifier.
+
+        """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
