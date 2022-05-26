@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cport.modules.cons_ppisp import Cons_ppisp
+from cport.modules.cons_ppisp import ConsPPISP
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def cons_ppisp():
-    yield Cons_ppisp("1PPE", "E")
+    yield ConsPPISP("1PPE", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the cons-PPISP server is up")

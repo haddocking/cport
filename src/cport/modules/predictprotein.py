@@ -1,3 +1,4 @@
+"""PREDICTPROTEIN module."""
 import glob
 import logging
 import os
@@ -24,7 +25,20 @@ ELEMENT_LOAD_WAIT = 5  # seconds
 
 
 class Predictprotein:
+    """PREDICTPROTEIN class."""
+
     def __init__(self, pdb_id, chain_id):
+        """
+        Initialize the class.
+
+        Parameters
+        ----------
+        pdb_id : str
+            Protein data bank identification code.
+        chain_id : str
+            Chain identifier.
+
+        """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
@@ -32,7 +46,7 @@ class Predictprotein:
 
     def submit(self):
         """
-        Makes a submission to the PredictProtein server.
+        Make a submission to the PredictProtein server.
 
         Returns
         -------
@@ -82,7 +96,7 @@ class Predictprotein:
 
     def retrieve_prediction_file(self, url=None, temp_dir=None):
         """
-        Waits for results if necessary and downloads the result file.
+        Wait for results if necessary and downloads the result file.
 
         Parameters
         ----------
@@ -153,13 +167,14 @@ class Predictprotein:
 
         return temp_dir
 
-    def parse_prediction(self, dir=None, test_file=None):
+    @staticmethod
+    def parse_prediction(pred_path=None, test_file=None):
         """
-        Takes the result file and parses them into the prediction dictionary.
+        Take the result file and parses them into the prediction dictionary.
 
         Parameters
         ----------
-        dir : str
+        pred_path : str
             The path to the directory containing the prediction files.
         test_file : str
             The path to the test file.
@@ -178,11 +193,11 @@ class Predictprotein:
             result_file = test_file
         else:
             # returns a list of all zip files, need to specify use of first one
-            zip_file = glob.glob(f"{dir}/*.zip")[0]
+            zip_file = glob.glob(f"{pred_path}/*.zip")[0]
             with zipfile.ZipFile(zip_file, "r") as zip_ref:
-                zip_ref.extractall(f"{dir}/")
+                zip_ref.extractall(f"{pred_path}/")
             os.remove(zip_file)
-            result_file = glob.glob(f"{dir}/*.prona")[0]
+            result_file = glob.glob(f"{pred_path}/*.prona")[0]
 
         final_predictions = pd.read_csv(
             result_file,
@@ -194,7 +209,11 @@ class Predictprotein:
 
         for row in final_predictions.itertuples():
             # 1 indicates interaction
-            interaction = True if row.Protein_Pred == 1 else False
+            if row.Protein_Pred == 1:
+                interaction = True
+            else:
+                interaction = False
+
             residue_number = int(row.Residue_Number.split("_")[-1])
             if interaction:
                 prediction_dict["active"].append(residue_number)
@@ -211,9 +230,6 @@ class Predictprotein:
         """
         Execute the PredictProtein prediction.
 
-        Parameters
-        ----------
-
         Returns
         -------
         prediction_dict : dict
@@ -228,6 +244,6 @@ class Predictprotein:
             temp_dir_prediction = self.retrieve_prediction_file(
                 url=submitted_url, temp_dir=temp_dir
             )
-            self.prediction_dict = self.parse_prediction(dir=temp_dir_prediction)
+            prediction_dict = self.parse_prediction(pred_path=temp_dir_prediction)
 
-        return self.prediction_dict
+        return prediction_dict

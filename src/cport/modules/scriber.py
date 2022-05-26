@@ -1,3 +1,4 @@
+"""SCRIBER module."""
 import logging
 import re
 import sys
@@ -19,9 +20,23 @@ NUM_RETRIES = 6
 
 
 class Scriber:
+    """SCRIBER class."""
+
     def __init__(self, pdb_id, chain_id):
+        """
+        Initialize the class.
+
+        Parameters
+        ----------
+        pdb_id : str
+            Protein data bank identification code.
+        chain_id : str
+            Chain identifier.
+
+        """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
 
@@ -41,9 +56,9 @@ class Scriber:
 
         browser.open(SCRIBER_URL)
 
-        form_FASTA = browser.select_form(nr=0)
-        form_FASTA.set(name="seq", value=fasta_string)
-        form_FASTA.set(name="email1", value="")
+        from_fasta = browser.select_form(nr=0)
+        from_fasta.set(name="seq", value=fasta_string)
+        from_fasta.set(name="email1", value="")
         browser.submit_selected(btnName="Button1")
         links = browser.links()
 

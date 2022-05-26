@@ -1,3 +1,4 @@
+"""Utilities for CPORT."""
 import itertools
 import logging
 import os
@@ -51,7 +52,7 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
     fasta_seq = seq_dic[chain_id]
 
     if chain_id not in seq_dic:
-        log.error(f"Could not find chain {chain_id} in {pdb_id}")
+        log.error("Could not find chain %s in %s", chain_id, pdb_id)
         sys.exit()
     else:
         return fasta_seq
@@ -72,7 +73,6 @@ def get_pdb_from_pdbid(pdb_id):
         A temporary file containing the PDB.
 
     """
-
     target_url = f"{PDB_URL}{pdb_id}.pdb"
     temp_file = tempfile.NamedTemporaryFile(delete=False)
     request.urlretrieve(target_url, temp_file.name)
@@ -94,7 +94,6 @@ def format_output(result_dic, output_fname):
         The output file name.
 
     """
-
     reslist = get_residue_range(result_dic)
     data = []
     for pred in result_dic:
@@ -120,8 +119,8 @@ def format_output(result_dic, output_fname):
         # print(row)
         data.append(row)
 
-    df = pd.DataFrame(data, columns=["predictor"] + reslist)
-    df.to_csv(output_fname, index=False)
+    output_df = pd.DataFrame(data, columns=["predictor"] + reslist)
+    output_df.to_csv(output_fname, index=False)
 
 
 def get_residue_range(result_dic):
