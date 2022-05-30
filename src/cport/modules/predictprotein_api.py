@@ -1,5 +1,8 @@
 import json
 import logging
+import re
+import sys
+import time
 from io import StringIO
 
 import pandas as pd
@@ -11,7 +14,7 @@ from cport.url import PREDICTPROTEIN_API
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 10  # seconds
+WAIT_INTERVAL = 30  # seconds
 NUM_RETRIES = 12
 ELEMENT_LOAD_WAIT = 5  # seconds
 
@@ -38,7 +41,7 @@ class Predictprotein_api:
 
     def submit(self):
         """
-        Submits request for results.
+        Submits request for results, waits if not yet processed.
 
         Returns
         -------
@@ -51,11 +54,29 @@ class Predictprotein_api:
         # FASTA header must be removed from sequence
         sequence_headless = "".join(sequence.splitlines(keepends=True)[1:])
 
-        log.info(sequence_headless)
-
         data = {"action": "get", "sequence": sequence_headless, "file": "query.prona"}
 
         results = requests.post(PREDICTPROTEIN_API, data=json.dumps(data))
+
+        completed = False
+        while not completed:
+            # Check if the result page exists
+            match = re.search(r"No results found", str(results.text))
+            if not match:
+                completed = True
+            else:
+                # still running, wait a bit
+                log.debug(f"Waiting for predictprotein to finish... {self.tries}")
+                time.sleep(self.wait)
+                results = requests.post(PREDICTPROTEIN_API, data=json.dumps(data))
+                self.tries -= 1
+
+            if self.tries == 0:
+                # if tries is 0, then the server is not responding
+                log.error(
+                    f"predictprotein server is not responding, sequence was {sequence}"
+                )
+                sys.exit()
 
         return results.text
 
