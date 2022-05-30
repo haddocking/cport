@@ -5,8 +5,10 @@ import re
 import sys
 import tempfile
 import time
+from io import StringIO
 
 import mechanicalsoup as ms
+import pandas as pd
 import requests
 
 from cport.modules.utils import get_fasta_from_pdbid
@@ -44,12 +46,12 @@ class Psiver:
 
     def submit(self):
         """
-        Make a submission to the PSIVER server
+        Make a submission to the PSIVER server.
 
         Returns
         -------
         submission_link: str
-            url resulting from submission
+            url resulting from submission.
         """
         sequence = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
         # FASTA header must be removed from sequence
@@ -136,17 +138,17 @@ class Psiver:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.name = requests.get(download_link).content
+        temp_file.write(requests.get(download_link).content)
         return temp_file.name
 
-    def parse_prediction(self, pred_url=None, page_text=None):
+    def parse_prediction(self, pred_url=None, test_file=None):
         """
         Take the results extracts the active and passive residue predictions.
 
         Parameters
         ----------
-        url : str
-            The url of the meta-PPISP result page.
+        pred_url : str
+            The url of the PSIVER result page.
         test_file : str
             A file containing the text present in the result page
 
@@ -156,13 +158,47 @@ class Psiver:
             A dictionary containing the active and passive residue predictions.
 
         """
-        # prediction_dict = {"active": [], "passive": []}
+        prediction_dict = {"active": [], "passive": []}
 
-        download_file = self.download_result(pred_url)
-        with gzip.open(download_file, "rt") as f:
-            file_content = f.read()
+        if test_file:
+            # for testing purposes
+            result_file = test_file
+        else:
+            download_file = self.download_result(pred_url)
+            with gzip.open(download_file, "rt") as f:
+                file_content = f.read()
+            result_file = StringIO(file_content)
 
-        return file_content
+        final_predictions = pd.read_csv(
+            result_file,
+            header=0,
+            skiprows=15,
+            usecols=[1, 2, 4],
+            names=["residue", "prediction", "score"],
+            delim_whitespace=True,
+            skipfooter=12,
+        )
+
+        for row in final_predictions.itertuples():
+            # 1 indicates interaction
+            if row.prediction == "-":
+                interaction = False
+            else:
+                interaction = True
+                # adds standardized score to positive residues
+                score = row.score
+
+            residue_number = row.residue
+            if interaction:
+                prediction_dict["active"].append([residue_number, score])
+            elif not interaction:
+                prediction_dict["passive"].append(residue_number)
+            else:
+                log.warning(
+                    f"There appears that residue {row} is either empty or unprocessable"
+                )
+
+        return prediction_dict
 
     def run(self):
         """
@@ -177,7 +213,7 @@ class Psiver:
         log.info("Running PSIVER")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        #   submitted_url = self.submit()
+        # submitted_url = self.submit()
         prediction_url = self.retrieve_prediction_link(url=self.test_url)
         prediction_dict = self.parse_prediction(pred_url=prediction_url)
 
