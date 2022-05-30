@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from cport.modules.predictprotein import Predictprotein
+from cport.modules.predictprotein_api import Predictprotein
 
 
 @pytest.fixture
@@ -18,11 +18,6 @@ def predictprotein():
 
 @pytest.mark.skip("Cannot guarantee that the Predict Protein server is up")
 def test_submit():
-    pass
-
-
-@pytest.mark.skip("Cannot test the download")
-def test_retrieve_prediction_file(predictprotein):
     pass
 
 
