@@ -1,4 +1,4 @@
-"""PredictProtein module."""
+"""PREDICTPROTEIN module."""
 import json
 import logging
 import re
@@ -20,7 +20,7 @@ NUM_RETRIES = 12
 ELEMENT_LOAD_WAIT = 5  # seconds
 
 
-class Predictprotein_api:
+class Predictprotein:
     """PREDICTPROTEIN class."""
 
     def __init__(self, pdb_id, chain_id):
@@ -42,7 +42,7 @@ class Predictprotein_api:
 
     def submit(self):
         """
-        Submits request for results, waits if not yet processed.
+        Submit request for results, waits if not yet processed.
 
         Returns
         -------
@@ -84,7 +84,7 @@ class Predictprotein_api:
     @staticmethod
     def parse_prediction(prediction=None, test_file=None):
         """
-        Take the result and parses them into the prediction dictionary.
+        Take the result and parse them into the prediction dictionary.
 
         Parameters
         ----------
