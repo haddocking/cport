@@ -6,7 +6,7 @@ from cport.modules.cons_ppisp import ConsPPISP
 from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
 from cport.modules.meta_ppisp import MetaPPISP
-from cport.modules.predictprotein import Predictprotein
+from cport.modules.predictprotein_api import Predictprotein_api
 from cport.modules.predus2 import Predus2
 from cport.modules.scriber import Scriber
 from cport.modules.sppider import Sppider
@@ -193,8 +193,8 @@ def run_predictprotein(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    predictprotein = Predictprotein(pdb_id, chain_id)
-    predictions = predictprotein.run()
+    predictprotein_api = Predictprotein_api(pdb_id, chain_id)
+    predictions = predictprotein_api.run()
     log.info(predictions)
     return predictions
 
