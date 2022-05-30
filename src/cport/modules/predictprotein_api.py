@@ -1,14 +1,12 @@
 import json
 import logging
-import requests
+from io import StringIO
 
 import pandas as pd
+import requests
 
-from cport.modules import utils
 from cport.modules.utils import get_fasta_from_pdbid
 from cport.url import PREDICTPROTEIN_API
-from io import StringIO
-from xml.etree.ElementTree import tostring
 
 log = logging.getLogger("cportlog")
 
