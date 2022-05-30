@@ -1,4 +1,4 @@
-"""PREDICTPROTEIN module."""
+"""PREDICTPROTEIN module for API interaction."""
 import json
 import logging
 import re
