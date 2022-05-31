@@ -8,6 +8,7 @@ from cport.modules.ispred4 import Ispred4
 from cport.modules.meta_ppisp import MetaPPISP
 from cport.modules.predictprotein_api import Predictprotein
 from cport.modules.predus2 import Predus2
+from cport.modules.psiver import Psiver
 from cport.modules.scriber import Scriber
 from cport.modules.sppider import Sppider
 from cport.modules.whiscy import Whiscy
@@ -199,6 +200,29 @@ def run_predictprotein(pdb_id, chain_id):
     return predictions
 
 
+def run_psiver(pdb_id, chain_id):
+    """
+    Run the PSIVER predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
+    """
+    psiver = Psiver(pdb_id, chain_id)
+    predictions = psiver.run()
+    log.info(predictions)
+    return predictions
+
+
 def run_placeholder(fasta_str):
     """
     Run the PLACEHOLDER predictor.
@@ -219,6 +243,7 @@ PDB_PREDICTORS = {
     "meta_ppisp": run_meta_ppisp,
     "predictprotein": run_predictprotein,
     "predus2": run_predus2,
+    "psiver": run_psiver,
     "scriber": run_scriber,
     "sppider": run_sppider,
     "whiscy": run_whiscy,

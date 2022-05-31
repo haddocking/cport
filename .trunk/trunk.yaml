@@ -11,3 +11,7 @@ lint:
     - markdownlint@0.31.1
     - prettier@2.5.1
     - bandit@1.7.4
+  ignore:
+    - linters: [ALL]
+      paths:
+        - tests/*
