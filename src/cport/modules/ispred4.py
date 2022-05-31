@@ -146,6 +146,7 @@ class Ispred4:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
+        # trunk-ignore(bandit/B310)
         request.urlretrieve(download_link, temp_file.name)
         return temp_file.name
 
@@ -175,7 +176,7 @@ class Ispred4:
         #  residues are buried
         for row in final_predictions.itertuples():
             if row.Inter == "yes":  # indicates high likelihood of interaction
-                prediction_dict["active"].append(row.ResNum)
+                prediction_dict["active"].append([row.ResNum, row.Probability])
             elif row.Inter == "no":
                 prediction_dict["passive"].append(row.ResNum)
 
