@@ -40,9 +40,6 @@ class Psiver:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_url = (
-            "https://mizuguchilab.org/PSIVER/users_cache/example/psiver_result.html"
-        )
 
     def submit(self):
         """
@@ -101,7 +98,7 @@ class Psiver:
         while not completed:
             # Check if the result page exists
             # https://regex101.com/r/MzRYcb/1
-            match = re.search(r"<title>psiver results</title>", str(browser.page))
+            match = re.search(r"All the results are available now.", str(browser.page))
             if match:
                 completed = True
             else:
@@ -115,6 +112,9 @@ class Psiver:
                 # if tries is 0, then the server is not responding
                 log.error(f"PSIVER server is not responding, url was {url}")
                 sys.exit()
+
+        result_link = browser.links()[4]
+        browser.follow_link(result_link)
 
         download_link = browser.links()[1]
         browser.follow_link(download_link)
@@ -171,17 +171,19 @@ class Psiver:
 
         final_predictions = pd.read_csv(
             result_file,
+            engine="python",
             header=0,
             skiprows=15,
-            usecols=[1, 2, 4],
-            names=["residue", "prediction", "score"],
+            usecols=[0, 1, 2, 4],
+            names=["check", "residue", "prediction", "score"],
             delim_whitespace=True,
-            skipfooter=12,
         )
 
         for row in final_predictions.itertuples():
-            # 1 indicates interaction
-            if row.prediction == "-":
+            # skips bottom rows as this number can vary between results
+            if row.check != "PRED":
+                continue
+            elif row.prediction == "-":
                 interaction = False
             else:
                 interaction = True
@@ -213,8 +215,8 @@ class Psiver:
         log.info("Running PSIVER")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        # submitted_url = self.submit()
-        prediction_url = self.retrieve_prediction_link(url=self.test_url)
+        submitted_url = self.submit()
+        prediction_url = self.retrieve_prediction_link(url=submitted_url)
         prediction_dict = self.parse_prediction(pred_url=prediction_url)
 
         return prediction_dict
