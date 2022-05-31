@@ -43,7 +43,6 @@ class Psiver:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_url = "https://mizuguchilab.org/cgi-bin/PSIVER/check.cgi?DIR_ID=D20220530_T214333_IP145136137137_SEQ1"
 
     def submit(self):
         """
@@ -73,19 +72,19 @@ class Psiver:
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """
-        Retrieve the link to the meta-PPISP prediction page.
+        Retrieve the link to the PSIVER prediction page.
 
         Parameters
         ----------
         url : str
-            The url of the meta-PPISP processing page.
+            The url of the PSIVER processing page.
         page_text : str
-            The text of the meta-PPISP processing page.
+            The text of the PSIVER processing page.
 
         Returns
         -------
         url : str
-            The url of the obtained meta-PPISP prediction page.
+            The url of the obtained PSIVER prediction page.
 
         """
 
@@ -136,7 +135,7 @@ class Psiver:
         Parameters
         ----------
         download_link : str
-            The url of the meta-PPISP result page.
+            The url of the PSIVER result page.
 
         Returns
         -------
@@ -222,8 +221,8 @@ class Psiver:
         log.info("Running PSIVER")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        #submitted_url = self.submit()
-        prediction_url = self.retrieve_prediction_link(url=self.test_url)
+        submitted_url = self.submit()
+        prediction_url = self.retrieve_prediction_link(url=submitted_url)
         prediction_dict = self.parse_prediction(pred_url=prediction_url)
 
         return prediction_dict
