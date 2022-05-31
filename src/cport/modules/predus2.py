@@ -140,7 +140,9 @@ class Predus2:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.name = requests.get(download_link, verify=False).content
+        # this verify=False is a security issue but i'm afraid there's
+        #  no trivial solution and that the issue might be of the server
+        temp_file.name = requests.get(download_link, verify=False).content  # nosec
 
         return temp_file.name
 

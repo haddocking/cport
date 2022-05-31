@@ -136,9 +136,9 @@ class ConsPPISP:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        temp_file.name = requests.get(
-            download_link, verify=False
-        ).content  # needed a way to disable verification for SSL
+        # this verify=False is a security issue but i'm afraid there's
+        #  no trivial solution and that the issue might be of the server
+        temp_file.name = requests.get(download_link, verify=False).content  # nosec
         return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
