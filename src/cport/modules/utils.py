@@ -33,7 +33,8 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
 
     """
     # https://regex101.com/r/qjjIih/1
-    chain_regex = r"Chain\s(\S)|auth\s(\S)"
+    # https://regex101.com/r/lVRUIQ/1
+    chain_regex = r"Chain\s(\S)|Chains\s(\S)|auth\s(\S)"
 
     target_url = f"{PDB_FASTA_URL}{pdb_id}#{chain_id}/download"
     fasta_seqs = requests.get(target_url).text
@@ -75,6 +76,7 @@ def get_pdb_from_pdbid(pdb_id):
     """
     target_url = f"{PDB_URL}{pdb_id}.pdb"
     temp_file = tempfile.NamedTemporaryFile(delete=False)
+    # trunk-ignore(bandit/B310)
     request.urlretrieve(target_url, temp_file.name)
 
     pdb_fname = temp_file.name
