@@ -1,4 +1,7 @@
 """PSIVER module."""
+# This predictor can take up to 5 hours to complete,
+# so similar to meta-ppisp its reliability should be
+# examined before it gets added to the final prediction.
 import gzip
 import logging
 import re
@@ -40,6 +43,7 @@ class Psiver:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
+        self.test_url = "https://mizuguchilab.org/cgi-bin/PSIVER/check.cgi?DIR_ID=D20220530_T214333_IP145136137137_SEQ1"
 
     def submit(self):
         """
@@ -97,7 +101,6 @@ class Psiver:
         completed = False
         while not completed:
             # Check if the result page exists
-            # https://regex101.com/r/MzRYcb/1
             match = re.search(r"All the results are available now.", str(browser.page))
             if match:
                 completed = True
@@ -113,13 +116,17 @@ class Psiver:
                 log.error(f"PSIVER server is not responding, url was {url}")
                 sys.exit()
 
-        result_link = browser.links()[4]
-        browser.follow_link(result_link)
+        if page_text:
+            final_url = url
+        else:
+            result_link = browser.links()[4]
+            browser.follow_link(result_link)
 
-        download_link = browser.links()[1]
-        browser.follow_link(download_link)
+            download_link = browser.links()[1]
+            browser.follow_link(download_link)
+            final_url = browser.url
 
-        return browser.url
+        return final_url
 
     @staticmethod
     def download_result(download_link):
@@ -215,8 +222,8 @@ class Psiver:
         log.info("Running PSIVER")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        submitted_url = self.submit()
-        prediction_url = self.retrieve_prediction_link(url=submitted_url)
+        #submitted_url = self.submit()
+        prediction_url = self.retrieve_prediction_link(url=self.test_url)
         prediction_dict = self.parse_prediction(pred_url=prediction_url)
 
         return prediction_dict
