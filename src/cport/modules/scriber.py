@@ -16,7 +16,7 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 6
+NUM_RETRIES = 12
 
 
 class Scriber:
@@ -169,6 +169,7 @@ class Scriber:
             usecols=[
                 0,
                 1,
+                4,
             ],
         )
 
@@ -176,13 +177,14 @@ class Scriber:
         final_predictions.columns = [
             "ResidueNumber",
             "ResidueType",
+            "ResidueScore",
         ]
 
         for row in final_predictions.itertuples():
             if str.isupper(
                 row.ResidueType
             ):  # uppercase denotes a predicted interaction
-                prediction_dict["active"].append(row.ResidueNumber)
+                prediction_dict["active"].append([row.ResidueNumber, row.ResidueScore])
             elif str.islower(row.ResidueType):
                 prediction_dict["passive"].append(row.ResidueNumber)
             else:
