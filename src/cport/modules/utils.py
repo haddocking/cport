@@ -146,6 +146,7 @@ def get_residue_range(result_dic):
     active_reslist = list(
         itertools.chain(*[result_dic[e]["active"] for e in result_dic])
     )
-    reslist = passive_reslist + active_reslist
+    # workaround to compensate for tuples in the active_reslist
+    reslist = passive_reslist + [x[0] for x in active_reslist]
     absolute_range = list(range(min(reslist), max(reslist)))
     return absolute_range
