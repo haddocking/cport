@@ -185,7 +185,7 @@ class Predus2:
 
         for row in final_predictions.itertuples():
             if row.Score >= 0:  # positive score indicates potential for interaction
-                prediction_dict["active"].append(row.Residue)
+                prediction_dict["active"].append([row.Residue, row.Score])
             elif row.Score < 0:
                 prediction_dict["passive"].append(row.Residue)
 
