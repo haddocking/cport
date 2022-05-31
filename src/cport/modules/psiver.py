@@ -52,6 +52,7 @@ class Psiver:
         -------
         submission_link: str
             url resulting from submission.
+
         """
         sequence = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
         # FASTA header must be removed from sequence
@@ -87,7 +88,6 @@ class Psiver:
             The url of the obtained PSIVER prediction page.
 
         """
-
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -171,8 +171,8 @@ class Psiver:
             result_file = test_file
         else:
             download_file = self.download_result(pred_url)
-            with gzip.open(download_file, "rt") as f:
-                file_content = f.read()
+            with gzip.open(download_file, "rt") as unzip_file:
+                file_content = unzip_file.read()
             result_file = StringIO(file_content)
 
         final_predictions = pd.read_csv(
@@ -189,7 +189,7 @@ class Psiver:
             # skips bottom rows as this number can vary between results
             if row.check != "PRED":
                 continue
-            elif row.prediction == "-":
+            if row.prediction == "-":
                 interaction = False
             else:
                 interaction = True
