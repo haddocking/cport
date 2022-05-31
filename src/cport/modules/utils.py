@@ -100,26 +100,52 @@ def format_output(result_dic, output_fname):
     data = []
     for pred in result_dic:
         row = [pred]
-        for res in reslist:
-            is_passive = None
-            is_active = None
+        if pred != "whiscy" or "sppider":
+            active_list = [x[0] for x in result_dic[pred]["active"]]
 
-            if res in result_dic[pred]["passive"]:
-                is_passive = True
+            for res in reslist:
+                is_passive = None
+                is_active = None
 
-            if res in result_dic[pred]["active"]:
-                is_active = True
+                if res in result_dic[pred]["passive"]:
+                    is_passive = True
 
-            if is_active and is_passive:
-                row.append("AP")
-            elif is_active:
-                row.append("A")
-            elif is_passive:
-                row.append("P")
-            else:
-                row.append("-")
-        # print(row)
-        data.append(row)
+                if res in active_list:
+                    is_active = True
+                    score = result_dic[pred]["active"][active_list.index(res)][1]
+
+                if is_active and is_passive:
+                    row.append("AP")
+                elif is_active:
+                    row.append(str(score))
+                elif is_passive:
+                    row.append("P")
+                else:
+                    row.append("-")
+            # print(row)
+            data.append(row)
+
+        else:
+            for res in reslist:
+                is_passive = None
+                is_active = None
+
+                if res in result_dic[pred]["passive"]:
+                    is_passive = True
+
+                if res in result_dic[pred]["active"]:
+                    is_active = True
+
+                if is_active and is_passive:
+                    row.append("AP")
+                elif is_active:
+                    row.append("A")
+                elif is_passive:
+                    row.append("P")
+                else:
+                    row.append("-")
+            # print(row)
+            data.append(row)
 
     output_df = pd.DataFrame(data, columns=["predictor"] + reslist)
     output_df.to_csv(output_fname, index=False)

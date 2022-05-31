@@ -176,9 +176,9 @@ class Ispred4:
         #  residues are buried
         for row in final_predictions.itertuples():
             if row.Inter == "yes":  # indicates high likelihood of interaction
-                prediction_dict["active"].append([row.ResNum, row.Probability])
+                prediction_dict["active"].append([int(row.ResNum), row.Probability])
             elif row.Inter == "no":
-                prediction_dict["passive"].append(row.ResNum)
+                prediction_dict["passive"].append(int(row.ResNum))
 
         return prediction_dict
 

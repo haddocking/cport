@@ -127,9 +127,9 @@ class Predictprotein:
 
             residue_number = int(row.Residue_Number.split("_")[-1])
             if interaction:
-                prediction_dict["active"].append([residue_number, score])
+                prediction_dict["active"].append([int(residue_number), float(score)])
             elif not interaction:
-                prediction_dict["passive"].append(residue_number)
+                prediction_dict["passive"].append(int(residue_number))
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"
