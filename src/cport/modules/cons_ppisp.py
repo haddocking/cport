@@ -185,7 +185,7 @@ class ConsPPISP:
 
         for row in final_predictions.itertuples():
             if row.Prediction == "P":  # positive for interaction
-                prediction_dict["active"].append(row.AA_nr)
+                prediction_dict["active"].append([row.AA_nr, row.Score])
             elif row.Prediction == "N":
                 prediction_dict["passive"].append(row.AA_nr)
 
