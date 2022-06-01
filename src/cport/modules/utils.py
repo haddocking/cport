@@ -229,8 +229,8 @@ def standardize_residues(result_dic):
             if lowest != 1:
                 lowest -= 1
                 for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index][0] -= lowest
+                    result_dic[pred]["active"][index[0]][0] -= lowest
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index] -= lowest
+                    result_dic[pred]["passive"][index[0]] -= lowest
 
     return result_dic
