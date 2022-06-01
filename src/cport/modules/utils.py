@@ -14,6 +14,16 @@ from cport.url import PDB_FASTA_URL, PDB_URL
 
 log = logging.getLogger("cportlog")
 
+scored_predictors = [
+    "cons_ppisp",
+    "meta_ppisp",
+    "ispred4",
+    "predictprotein",
+    "predus2",
+    "psiver",
+    "scriber",
+]
+
 
 def get_fasta_from_pdbid(pdb_id, chain_id):
     """
@@ -96,11 +106,12 @@ def format_output(result_dic, output_fname):
         The output file name.
 
     """
-    reslist = get_residue_range(result_dic)
+    standardized_dic = standardize_residues(result_dic)
+    reslist = get_residue_range(standardized_dic)
     data = []
     for pred in result_dic:
         row = [pred]
-        if pred != "whiscy" or "sppider":
+        if pred in scored_predictors:
             active_list = [x[0] for x in result_dic[pred]["active"]]
 
             for res in reslist:
@@ -169,10 +180,41 @@ def get_residue_range(result_dic):
     passive_reslist = list(
         itertools.chain(*[result_dic[e]["passive"] for e in result_dic])
     )
-    active_reslist = list(
-        itertools.chain(*[result_dic[e]["active"] for e in result_dic])
-    )
-    # workaround to compensate for tuples in the active_reslist
-    reslist = passive_reslist + [x[0] for x in active_reslist]
+
+    active_reslist = []
+    for pred in result_dic:
+        if pred in scored_predictors:
+            active_reslist += [x[0] for x in result_dic[pred]["active"]]
+        else:
+            active_reslist += [x for x in result_dic[pred]["active"]]
+
+    reslist = passive_reslist + active_reslist
     absolute_range = list(range(min(reslist), max(reslist)))
     return absolute_range
+
+
+def standardize_residues(result_dic):
+    for pred in result_dic:
+        if pred not in scored_predictors:
+            lowest = min(
+                min(result_dic[pred]["active"]), min(result_dic[pred]["passive"])
+            )
+            if lowest != 1:
+                lowest -= 1
+                for index in enumerate(result_dic[pred]["active"]):
+                    result_dic[pred]["active"][index[0]] -= lowest
+                for index in enumerate(result_dic[pred]["passive"]):
+                    result_dic[pred]["passive"][index[0]] -= lowest
+        else:
+            lowest = min(
+                min([x[0] for x in result_dic[pred]["active"]]),
+                min(result_dic[pred]["passive"]),
+            )
+            if lowest != 1:
+                lowest -= 1
+                for index in enumerate(result_dic[pred]["active"]):
+                    result_dic[pred]["active"][index][0] -= lowest
+                for index in enumerate(result_dic[pred]["passive"]):
+                    result_dic[pred]["passive"][index] -= lowest
+
+    return result_dic
