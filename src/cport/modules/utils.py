@@ -181,6 +181,7 @@ def get_residue_range(result_dic):
         itertools.chain(*[result_dic[e]["passive"] for e in result_dic])
     )
 
+    # due to the scored predictors using tuples, the extraction is different
     active_reslist = []
     for pred in result_dic:
         if pred in scored_predictors:
@@ -194,6 +195,21 @@ def get_residue_range(result_dic):
 
 
 def standardize_residues(result_dic):
+    """
+    Standardize the residues from different predictors
+    into a uniform numbering system starting at 1.
+
+    Parameters
+    ----------
+    result_dic: dict
+        The results dictionary
+
+    Returns
+    -------
+    result_dic : dict
+        The standardized results dict
+
+    """
     for pred in result_dic:
         if pred not in scored_predictors:
             lowest = min(
