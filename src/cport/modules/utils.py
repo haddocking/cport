@@ -24,6 +24,8 @@ scored_predictors = [
     "scriber",
 ]
 
+pdb_predictors = ["whiscy", "ispred4", "meta_ppisp", "cons_ppisp", "predus2", "sppider"]
+
 
 def get_fasta_from_pdbid(pdb_id, chain_id):
     """
@@ -94,7 +96,7 @@ def get_pdb_from_pdbid(pdb_id):
     return pdb_fname
 
 
-def format_output(result_dic, output_fname):
+def format_output(result_dic, output_fname, pdb_id, chain_id):
     """
     Format the results into a human-readable format.
 
@@ -106,7 +108,7 @@ def format_output(result_dic, output_fname):
         The output file name.
 
     """
-    standardized_dic = standardize_residues(result_dic)
+    standardized_dic = standardize_residues(result_dic, pdb_id, chain_id)
     reslist = get_residue_range(standardized_dic)
     data = []
     for pred in result_dic:
@@ -194,7 +196,7 @@ def get_residue_range(result_dic):
     return absolute_range
 
 
-def standardize_residues(result_dic):
+def standardize_residues(result_dic, pdb_id, chain_id):
     """
     Standardize the residues from different predictors
     into a uniform numbering system starting at 1.
@@ -210,27 +212,24 @@ def standardize_residues(result_dic):
         The standardized results dict
 
     """
+    pdb_file = get_pdb_from_pdbid(pdb_id)
+    # https://regex101.com/r/UdPJ7I/1
+    bias_regex = r"DBREF\s\s" + pdb_id.upper() + r"\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
+
+    f = open(pdb_file, "r")
+    pdb_text = "\n".join(f.read().splitlines())
+    # pdb files start at a number residue, so remove this bias
+    bias = int(re.findall(bias_regex, pdb_text)[0]) - 1
     for pred in result_dic:
-        if pred not in scored_predictors:
-            lowest = min(
-                min(result_dic[pred]["active"]), min(result_dic[pred]["passive"])
-            )
-            if lowest != 1:
-                lowest -= 1
-                for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]] -= lowest
-                for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= lowest
-        else:
-            lowest = min(
-                min([x[0] for x in result_dic[pred]["active"]]),
-                min(result_dic[pred]["passive"]),
-            )
-            if lowest != 1:
-                lowest -= 1
-                for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]][0] -= lowest
-                for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= lowest
+        if pred not in scored_predictors and pred in pdb_predictors:
+            for index in enumerate(result_dic[pred]["active"]):
+                result_dic[pred]["active"][index[0]] -= bias
+            for index in enumerate(result_dic[pred]["passive"]):
+                result_dic[pred]["passive"][index[0]] -= bias
+        elif pred in pdb_predictors:
+            for index in enumerate(result_dic[pred]["active"]):
+                result_dic[pred]["active"][index[0]][0] -= bias
+            for index in enumerate(result_dic[pred]["passive"]):
+                result_dic[pred]["passive"][index[0]] -= bias
 
     return result_dic
