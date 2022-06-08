@@ -224,7 +224,7 @@ def run_psiver(pdb_id, chain_id):
     return predictions
 
 
-def run_csm_potential(pdb_id, chain_id):
+def run_csm_potential(pdb_id, chain_id, pdb_file):
     """
     Run the PSIVER predictor.
 
@@ -241,7 +241,7 @@ def run_csm_potential(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    csm_potential = CsmPotential(pdb_id, chain_id)
+    csm_potential = CsmPotential(pdb_id, chain_id, pdb_file)
     predictions = csm_potential.run()
     log.info(predictions)
     return predictions
@@ -317,6 +317,7 @@ def run_prediction(prediction_method, **kwargs):
             PDB_PREDICTORS[prediction_method],
             pdb_id=kwargs["pdb_id"],
             chain_id=kwargs["chain_id"],
+            pdb_file=kwargs["pdb_file"],
         )
 
     elif prediction_method in FASTA_PREDICTORS:

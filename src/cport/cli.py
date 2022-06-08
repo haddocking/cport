@@ -35,6 +35,11 @@ argument_parser.add_argument(
 )
 
 argument_parser.add_argument(
+    "pdb_file",
+    help="",
+)
+
+argument_parser.add_argument(
     "--fasta_file",
     help="",
 )
@@ -100,7 +105,7 @@ def maincli():
 
 # ====================================================================================#
 # Main code
-def main(pdb_id, chain_id, pred, fasta_file):
+def main(pdb_id, chain_id, pdb_file, pred, fasta_file):
     """
     Execute main function.
 
@@ -110,6 +115,8 @@ def main(pdb_id, chain_id, pred, fasta_file):
         Protein data bank identification code.
     chain_id : str
         Chain identifier.
+    pdb_file : str
+        Path to pdb file.
     pred : list
         List of predictors to run.
     fasta_file : str
@@ -123,7 +130,12 @@ def main(pdb_id, chain_id, pred, fasta_file):
     log.info("-" * 42)
 
     # Run predictors #================================================================#
-    data = {"pdb_id": pdb_id, "chain_id": chain_id, "fasta_file": fasta_file}
+    data = {
+        "pdb_id": pdb_id,
+        "chain_id": chain_id,
+        "fasta_file": fasta_file,
+        "pdb_file": pdb_file,
+    }
     result_dic = {}
 
     if "all" in pred:

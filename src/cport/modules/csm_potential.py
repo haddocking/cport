@@ -7,7 +7,6 @@ import time
 import pandas as pd
 import requests
 
-from cport.modules.utils import get_pdb_from_pdbid
 from cport.url import CSM_POTENTIAL_URL
 
 log = logging.getLogger("cportlog")
@@ -21,7 +20,7 @@ ELEMENT_LOAD_WAIT = 5  # seconds
 class CsmPotential:
     """CSM_POTENTIAL class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_id, chain_id, pdb_file):
         """
         Initialize the class.
 
@@ -31,10 +30,13 @@ class CsmPotential:
             Protein data bank identification code.
         chain_id : str
             Chain identifier.
+        pdb_file : str
+            Path to pdb file.
 
         """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.pdb_file = pdb_file
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
 
@@ -49,8 +51,7 @@ class CsmPotential:
             prediction results.
 
         """
-        pdb_file = get_pdb_from_pdbid(self.pdb_id)
-        data = {"pdb_file": open(pdb_file), "chain": self.chain_id}
+        data = {"pdb_file": open(self.pdb_file)}
 
         req = requests.post(CSM_POTENTIAL_URL, files=data)
 
