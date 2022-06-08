@@ -1,4 +1,5 @@
 """CSM_POTENTIAL module for API interaction."""
+import json
 import logging
 import sys
 import time
@@ -36,7 +37,6 @@ class CsmPotential:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
-        self.test_id = "165468982351"
 
     def submit(self):
         """
@@ -122,18 +122,20 @@ class CsmPotential:
 
         """
         prediction_dict = {"active": [], "passive": []}
+        key = "Chain " + self.chain_id
 
         if test_file:
             # for testing purposes
-            results = test_file
+            with open(test_file) as f:
+                data = f.read()
+            results = json.loads(data)[key]
         else:
-            key = "Chain " + self.chain_id
             results = prediction[key]
 
         result_dict = pd.DataFrame.from_dict(results)
 
         for row in result_dict.itertuples():
-            # 1 indicates interaction
+            # the webserver uses any value above 0.5 to indicate interaction
             if row.prediction >= 0.5:
                 interaction = True
                 # adds standardized score to positive residues
@@ -166,8 +168,8 @@ class CsmPotential:
         log.info("Running CSM-Potential")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        # job_id = self.submit()
-        results = self.retrieve_prediction(job_id=self.test_id)
+        job_id = self.submit()
+        results = self.retrieve_prediction(job_id=job_id)
         prediction_dict = self.parse_prediction(prediction=results)
 
         return prediction_dict
