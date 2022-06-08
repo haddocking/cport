@@ -32,12 +32,12 @@ Please also refer to the original publication:
 | [DELPHI](https://delphi.csd.uwo.ca)                              | 🟠     |             |
 | [MASIF-site](https://github.com/LPDI-EPFL/masif)                 | 🟢     |             |
 | [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
-| [ProMate](http://bioportal.weizmann.ac.il/promate/)              | 🔴     |             |
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html)           | 🟢     | ✔️          |
 | [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🟢     | ✔️          |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🟢     | ✔️          |
 | [PredictProtein](https://predictprotein.org)                     | 🟢     | ✔️          |
 | [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🟢     | ✔️          |
+| [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🟢     |             |
 
 ## Installation
 
