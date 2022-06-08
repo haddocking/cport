@@ -36,6 +36,7 @@ class CsmPotential:
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
+        self.test_id = "165468982351"
 
     def submit(self):
         """
@@ -102,7 +103,6 @@ class CsmPotential:
 
         return response
 
-    @staticmethod
     def parse_prediction(self, prediction=None, test_file=None):
         """
         Take the result and parse them into the prediction dictionary.
@@ -110,7 +110,7 @@ class CsmPotential:
         Parameters
         ----------
         prediction : dict
-            Dict containing the interaction prediction.
+            Dict containing the interaction prediction for each chain.
         test_file : string
             The path to the test file.
 
@@ -125,28 +125,23 @@ class CsmPotential:
 
         if test_file:
             # for testing purposes
-            result_file = test_file
+            results = test_file
         else:
-            result_file = prediction
+            key = "Chain " + self.chain_id
+            results = prediction[key]
 
-        final_predictions = pd.read_csv(
-            result_file,
-            skiprows=11,
-            usecols=[0, 2, 3],
-            names=["Residue_Number", "Protein_RI", "Protein_Pred"],
-            delim_whitespace=True,
-        )
+        result_dict = pd.DataFrame.from_dict(results)
 
-        for row in final_predictions.itertuples():
+        for row in result_dict.itertuples():
             # 1 indicates interaction
-            if row.Protein_Pred == 1:
+            if row.prediction >= 0.5:
                 interaction = True
                 # adds standardized score to positive residues
-                score = row.Protein_RI / 100
+                score = row.prediction
             else:
                 interaction = False
 
-            residue_number = int(row.Residue_Number.split("_")[-1])
+            residue_number = row.resnumber
             if interaction:
                 prediction_dict["active"].append([int(residue_number), float(score)])
             elif not interaction:
@@ -171,8 +166,8 @@ class CsmPotential:
         log.info("Running CSM-Potential")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        job_id = self.submit()
-        results = self.retrieve_prediction(job_id=job_id)
+        # job_id = self.submit()
+        results = self.retrieve_prediction(job_id=self.test_id)
         prediction_dict = self.parse_prediction(prediction=results)
 
         return prediction_dict
