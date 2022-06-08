@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def csm_potential():
-    yield CsmPotential("1ppe", "E", "/Users/aldovandennieuwendijk/Documents/GitHub/cport/tests/test_data/1PPE.pdb")
+    yield CsmPotential("1ppe", "E", "tests/test_data/1PPE.pdb")
 
 
 @pytest.mark.skip("Cannot guarantee that the CSM-Potential server is up")
