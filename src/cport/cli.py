@@ -139,7 +139,9 @@ def main(pdb_id, chain_id, pred, fasta_file):
             sys.exit()
 
     # Ouput results #==================================================================#
-    format_output(result_dic, output_fname="cport.csv")
+    format_output(
+        result_dic, output_fname="cport.csv", pdb_id=pdb_id, chain_id=chain_id
+    )
 
 
 if __name__ == "__main__":
