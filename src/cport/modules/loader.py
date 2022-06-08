@@ -3,6 +3,7 @@ import logging
 from functools import partial
 
 from cport.modules.cons_ppisp import ConsPPISP
+from cport.modules.csm_potential import CsmPotential
 from cport.modules.error import IncompleteInputError
 from cport.modules.ispred4 import Ispred4
 from cport.modules.meta_ppisp import MetaPPISP
@@ -223,6 +224,29 @@ def run_psiver(pdb_id, chain_id):
     return predictions
 
 
+def run_csm_potential(pdb_id, chain_id):
+    """
+    Run the PSIVER predictor.
+
+    Parameters
+    ----------
+    pdb_id : str
+        Protein data bank identification code.
+    chain_id : str
+        Chain identifier.
+
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions
+
+    """
+    csm_potential = CsmPotential(pdb_id, chain_id)
+    predictions = csm_potential.run()
+    log.info(predictions)
+    return predictions
+
+
 def run_placeholder(fasta_str):
     """
     Run the PLACEHOLDER predictor.
@@ -247,6 +271,7 @@ PDB_PREDICTORS = {
     "scriber": run_scriber,
     "sppider": run_sppider,
     "whiscy": run_whiscy,
+    "csm_potential": run_csm_potential,
 }
 
 FASTA_PREDICTORS = {"placeholder": run_placeholder}

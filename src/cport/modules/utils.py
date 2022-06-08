@@ -22,9 +22,18 @@ scored_predictors = [
     "predus2",
     "psiver",
     "scriber",
+    "csm_potential",
 ]
 
-pdb_predictors = ["whiscy", "ispred4", "meta_ppisp", "cons_ppisp", "predus2", "sppider"]
+pdb_predictors = [
+    "whiscy",
+    "ispred4",
+    "meta_ppisp",
+    "cons_ppisp",
+    "predus2",
+    "sppider",
+    "csm_potential",
+]
 
 
 def get_fasta_from_pdbid(pdb_id, chain_id):
