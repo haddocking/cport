@@ -17,7 +17,7 @@ from cport.modules.whiscy import Whiscy
 log = logging.getLogger("cportlog")
 
 
-def run_whiscy(pdb_id, chain_id):
+def run_whiscy(pdb_id, chain_id, pdb_file):
     """
     Run the WHISCY predictor.
 
@@ -34,13 +34,13 @@ def run_whiscy(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    whiscy = Whiscy(pdb_id, chain_id)
+    whiscy = Whiscy(pdb_id, chain_id, pdb_file)
     predictions = whiscy.run()
     log.info(predictions)
     return predictions
 
 
-def run_ispred4(pdb_id, chain_id):
+def run_ispred4(pdb_id, chain_id, pdb_file):
     """
     Run the ISPRED4 predictor.
 
@@ -57,13 +57,13 @@ def run_ispred4(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    ispred4 = Ispred4(pdb_id, chain_id)
+    ispred4 = Ispred4(pdb_id, chain_id, pdb_file)
     predictions = ispred4.run()
     log.info(predictions)
     return predictions
 
 
-def run_scriber(pdb_id, chain_id):
+def run_scriber(pdb_id, chain_id, pdb_file):
     """
     Run the SCRIBER predictor.
 
@@ -80,13 +80,13 @@ def run_scriber(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    scriber = Scriber(pdb_id, chain_id)
+    scriber = Scriber(pdb_id, chain_id, pdb_file)
     predictions = scriber.run()
     log.info(predictions)
     return predictions
 
 
-def run_sppider(pdb_id, chain_id):
+def run_sppider(pdb_id, chain_id, pdb_file):
     """
     Run the WHISCY predictor.
 
@@ -103,13 +103,13 @@ def run_sppider(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    sppider = Sppider(pdb_id, chain_id)
+    sppider = Sppider(pdb_id, chain_id, pdb_file)
     predictions = sppider.run()
     log.info(predictions)
     return predictions
 
 
-def run_cons_ppisp(pdb_id, chain_id):
+def run_cons_ppisp(pdb_id, chain_id, pdb_file):
     """
     Run the CONS-PPISP predictor.
 
@@ -126,13 +126,13 @@ def run_cons_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    cons_ppisp = ConsPPISP(pdb_id, chain_id)
+    cons_ppisp = ConsPPISP(pdb_id, chain_id, pdb_file)
     predictions = cons_ppisp.run()
     log.info(predictions)
     return predictions
 
 
-def run_meta_ppisp(pdb_id, chain_id):
+def run_meta_ppisp(pdb_id, chain_id, pdb_file):
     """
     Run the META-PPISP predictor.
 
@@ -149,13 +149,13 @@ def run_meta_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    meta_ppisp = MetaPPISP(pdb_id, chain_id)
+    meta_ppisp = MetaPPISP(pdb_id, chain_id, pdb_file)
     predictions = meta_ppisp.run()
     log.info(predictions)
     return predictions
 
 
-def run_predus2(pdb_id, chain_id):
+def run_predus2(pdb_id, chain_id, pdb_file):
     """
     Run the WHISCY predictor.
 
@@ -172,13 +172,13 @@ def run_predus2(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    predus2 = Predus2(pdb_id, chain_id)
+    predus2 = Predus2(pdb_id, chain_id, pdb_file)
     predictions = predus2.run()
     log.info(predictions)
     return predictions
 
 
-def run_predictprotein(pdb_id, chain_id):
+def run_predictprotein(pdb_id, chain_id, pdb_file):
     """
     Run the PREDICTPROTEIN predictor.
 
@@ -195,13 +195,13 @@ def run_predictprotein(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    predictprotein_api = Predictprotein(pdb_id, chain_id)
+    predictprotein_api = Predictprotein(pdb_id, chain_id, pdb_file)
     predictions = predictprotein_api.run()
     log.info(predictions)
     return predictions
 
 
-def run_psiver(pdb_id, chain_id):
+def run_psiver(pdb_id, chain_id, pdb_file):
     """
     Run the PSIVER predictor.
 
@@ -218,7 +218,7 @@ def run_psiver(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    psiver = Psiver(pdb_id, chain_id)
+    psiver = Psiver(pdb_id, chain_id, pdb_file)
     predictions = psiver.run()
     log.info(predictions)
     return predictions
