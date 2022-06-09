@@ -178,14 +178,14 @@ def run_predus2(pdb_id, chain_id, pdb_file):
     return predictions
 
 
-def run_predictprotein(pdb_id, chain_id, pdb_file):
+def run_predictprotein(pdb_file, chain_id):
     """
     Run the PREDICTPROTEIN predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -195,7 +195,7 @@ def run_predictprotein(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    predictprotein_api = Predictprotein(pdb_id, chain_id, pdb_file)
+    predictprotein_api = Predictprotein(pdb_file, chain_id)
     predictions = predictprotein_api.run()
     log.info(predictions)
     return predictions
