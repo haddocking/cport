@@ -49,9 +49,10 @@ class Whiscy:
         """
         # take the exact name of the pdb input without the entire path
         filename = str(self.pdb_file)[-8:]
-        # a temporary file needs to be created to avoid WHISCY renaming the input
+        # A temporary file needs to be created to avoid WHISCY renaming the input
         # to the entire path name causing the prediction to not run as the name
         # of the input needs to match the hssp name otherwise it will not match
+        # A more elegant workaround would be preferable, but eludes me as of yet
         shutil.copyfile(self.pdb_file, filename)
 
         browser = ms.StatefulBrowser()
@@ -72,6 +73,7 @@ class Whiscy:
         new_url = re.findall(r"(https:.*)\"", page_text_list)[0]
 
         browser.close()
+        # remove file in main directory for cleanliness
         os.unlink(filename)
 
         return new_url
