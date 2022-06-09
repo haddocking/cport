@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def cons_ppisp():
-    yield ConsPPISP("1PPE", "E")
+    yield ConsPPISP("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the cons-PPISP server is up")
