@@ -155,14 +155,14 @@ def run_meta_ppisp(pdb_file, chain_id):
     return predictions
 
 
-def run_predus2(pdb_id, chain_id, pdb_file):
+def run_predus2(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -172,7 +172,7 @@ def run_predus2(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    predus2 = Predus2(pdb_id, chain_id, pdb_file)
+    predus2 = Predus2(pdb_file, chain_id)
     predictions = predus2.run()
     log.info(predictions)
     return predictions
@@ -201,14 +201,14 @@ def run_predictprotein(pdb_file, chain_id):
     return predictions
 
 
-def run_psiver(pdb_id, chain_id, pdb_file):
+def run_psiver(pdb_file, chain_id):
     """
     Run the PSIVER predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -218,7 +218,7 @@ def run_psiver(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    psiver = Psiver(pdb_id, chain_id, pdb_file)
+    psiver = Psiver(pdb_file, chain_id)
     predictions = psiver.run()
     log.info(predictions)
     return predictions
@@ -230,8 +230,8 @@ def run_csm_potential(pdb_file, chain_id):
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 

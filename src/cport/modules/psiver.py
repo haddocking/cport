@@ -14,7 +14,7 @@ import mechanicalsoup as ms
 import pandas as pd
 import requests
 
-from cport.modules.utils import get_fasta_from_pdbid
+from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import PSIVER_URL
 
 log = logging.getLogger("cportlog")
@@ -27,19 +27,19 @@ NUM_RETRIES = 6
 class Psiver:
     """PSIVER class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -54,15 +54,13 @@ class Psiver:
             url resulting from submission.
 
         """
-        sequence = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
-        # FASTA header must be removed from sequence
-        sequence_headless = "".join(sequence.splitlines(keepends=True)[1:])
+        sequence = get_fasta_from_pdbfile(self.pdb_file, self.chain_id)
 
         browser = ms.StatefulBrowser()
         browser.open(PSIVER_URL)
 
         input_form = browser.select_form(nr=0)
-        input_form.set_textarea({"fasta_seq": sequence_headless})
+        input_form.set_textarea({"fasta_seq": sequence})
         browser.submit_selected()
 
         wait_page = str(browser.page)
@@ -198,9 +196,9 @@ class Psiver:
 
             residue_number = row.residue
             if interaction:
-                prediction_dict["active"].append([residue_number, score])
+                prediction_dict["active"].append([int(residue_number), float(score)])
             elif not interaction:
-                prediction_dict["passive"].append(residue_number)
+                prediction_dict["passive"].append(int(residue_number))
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"
