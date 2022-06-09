@@ -86,13 +86,13 @@ def run_scriber(pdb_file, chain_id):
     return predictions
 
 
-def run_sppider(pdb_id, chain_id, pdb_file):
+def run_sppider(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
+    pdb_file : str
         Protein data bank identification code.
     chain_id : str
         Chain identifier.
@@ -103,7 +103,7 @@ def run_sppider(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    sppider = Sppider(pdb_id, chain_id, pdb_file)
+    sppider = Sppider(pdb_file, chain_id)
     predictions = sppider.run()
     log.info(predictions)
     return predictions
