@@ -112,6 +112,7 @@ class Predus2:
                 log.error(f"PredUs2 server is not responding, url was {url}")
                 sys.exit()
 
+        # once the server is running again, check if this is the correct url format!
         pdb_name = str(self.pdb_file)[-8:-4]
         capital_chain_id = self.chain_id.capitalize()
         final_url = (
