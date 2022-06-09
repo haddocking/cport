@@ -44,10 +44,10 @@ def test_get_pdb_from_pdbid():
     assert filecmp.cmp(observed_pdb, expected_pdb)
 
 
-def test_format_output(test_result_dic, pdb_id = "1PPE", chain_id = "E"):
+def test_format_output(test_result_dic, pdb_file = "tests/test_data/1PPE.pdb", chain_id = "E"):
 
     output_f = Path(tempfile.NamedTemporaryFile(delete=False, mode="w+").name)
-    format_output(test_result_dic, output_f, pdb_id, chain_id)
+    format_output(test_result_dic, output_f, pdb_file, chain_id)
 
     expected_output_f = Path(
         Path(__file__).parents[1], "tests/test_data/test_output.csv"

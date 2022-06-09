@@ -130,7 +130,7 @@ def get_fasta_from_pdbfile(pdb_file, chain_id):
     return sequence
 
 
-def format_output(result_dic, output_fname, chain_id, pdb_file):
+def format_output(result_dic, output_fname, pdb_file, chain_id):
     """
     Format the results into a human-readable format.
 

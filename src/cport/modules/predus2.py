@@ -112,10 +112,11 @@ class Predus2:
                 log.error(f"PredUs2 server is not responding, url was {url}")
                 sys.exit()
 
+        pdb_name = str(self.pdb_file)[-8:-4]
         capital_chain_id = self.chain_id.capitalize()
         final_url = (
             "https://honiglab.c2b2.columbia.edu/hfpd/tmp/"
-            f"{self.pdb_id}_{capital_chain_id}.pd2.txt"
+            f"{pdb_name}_{capital_chain_id}.pd2.txt"
         )
 
         browser.close()
