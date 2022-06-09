@@ -22,7 +22,7 @@ NUM_RETRIES = 12
 class Scriber:
     """SCRIBER class."""
 
-    def __init__(self, pdb_id, chain_id, pdb_file):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
@@ -34,7 +34,6 @@ class Scriber:
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.pdb_file = pdb_file
         self.prediction_dict = {}
@@ -56,12 +55,14 @@ class Scriber:
             pdb_file=self.pdb_file, chain_id=self.chain_id
         )
 
+        submission_string = ">Chain " + self.chain_id + "\n" + fasta_string
+
         browser = ms.StatefulBrowser()
 
         browser.open(SCRIBER_URL)
 
         from_fasta = browser.select_form(nr=0)
-        from_fasta.set(name="seq", value=fasta_string)
+        from_fasta.set(name="seq", value=submission_string)
         from_fasta.set(name="email1", value="")
         browser.submit_selected(btnName="Button1")
         links = browser.links()
@@ -73,7 +74,7 @@ class Scriber:
             log.error("SCRIBER submission failed")
             sys.exit()
 
-        return fasta_string
+        return submitted_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """

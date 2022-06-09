@@ -25,7 +25,7 @@ CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
 # Define arguments
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument(
-    "pdb_id",
+    "pdb_file",
     help="",
 )
 
@@ -35,7 +35,7 @@ argument_parser.add_argument(
 )
 
 argument_parser.add_argument(
-    "pdb_file",
+    "--pdb_id",
     help="",
 )
 
@@ -105,7 +105,7 @@ def maincli():
 
 # ====================================================================================#
 # Main code
-def main(pdb_id, chain_id, pdb_file, pred, fasta_file):
+def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     """
     Execute main function.
 

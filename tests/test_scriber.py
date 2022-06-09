@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def scriber():
-    yield Scriber("1PPE", "E")
+    yield Scriber("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the Scriber server is up")

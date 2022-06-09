@@ -63,7 +63,7 @@ def run_ispred4(pdb_id, chain_id, pdb_file):
     return predictions
 
 
-def run_scriber(pdb_id, chain_id, pdb_file):
+def run_scriber(pdb_file, chain_id):
     """
     Run the SCRIBER predictor.
 
@@ -80,7 +80,7 @@ def run_scriber(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    scriber = Scriber(pdb_id, chain_id, pdb_file)
+    scriber = Scriber(pdb_file, chain_id)
     predictions = scriber.run()
     log.info(predictions)
     return predictions
@@ -303,9 +303,9 @@ def run_prediction(prediction_method, **kwargs):
 
     """
     if prediction_method in PDB_PREDICTORS:
-        if not kwargs["pdb_id"]:
+        if not kwargs["pdb_file"]:
             raise IncompleteInputError(
-                predictor_name=prediction_method, missing="pdb_id"
+                predictor_name=prediction_method, missing="pdb_file"
             )
 
         if not kwargs["chain_id"]:
@@ -315,7 +315,6 @@ def run_prediction(prediction_method, **kwargs):
 
         predictor_func = partial(
             PDB_PREDICTORS[prediction_method],
-            pdb_id=kwargs["pdb_id"],
             chain_id=kwargs["chain_id"],
             pdb_file=kwargs["pdb_file"],
         )
