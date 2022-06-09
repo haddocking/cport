@@ -40,10 +40,7 @@ def run_whiscy(pdb_id, chain_id, pdb_file):
     return predictions
 
 
-def run_ispred4(
-    pdb_file,
-    chain_id,
-):
+def run_ispred4(pdb_file, chain_id):
     """
     Run the ISPRED4 predictor.
 
@@ -135,14 +132,14 @@ def run_cons_ppisp(pdb_file, chain_id):
     return predictions
 
 
-def run_meta_ppisp(pdb_id, chain_id, pdb_file):
+def run_meta_ppisp(pdb_file, chain_id):
     """
     Run the META-PPISP predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -152,7 +149,7 @@ def run_meta_ppisp(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    meta_ppisp = MetaPPISP(pdb_id, chain_id, pdb_file)
+    meta_ppisp = MetaPPISP(pdb_file, chain_id)
     predictions = meta_ppisp.run()
     log.info(predictions)
     return predictions

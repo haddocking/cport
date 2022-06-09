@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def meta_ppisp():
-    yield MetaPPISP("1PPE", "E")
+    yield MetaPPISP("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the meta-PPISP server is up")
