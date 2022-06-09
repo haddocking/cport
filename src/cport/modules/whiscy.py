@@ -1,6 +1,8 @@
 """Whiscy module."""
 import logging
+import os
 import re
+import shutil
 import sys
 import time
 
@@ -18,19 +20,19 @@ NUM_RETRIES = 6
 class Whiscy:
     """Whiscy class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -45,13 +47,20 @@ class Whiscy:
             The url to the processing page.
 
         """
+        # take the exact name of the pdb input without the entire path
+        filename = str(self.pdb_file)[-8:]
+        # a temporary file needs to be created to avoid WHISCY renaming the input
+        # to the entire path name causing the prediction to not run as the name
+        # of the input needs to match the hssp name otherwise it will not match
+        shutil.copyfile(self.pdb_file, filename)
+
         browser = ms.StatefulBrowser()
         browser.open(WHISCY_URL)
 
         form = browser.select_form(nr=1)
-        form.set(name="pdb_id", value=self.pdb_id)
+        form.set(name="pdb_file", value=filename)
         form.set(name="chain", value=self.chain_id.capitalize())
-        form.set(name="hssp_id", value=self.pdb_id)
+        form.set(name="hssp_id", value=str(self.pdb_file)[-8:-4])
         form.set(name="alignment_format", value="FASTA")
 
         browser.submit_selected(btnName="submit")
@@ -63,6 +72,7 @@ class Whiscy:
         new_url = re.findall(r"(https:.*)\"", page_text_list)[0]
 
         browser.close()
+        os.unlink(filename)
 
         return new_url
 

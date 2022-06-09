@@ -17,14 +17,14 @@ from cport.modules.whiscy import Whiscy
 log = logging.getLogger("cportlog")
 
 
-def run_whiscy(pdb_id, chain_id, pdb_file):
+def run_whiscy(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -34,7 +34,7 @@ def run_whiscy(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    whiscy = Whiscy(pdb_id, chain_id, pdb_file)
+    whiscy = Whiscy(pdb_file, chain_id)
     predictions = whiscy.run()
     log.info(predictions)
     return predictions

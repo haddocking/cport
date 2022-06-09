@@ -6,7 +6,7 @@ from cport.modules.whiscy import Whiscy
 
 @pytest.fixture
 def whiscy():
-    yield Whiscy("1PPE", "E")
+    yield Whiscy("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot test the submission")
