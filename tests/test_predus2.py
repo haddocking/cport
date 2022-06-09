@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def predus2():
-    yield Predus2("1ppe", "E")
+    yield Predus2("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the PredUs2 server is up")
