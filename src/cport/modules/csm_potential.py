@@ -20,21 +20,20 @@ ELEMENT_LOAD_WAIT = 5  # seconds
 class CsmPotential:
     """CSM_POTENTIAL class."""
 
-    def __init__(self, pdb_id, chain_id, pdb_file):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
         pdb_file : str
             Path to pdb file.
 
         """
-        self.pdb_id = pdb_id
         self.chain_id = chain_id
         self.pdb_file = pdb_file
         self.wait = WAIT_INTERVAL
