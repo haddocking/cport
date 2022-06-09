@@ -43,7 +43,7 @@ Please refer to [INSTALL.md](INSTALL.md) for installation instructions.
 ## Example
 
 ```text
-cport 1PPE E
+cport path/to/file.pdb E
 ```
 
 ## How to contribute
