@@ -69,8 +69,8 @@ def run_scriber(pdb_file, chain_id):
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
