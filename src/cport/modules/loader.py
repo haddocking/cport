@@ -40,14 +40,17 @@ def run_whiscy(pdb_id, chain_id, pdb_file):
     return predictions
 
 
-def run_ispred4(pdb_id, chain_id, pdb_file):
+def run_ispred4(
+    pdb_file,
+    chain_id,
+):
     """
     Run the ISPRED4 predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -57,7 +60,7 @@ def run_ispred4(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    ispred4 = Ispred4(pdb_id, chain_id, pdb_file)
+    ispred4 = Ispred4(pdb_file, chain_id)
     predictions = ispred4.run()
     log.info(predictions)
     return predictions

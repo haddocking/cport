@@ -9,7 +9,6 @@ from urllib import request
 import mechanicalsoup as ms
 import pandas as pd
 
-from cport.modules.utils import get_pdb_from_pdbid
 from cport.url import ISPRED4_URL
 
 log = logging.getLogger("cportlog")
@@ -22,19 +21,19 @@ NUM_RETRIES = 6
 class Ispred4:
     """ISPRED4 class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -49,13 +48,11 @@ class Ispred4:
             The url to the summary page.
 
         """
-        pdb_file = get_pdb_from_pdbid(self.pdb_id)
-
         browser = ms.StatefulBrowser()
         browser.open(ISPRED4_URL)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="structure", value=pdb_file)
+        input_form.set(name="structure", value=self.pdb_file)
         input_form.set(name="ispred_chain", value=self.chain_id)
         input_form.set(
             name="ispred_rsath", value="0.20"
@@ -176,7 +173,9 @@ class Ispred4:
         #  residues are buried
         for row in final_predictions.itertuples():
             if row.Inter == "yes":  # indicates high likelihood of interaction
-                prediction_dict["active"].append([int(row.ResNum), row.Probability])
+                prediction_dict["active"].append(
+                    [int(row.ResNum), float(row.Probability)]
+                )
             elif row.Inter == "no":
                 prediction_dict["passive"].append(int(row.ResNum))
 
