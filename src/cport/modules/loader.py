@@ -109,14 +109,14 @@ def run_sppider(pdb_id, chain_id, pdb_file):
     return predictions
 
 
-def run_cons_ppisp(pdb_id, chain_id, pdb_file):
+def run_cons_ppisp(pdb_file, chain_id):
     """
     Run the CONS-PPISP predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -126,7 +126,7 @@ def run_cons_ppisp(pdb_id, chain_id, pdb_file):
         Dictionary containing the predictions
 
     """
-    cons_ppisp = ConsPPISP(pdb_id, chain_id, pdb_file)
+    cons_ppisp = ConsPPISP(pdb_file, chain_id)
     predictions = cons_ppisp.run()
     log.info(predictions)
     return predictions
