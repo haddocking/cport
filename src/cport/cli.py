@@ -152,7 +152,10 @@ def main(pdb_id, chain_id, pdb_file, pred, fasta_file):
 
     # Ouput results #==================================================================#
     format_output(
-        result_dic, output_fname="cport.csv", pdb_id=pdb_id, chain_id=chain_id
+        result_dic,
+        output_fname="cport.csv",
+        chain_id=chain_id,
+        pdb_file=pdb_file,
     )
 
 

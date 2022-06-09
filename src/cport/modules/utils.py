@@ -105,7 +105,7 @@ def get_pdb_from_pdbid(pdb_id):
     return pdb_fname
 
 
-def format_output(result_dic, output_fname, pdb_id, chain_id):
+def format_output(result_dic, output_fname, chain_id, pdb_file):
     """
     Format the results into a human-readable format.
 
@@ -117,7 +117,7 @@ def format_output(result_dic, output_fname, pdb_id, chain_id):
         The output file name.
 
     """
-    standardized_dic = standardize_residues(result_dic, pdb_id, chain_id)
+    standardized_dic = standardize_residues(result_dic, chain_id, pdb_file)
     reslist = get_residue_range(standardized_dic)
     data = []
     for pred in result_dic:
@@ -205,7 +205,7 @@ def get_residue_range(result_dic):
     return absolute_range
 
 
-def standardize_residues(result_dic, pdb_id, chain_id):
+def standardize_residues(result_dic, chain_id, pdb_file):
     """
     Standardize the residues from different predictors
     into a uniform numbering system starting at 1.
@@ -221,9 +221,8 @@ def standardize_residues(result_dic, pdb_id, chain_id):
         The standardized results dict
 
     """
-    pdb_file = get_pdb_from_pdbid(pdb_id)
     # https://regex101.com/r/UdPJ7I/1
-    bias_regex = r"DBREF\s\s" + pdb_id.upper() + r"\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
+    bias_regex = r"DBREF\s\s.*?\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
 
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())
