@@ -30,8 +30,6 @@ class CsmPotential:
             Path to PDB file.
         chain_id : str
             Chain identifier.
-        pdb_file : str
-            Path to pdb file.
 
         """
         self.chain_id = chain_id
