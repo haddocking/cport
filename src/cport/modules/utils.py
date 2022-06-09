@@ -9,6 +9,7 @@ from urllib import request
 
 import pandas as pd
 import requests
+from Bio import SeqIO
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 
@@ -103,6 +104,30 @@ def get_pdb_from_pdbid(pdb_id):
     pdb_fname = temp_file.name
 
     return pdb_fname
+
+
+def get_fasta_from_pdbfile(pdb_file, chain_id):
+    """
+    Extract FASTA sequence from supplied PDB file.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to the supplied PDB file.
+    chain_id : str
+        Specific chain to return the FASTA string from.
+
+    Returns
+    -------
+    sequence : str
+        String of the FASTA sequence.
+
+    """
+    with open(pdb_file) as handle:
+        for record in SeqIO.PdbIO.PdbSeqresIterator(handle):
+            if record.id[-1] == chain_id:
+                sequence = str(record.seq)
+    return sequence
 
 
 def format_output(result_dic, output_fname, chain_id, pdb_file):

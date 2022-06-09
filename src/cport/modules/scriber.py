@@ -9,7 +9,7 @@ from urllib import request
 import mechanicalsoup as ms
 import pandas as pd
 
-from cport.modules.utils import get_fasta_from_pdbid
+from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import SCRIBER_URL
 
 log = logging.getLogger("cportlog")
@@ -22,7 +22,7 @@ NUM_RETRIES = 12
 class Scriber:
     """SCRIBER class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_id, chain_id, pdb_file):
         """
         Initialize the class.
 
@@ -36,6 +36,7 @@ class Scriber:
         """
         self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.pdb_file = pdb_file
         self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -50,7 +51,10 @@ class Scriber:
             The url of the submitted job.
 
         """
-        fasta_string = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
+        # fasta_string = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
+        fasta_string = get_fasta_from_pdbfile(
+            pdb_file=self.pdb_file, chain_id=self.chain_id
+        )
 
         browser = ms.StatefulBrowser()
 
@@ -69,7 +73,7 @@ class Scriber:
             log.error("SCRIBER submission failed")
             sys.exit()
 
-        return submitted_url
+        return fasta_string
 
     def retrieve_prediction_link(self, url=None, page_text=None):
         """
