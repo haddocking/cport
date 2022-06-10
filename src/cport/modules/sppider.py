@@ -25,7 +25,7 @@ class Sppider:
         Parameters
         ----------
         pdb_file : str
-            Protein data bank identification code.
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
