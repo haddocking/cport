@@ -4,6 +4,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 chromedriver-py==102.0.5005.61
 click==8.1.2
+defusedxml==0.7.1
 freesasa==2.1.0
 idna==3.3
 isort==5.10.1
