@@ -5,6 +5,7 @@ import re
 import shutil
 import sys
 import time
+from pathlib import Path
 
 import mechanicalsoup as ms
 from Bio import AlignIO
@@ -30,13 +31,13 @@ class Whiscy:
 
         Parameters
         ----------
-        pdb_file : str
+        pdb_file : str or PosixPath
             Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_file = pdb_file
+        self.pdb_file = Path(pdb_file)
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -51,12 +52,11 @@ class Whiscy:
             The url to the processing page.
 
         """
-        # take the exact name of the pdb input without the entire path
-        filename = str(self.pdb_file)[-8:]
         # A temporary file needs to be created to avoid WHISCY renaming the input
         # to the entire path name causing the prediction to not run as the name
         # of the input needs to match the hssp name otherwise it will not match
         # A more elegant workaround would be preferable, but eludes me as of yet
+        filename = Path(f"{self.pdb_file.stem}_whiscy.pdb")
         shutil.copyfile(self.pdb_file, filename)
 
         blast_seq = get_fasta_from_pdbfile(self.pdb_file, self.chain_id)
