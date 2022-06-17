@@ -23,19 +23,19 @@ NUM_RETRIES = 6
 class Predus2:
     """Predus2 class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
@@ -55,8 +55,7 @@ class Predus2:
         browser.open(PREDUS2_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="pdbid", value=self.pdb_id)
-        input_form.set(name="chain", value=self.chain_id)
+        input_form.set(name="userfile", value=self.pdb_file)
         browser.submit_selected()
 
         # finds the submission url from the many links present on the page
@@ -113,10 +112,12 @@ class Predus2:
                 log.error(f"PredUs2 server is not responding, url was {url}")
                 sys.exit()
 
+        # once the server is running again, check if this is the correct url format!
+        pdb_name = str(self.pdb_file)[-8:-4]
         capital_chain_id = self.chain_id.capitalize()
         final_url = (
             "https://honiglab.c2b2.columbia.edu/hfpd/tmp/"
-            f"{self.pdb_id}_{capital_chain_id}.pd2.txt"
+            f"{pdb_name}_{capital_chain_id}.pd2.txt"
         )
 
         browser.close()

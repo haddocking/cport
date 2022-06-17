@@ -14,7 +14,6 @@ import mechanicalsoup as ms
 import pandas as pd
 import requests
 
-from cport.modules.utils import get_pdb_from_pdbid
 from cport.url import META_PPISP_URL
 
 log = logging.getLogger("cportlog")
@@ -27,19 +26,19 @@ NUM_RETRIES = 6
 class MetaPPISP:
     """Meta-PPISP class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
@@ -55,18 +54,16 @@ class MetaPPISP:
             The url of the meta-PPISP processing page.
 
         """
-        pdb_file = get_pdb_from_pdbid(self.pdb_id)
-
         browser = ms.StatefulBrowser()
         # SSL request fails, try to find alternative solution as this would save
         # a lot of code
         browser.open(META_PPISP_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="submitter", value=str(self.pdb_id + self.chain_id))
+        input_form.set(name="submitter", value=str(self.chain_id))
         input_form.set(name="emailAddr", value="validmail@trustme.yes")
         input_form.set(name="pChain", value=self.chain_id)
-        input_form.set(name="userfile", value=pdb_file)
+        input_form.set(name="userfile", value=self.pdb_file)
         browser.submit_selected()
 
         # https://regex101.com/r/FBgZFE/1
@@ -209,10 +206,12 @@ class MetaPPISP:
         for row in final_predictions.itertuples():
             if row.Prediction == "P":  # positive for interaction
                 # save confidence of prediction
-                score = [row.AA_nr, row.meta_ppisp]
+                # trunk-ignore(flake8/W605)
+                score = [int(re.sub("\D", "", row.AA_nr)), float(row.meta_ppisp)]
                 prediction_dict["active"].append(score)
             elif row.Prediction == "N":
-                prediction_dict["passive"].append(row.AA_nr)
+                # trunk-ignore(flake8/W605)
+                prediction_dict["passive"].append(int(re.sub("\D", "", row.AA_nr)))
 
         return prediction_dict
 

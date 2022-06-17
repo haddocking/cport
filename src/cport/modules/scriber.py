@@ -9,7 +9,7 @@ from urllib import request
 import mechanicalsoup as ms
 import pandas as pd
 
-from cport.modules.utils import get_fasta_from_pdbid
+from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import SCRIBER_URL
 
 log = logging.getLogger("cportlog")
@@ -22,20 +22,20 @@ NUM_RETRIES = 12
 class Scriber:
     """SCRIBER class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
         self.chain_id = chain_id
+        self.pdb_file = pdb_file
         self.prediction_dict = {}
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -50,14 +50,18 @@ class Scriber:
             The url of the submitted job.
 
         """
-        fasta_string = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
+        fasta_string = get_fasta_from_pdbfile(
+            pdb_file=self.pdb_file, chain_id=self.chain_id
+        )
+
+        submission_string = ">Chain " + self.chain_id + "\n" + fasta_string
 
         browser = ms.StatefulBrowser()
 
         browser.open(SCRIBER_URL)
 
         from_fasta = browser.select_form(nr=0)
-        from_fasta.set(name="seq", value=fasta_string)
+        from_fasta.set(name="seq", value=submission_string)
         from_fasta.set(name="email1", value="")
         browser.submit_selected(btnName="Button1")
         links = browser.links()

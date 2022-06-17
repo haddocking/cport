@@ -19,18 +19,18 @@ NUM_RETRIES = 12
 class Sppider:
     """SPPIDER class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """Initialize the SPPIDER class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -49,8 +49,7 @@ class Sppider:
         browser.open(SPPIDER_URL)
 
         sppider_form = browser.select_form()
-        sppider_form.set(name="PDBCode", value=self.pdb_id)
-        sppider_form.set(name="PDBChain", value=self.chain_id)
+        sppider_form.set(name="PDBFileName", value=self.pdb_file)
 
         browser.submit_selected()
 

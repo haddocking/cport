@@ -9,6 +9,7 @@ from urllib import request
 
 import pandas as pd
 import requests
+from Bio import SeqIO
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 
@@ -105,7 +106,32 @@ def get_pdb_from_pdbid(pdb_id):
     return pdb_fname
 
 
-def format_output(result_dic, output_fname, pdb_id, chain_id):
+def get_fasta_from_pdbfile(pdb_file, chain_id):
+    """
+    Extract FASTA sequence from supplied PDB file.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to the supplied PDB file.
+    chain_id : str
+        Specific chain to return the FASTA string from.
+
+    Returns
+    -------
+    sequence : str
+        String of the FASTA sequence.
+
+    """
+    with open(pdb_file) as handle:
+        for record in SeqIO.PdbIO.PdbSeqresIterator(handle):
+            # checks all the chains to find match with chain_id
+            if record.id[-1] == chain_id:
+                sequence = str(record.seq)
+    return sequence
+
+
+def format_output(result_dic, output_fname, pdb_file, chain_id):
     """
     Format the results into a human-readable format.
 
@@ -117,7 +143,7 @@ def format_output(result_dic, output_fname, pdb_id, chain_id):
         The output file name.
 
     """
-    standardized_dic = standardize_residues(result_dic, pdb_id, chain_id)
+    standardized_dic = standardize_residues(result_dic, chain_id, pdb_file)
     reslist = get_residue_range(standardized_dic)
     data = []
     for pred in result_dic:
@@ -205,7 +231,7 @@ def get_residue_range(result_dic):
     return absolute_range
 
 
-def standardize_residues(result_dic, pdb_id, chain_id):
+def standardize_residues(result_dic, chain_id, pdb_file):
     """
     Standardize the residues from different predictors
     into a uniform numbering system starting at 1.
@@ -221,9 +247,8 @@ def standardize_residues(result_dic, pdb_id, chain_id):
         The standardized results dict
 
     """
-    pdb_file = get_pdb_from_pdbid(pdb_id)
     # https://regex101.com/r/UdPJ7I/1
-    bias_regex = r"DBREF\s\s" + pdb_id.upper() + r"\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
+    bias_regex = r"DBREF\s\s.*?\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
 
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())

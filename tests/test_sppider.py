@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def sppider():
-    yield Sppider("1PPE", "E")
+    yield Sppider("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the SPPIDER server is up")

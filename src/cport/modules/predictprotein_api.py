@@ -9,7 +9,7 @@ from io import StringIO
 import pandas as pd
 import requests
 
-from cport.modules.utils import get_fasta_from_pdbid
+from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import PREDICTPROTEIN_API
 
 log = logging.getLogger("cportlog")
@@ -23,19 +23,19 @@ ELEMENT_LOAD_WAIT = 5  # seconds
 class Predictprotein:
     """PREDICTPROTEIN class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = pdb_file
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -51,11 +51,9 @@ class Predictprotein:
             prediction results.
 
         """
-        sequence = get_fasta_from_pdbid(self.pdb_id, self.chain_id)
-        # FASTA header must be removed from sequence
-        sequence_headless = "".join(sequence.splitlines(keepends=True)[1:])
+        sequence = get_fasta_from_pdbfile(self.pdb_file, self.chain_id)
 
-        data = {"action": "get", "sequence": sequence_headless, "file": "query.prona"}
+        data = {"action": "get", "sequence": sequence, "file": "query.prona"}
 
         results = requests.post(PREDICTPROTEIN_API, data=json.dumps(data))
 

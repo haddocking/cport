@@ -13,7 +13,7 @@ def precalc_result():
 
 @pytest.fixture
 def predictprotein():
-    yield Predictprotein("1ppe", "E")
+    yield Predictprotein("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the Predict Protein server is up")

@@ -14,7 +14,7 @@ def precalc_result():
 
 @pytest.fixture
 def ispred4():
-    yield Ispred4("1PPE", "E")
+    yield Ispred4("tests/test_data/1PPE.pdb", "E")
 
 
 @pytest.mark.skip("Cannot guarantee that the ISPRED4 server is up")

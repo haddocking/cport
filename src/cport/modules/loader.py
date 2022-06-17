@@ -17,14 +17,14 @@ from cport.modules.whiscy import Whiscy
 log = logging.getLogger("cportlog")
 
 
-def run_whiscy(pdb_id, chain_id):
+def run_whiscy(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -34,20 +34,20 @@ def run_whiscy(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    whiscy = Whiscy(pdb_id, chain_id)
+    whiscy = Whiscy(pdb_file, chain_id)
     predictions = whiscy.run()
     log.info(predictions)
     return predictions
 
 
-def run_ispred4(pdb_id, chain_id):
+def run_ispred4(pdb_file, chain_id):
     """
     Run the ISPRED4 predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -57,20 +57,20 @@ def run_ispred4(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    ispred4 = Ispred4(pdb_id, chain_id)
+    ispred4 = Ispred4(pdb_file, chain_id)
     predictions = ispred4.run()
     log.info(predictions)
     return predictions
 
 
-def run_scriber(pdb_id, chain_id):
+def run_scriber(pdb_file, chain_id):
     """
     Run the SCRIBER predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -80,19 +80,19 @@ def run_scriber(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    scriber = Scriber(pdb_id, chain_id)
+    scriber = Scriber(pdb_file, chain_id)
     predictions = scriber.run()
     log.info(predictions)
     return predictions
 
 
-def run_sppider(pdb_id, chain_id):
+def run_sppider(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
+    pdb_file : str
         Protein data bank identification code.
     chain_id : str
         Chain identifier.
@@ -103,20 +103,20 @@ def run_sppider(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    sppider = Sppider(pdb_id, chain_id)
+    sppider = Sppider(pdb_file, chain_id)
     predictions = sppider.run()
     log.info(predictions)
     return predictions
 
 
-def run_cons_ppisp(pdb_id, chain_id):
+def run_cons_ppisp(pdb_file, chain_id):
     """
     Run the CONS-PPISP predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -126,20 +126,20 @@ def run_cons_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    cons_ppisp = ConsPPISP(pdb_id, chain_id)
+    cons_ppisp = ConsPPISP(pdb_file, chain_id)
     predictions = cons_ppisp.run()
     log.info(predictions)
     return predictions
 
 
-def run_meta_ppisp(pdb_id, chain_id):
+def run_meta_ppisp(pdb_file, chain_id):
     """
     Run the META-PPISP predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -149,20 +149,20 @@ def run_meta_ppisp(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    meta_ppisp = MetaPPISP(pdb_id, chain_id)
+    meta_ppisp = MetaPPISP(pdb_file, chain_id)
     predictions = meta_ppisp.run()
     log.info(predictions)
     return predictions
 
 
-def run_predus2(pdb_id, chain_id):
+def run_predus2(pdb_file, chain_id):
     """
     Run the WHISCY predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -172,20 +172,20 @@ def run_predus2(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    predus2 = Predus2(pdb_id, chain_id)
+    predus2 = Predus2(pdb_file, chain_id)
     predictions = predus2.run()
     log.info(predictions)
     return predictions
 
 
-def run_predictprotein(pdb_id, chain_id):
+def run_predictprotein(pdb_file, chain_id):
     """
     Run the PREDICTPROTEIN predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -195,20 +195,20 @@ def run_predictprotein(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    predictprotein_api = Predictprotein(pdb_id, chain_id)
+    predictprotein_api = Predictprotein(pdb_file, chain_id)
     predictions = predictprotein_api.run()
     log.info(predictions)
     return predictions
 
 
-def run_psiver(pdb_id, chain_id):
+def run_psiver(pdb_file, chain_id):
     """
     Run the PSIVER predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -218,20 +218,20 @@ def run_psiver(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    psiver = Psiver(pdb_id, chain_id)
+    psiver = Psiver(pdb_file, chain_id)
     predictions = psiver.run()
     log.info(predictions)
     return predictions
 
 
-def run_csm_potential(pdb_id, chain_id):
+def run_csm_potential(pdb_file, chain_id):
     """
     Run the PSIVER predictor.
 
     Parameters
     ----------
-    pdb_id : str
-        Protein data bank identification code.
+    pdb_file : str
+        Path to PDB file.
     chain_id : str
         Chain identifier.
 
@@ -241,7 +241,7 @@ def run_csm_potential(pdb_id, chain_id):
         Dictionary containing the predictions
 
     """
-    csm_potential = CsmPotential(pdb_id, chain_id)
+    csm_potential = CsmPotential(pdb_file, chain_id)
     predictions = csm_potential.run()
     log.info(predictions)
     return predictions
@@ -303,9 +303,9 @@ def run_prediction(prediction_method, **kwargs):
 
     """
     if prediction_method in PDB_PREDICTORS:
-        if not kwargs["pdb_id"]:
+        if not kwargs["pdb_file"]:
             raise IncompleteInputError(
-                predictor_name=prediction_method, missing="pdb_id"
+                predictor_name=prediction_method, missing="pdb_file"
             )
 
         if not kwargs["chain_id"]:
@@ -315,8 +315,8 @@ def run_prediction(prediction_method, **kwargs):
 
         predictor_func = partial(
             PDB_PREDICTORS[prediction_method],
-            pdb_id=kwargs["pdb_id"],
             chain_id=kwargs["chain_id"],
+            pdb_file=kwargs["pdb_file"],
         )
 
     elif prediction_method in FASTA_PREDICTORS:

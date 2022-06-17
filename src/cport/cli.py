@@ -25,12 +25,17 @@ CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
 # Define arguments
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument(
-    "pdb_id",
+    "pdb_file",
     help="",
 )
 
 argument_parser.add_argument(
     "chain_id",
+    help="",
+)
+
+argument_parser.add_argument(
+    "--pdb_id",
     help="",
 )
 
@@ -100,7 +105,7 @@ def maincli():
 
 # ====================================================================================#
 # Main code
-def main(pdb_id, chain_id, pred, fasta_file):
+def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     """
     Execute main function.
 
@@ -110,6 +115,8 @@ def main(pdb_id, chain_id, pred, fasta_file):
         Protein data bank identification code.
     chain_id : str
         Chain identifier.
+    pdb_file : str
+        Path to pdb file.
     pred : list
         List of predictors to run.
     fasta_file : str
@@ -123,7 +130,12 @@ def main(pdb_id, chain_id, pred, fasta_file):
     log.info("-" * 42)
 
     # Run predictors #================================================================#
-    data = {"pdb_id": pdb_id, "chain_id": chain_id, "fasta_file": fasta_file}
+    data = {
+        "pdb_id": pdb_id,
+        "chain_id": chain_id,
+        "fasta_file": fasta_file,
+        "pdb_file": pdb_file,
+    }
     result_dic = {}
 
     if "all" in pred:
@@ -140,7 +152,10 @@ def main(pdb_id, chain_id, pred, fasta_file):
 
     # Ouput results #==================================================================#
     format_output(
-        result_dic, output_fname="cport.csv", pdb_id=pdb_id, chain_id=chain_id
+        result_dic,
+        output_fname="cport.csv",
+        pdb_file=pdb_file,
+        chain_id=chain_id,
     )
 
 

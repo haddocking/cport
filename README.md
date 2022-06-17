@@ -30,7 +30,7 @@ Please also refer to the original publication:
 | [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢     | ✔️          |
 | [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html)           | 🟢     | ✔️          |
-| [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🟢     | ✔️          |
+| [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🟠     | ✔️          |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🟢     | ✔️          |
 | [PredictProtein](https://predictprotein.org)                     | 🟢     | ✔️          |
 | [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🟢     | ✔️          |
@@ -43,7 +43,7 @@ Please refer to [INSTALL.md](INSTALL.md) for installation instructions.
 ## Example
 
 ```text
-cport 1PPE E
+cport path/to/file/1PPE.pdb E
 ```
 
 ## How to contribute

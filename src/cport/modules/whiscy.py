@@ -1,11 +1,18 @@
 """Whiscy module."""
 import logging
+import os
 import re
+import shutil
 import sys
 import time
+from pathlib import Path
 
 import mechanicalsoup as ms
+from Bio import AlignIO
+from Bio.Blast import NCBIWWW
+from defusedxml import lxml as ET
 
+from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import WHISCY_URL
 
 log = logging.getLogger("cportlog")
@@ -18,19 +25,19 @@ NUM_RETRIES = 6
 class Whiscy:
     """Whiscy class."""
 
-    def __init__(self, pdb_id, chain_id):
+    def __init__(self, pdb_file, chain_id):
         """
         Initialize the class.
 
         Parameters
         ----------
-        pdb_id : str
-            Protein data bank identification code.
+        pdb_file : str or PosixPath
+            Path to PDB file.
         chain_id : str
             Chain identifier.
 
         """
-        self.pdb_id = pdb_id
+        self.pdb_file = Path(pdb_file)
         self.chain_id = chain_id
         self.wait = WAIT_INTERVAL
         self.tries = NUM_RETRIES
@@ -45,15 +52,64 @@ class Whiscy:
             The url to the processing page.
 
         """
+        # A temporary file needs to be created to avoid WHISCY renaming the input
+        # to the entire path name causing the prediction to not run as the name
+        # of the input needs to match the hssp name otherwise it will not match
+        # A more elegant workaround would be preferable, but eludes me as of yet
+        filename = Path(f"{self.pdb_file.stem}_whiscy.pdb")
+        shutil.copyfile(self.pdb_file, filename)
+
+        blast_seq = get_fasta_from_pdbfile(self.pdb_file, self.chain_id)
+        blast_len = len(blast_seq)
+        log.debug("Running BLAST")
+        blast_res_handle = NCBIWWW.qblast("blastp", "nr", blast_seq, hitlist_size=50)
+        # This is the only somewhat realistic implementation without writing a whole
+        # program from scratch to get BLAST or downloading an excessive amount of
+        # FASTA aa sequence files.
+        # The downside is that this does not provide a proper alignment file that
+        # can be used by WHISCY, so this has to be done manually
+
+        log.debug("Finished BLAST")
+        with open("blast_res.xml", "w") as save_output:
+            blast_res = blast_res_handle.read()
+            save_output.write(blast_res)
+
+        align_string = ">main\n" + blast_seq + "\n"
+        tree = ET.parse("blast_res.xml")
+        root = tree.getroot()
+        for hit in root[8][0][4]:
+            align_len = hit[5][0][13].text
+            # workaround to make sure sequences are the same length for alignment
+            if int(align_len) == blast_len:
+                aa_string = hit[5][0][16].text
+                # [5][0][16] for sequence, [1] for hit_id
+                align_string += (
+                    ">" + hit[1].text + "\n" + aa_string.replace(" ", "-") + "\n"
+                )
+            else:
+                continue
+
+        log.debug("Preparing alignment for WHISCY")
+        with open("temp_align.fasta", "w") as temp_align:
+            temp_align.write(align_string)
+
+        # prepares proper alignment file for WHISCY
+        alignment = AlignIO.read("temp_align.fasta", "fasta")
+
+        with open("align.fasta", "w") as align:
+            align.write(format(alignment, "fasta"))
+
         browser = ms.StatefulBrowser()
+
         browser.open(WHISCY_URL)
 
         form = browser.select_form(nr=1)
-        form.set(name="pdb_id", value=self.pdb_id)
+        form.set(name="pdb_file", value=filename)
         form.set(name="chain", value=self.chain_id.capitalize())
-        form.set(name="hssp_id", value=self.pdb_id)
+        form.set(name="alignment_file", value="align.fasta")
         form.set(name="alignment_format", value="FASTA")
 
+        # currently the submission does not work due to reCAPTCHA
         browser.submit_selected(btnName="submit")
 
         page_text = browser.page
@@ -61,8 +117,14 @@ class Whiscy:
 
         # https://regex101.com/r/rwcIl8/1
         new_url = re.findall(r"(https:.*)\"", page_text_list)[0]
+        print(new_url)
 
         browser.close()
+        # remove file in main directory for cleanliness
+        os.unlink(filename)
+        os.unlink("temp_align.fasta")
+        os.unlink("align.fasta")
+        os.unlink("blast_res.xml")
 
         return new_url
 
