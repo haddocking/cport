@@ -16,7 +16,7 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 30  # seconds
-NUM_RETRIES = 12
+NUM_RETRIES = 24
 ELEMENT_LOAD_WAIT = 5  # seconds
 
 

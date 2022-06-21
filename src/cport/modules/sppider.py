@@ -13,7 +13,7 @@ log = logging.getLogger("cportlog")
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
 # results take up to 5 minutes for 1ppe E, but are usually ready within 2 minutes
-NUM_RETRIES = 12
+NUM_RETRIES = 24
 
 
 class Sppider:
@@ -144,6 +144,7 @@ class Sppider:
         """
         # sppider only provides a list of active residues
         prediction_dict = {"active": [], "passive": []}
+        prediction = {"active": []}
         browser = ms.StatefulBrowser()
 
         if page_text:
@@ -167,7 +168,10 @@ class Sppider:
         active_list = re.sub(r"[A-Z]", "", page_search[0])
 
         # splits on any non-word character, creating a list of all active residues
-        prediction_dict["active"] = re.split(r"\W+", active_list)
+        prediction["active"] = re.split(r"\W+", active_list)
+
+        for item in prediction["active"]:
+            prediction_dict["active"].append(int(item))
 
         return prediction_dict
 

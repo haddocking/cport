@@ -19,8 +19,8 @@ from cport.url import META_PPISP_URL
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 6
+WAIT_INTERVAL = 60  # seconds
+NUM_RETRIES = 30
 
 
 class MetaPPISP:
