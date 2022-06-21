@@ -164,9 +164,10 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         result_dic[predictor] = threads[predictor].join()
 
     # Ouput results #==================================================================#
+    filename = pdb_file[-8:-4]
     format_output(
         result_dic,
-        output_fname="cport.csv",
+        output_fname="cport_" + filename + ".csv",
         pdb_file=pdb_file,
         chain_id=chain_id,
     )
