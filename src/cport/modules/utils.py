@@ -247,13 +247,13 @@ def standardize_residues(result_dic, chain_id, pdb_file):
         The standardized results dict
 
     """
-    # https://regex101.com/r/UdPJ7I/1
-    bias_regex = r"DBREF\s\s.*?\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
+    # https://regex101.com/r/jQFPmY/1
+    bias_regex = r"\S"
 
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())
     # pdb files start at a number residue, so remove this bias
-    bias = int(re.findall(bias_regex, pdb_text)[0]) - 1
+    bias = int(re.findall(bias_regex, pdb_text)[10]) - 1
 
     # if there was no bias present, then no need to run through this block
     if bias != 0:
