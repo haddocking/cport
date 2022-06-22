@@ -25,7 +25,7 @@ Please also refer to the original publication:
 
 | Server                                                           | Status | Implemented |
 | ---------------------------------------------------------------- | ------ | ----------- |
-| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🟢     | ✔️          |
+| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🔴     |             |
 | [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/)            | 🟢     | ✔️          |
 | [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢     | ✔️          |
 | [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
