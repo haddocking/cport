@@ -1,6 +1,7 @@
 """PREDUS2 module."""
 import io
 import logging
+import os
 import re
 import sys
 import tempfile
@@ -9,6 +10,8 @@ import time
 import mechanicalsoup as ms
 import pandas as pd
 import requests
+from pdbtools.pdb_delhetatm import remove_hetatm
+from pdbtools.pdb_selchain import select_chain
 
 from cport.url import PREDUS2_URL
 
@@ -51,11 +54,21 @@ class Predus2:
             The url of the submitted job.
 
         """
+        pdb_id = str(self.pdb_file[-8:-4])
+        filename = f"{pdb_id.lower()}_{self.chain_id}.pdb"
+        with open("temp.pdb", "w") as handle:
+            for line in remove_hetatm(open(self.pdb_file)):
+                handle.write(line)
+
+        with open(filename, "w") as handle:
+            for line in select_chain(open("temp.pdb"), self.chain_id):
+                handle.write(line)
+
         browser = ms.StatefulBrowser()
         browser.open(PREDUS2_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="userfile", value=self.pdb_file)
+        input_form.set(name="userfile", value=filename)
         browser.submit_selected()
 
         # finds the submission url from the many links present on the page
@@ -66,6 +79,8 @@ class Predus2:
         )[0]
 
         browser.close()
+        os.unlink("temp.pdb")
+        os.unlink(filename)
 
         return submission_url
 
