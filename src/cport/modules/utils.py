@@ -37,6 +37,7 @@ pdb_predictors = [
 ]
 
 
+# currently unused function
 def get_fasta_from_pdbid(pdb_id, chain_id):
     """
     Retrieve the Fasta string file given a PDBid/Chain.
@@ -81,6 +82,7 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
         return fasta_seq
 
 
+# currently unused function
 def get_pdb_from_pdbid(pdb_id):
     """
     Retrieve the PDB file from a given PDBid.

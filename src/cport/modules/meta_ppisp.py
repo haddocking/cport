@@ -164,7 +164,7 @@ class MetaPPISP:
         if test_file:
             final_predictions = pd.read_csv(
                 test_file,
-                skiprows=11,
+                skiprows=12,
                 delim_whitespace=True,
                 names=[
                     "AA",
@@ -186,7 +186,7 @@ class MetaPPISP:
             file = self.download_result(url)
             final_predictions = pd.read_csv(
                 io.StringIO(file.decode("utf-8")),
-                skiprows=11,
+                skiprows=12,
                 delim_whitespace=True,
                 names=[
                     "AA",
