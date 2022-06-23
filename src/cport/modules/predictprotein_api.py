@@ -52,6 +52,9 @@ class Predictprotein:
 
         """
         sequence = get_fasta_from_pdbfile(self.pdb_file, self.chain_id)
+        # unreadable aa or HETATM causes an insertion of X, which is not accepted
+        # by removing any X the correct sequence is restored
+        sequence = sequence.replace("X", "")
 
         data = {"action": "get", "sequence": sequence, "file": "query.prona"}
 
