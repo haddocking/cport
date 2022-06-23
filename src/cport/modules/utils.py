@@ -124,10 +124,11 @@ def get_fasta_from_pdbfile(pdb_file, chain_id):
 
     """
     with open(pdb_file) as handle:
-        for record in SeqIO.PdbIO.PdbSeqresIterator(handle):
-            # checks all the chains to find match with chain_id
+        for record in SeqIO.PdbIO.PdbAtomIterator(handle):
+            # checks for matching chain id
             if record.id[-1] == chain_id:
                 sequence = str(record.seq)
+
     return sequence
 
 
