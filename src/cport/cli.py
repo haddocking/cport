@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 from cport.modules.loader import run_prediction
+from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
 
@@ -48,7 +49,7 @@ argument_parser.add_argument(
     "--pred",
     nargs="+",
     default=["all"],
-    choices=CONFIG["predictors"] + ["all"],
+    choices=CONFIG["predictors"] + ["all"] + ["fast"],
     help="",
 )
 
@@ -141,19 +142,42 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     if "all" in pred:
         pred = CONFIG["predictors"]
 
+    if "fast" in pred:
+        pred = [
+            "scriber",
+            "ispred4",
+            "sppider",
+            "cons_ppisp",
+            "predictprotein",
+            "csm_potential",
+        ]
+
+    threads = {}
+
+    # prepare a dict of predictor initializations.
     for predictor in pred:
+        threads[predictor] = ThreadReturnVal(
+            target=run_prediction, args=predictor, kwargs=data
+        )
+
+    for predictor in threads:
         try:
-            predictions = run_prediction(predictor, **data)
-            result_dic[predictor] = predictions
+            # initiate threads for predictors.
+            threads[predictor].start()
         except Exception as thrown_exception:
             log.error(f"Error running {predictor}")
             log.error(thrown_exception)
             sys.exit()
 
+    for predictor in threads:
+        # retrieve results from predictions with modified join
+        result_dic[predictor] = threads[predictor].join()
+
     # Ouput results #==================================================================#
+    filename = Path(pdb_file)
     format_output(
         result_dic,
-        output_fname="cport.csv",
+        output_fname="cport_" + filename.stem + ".csv",
         pdb_file=pdb_file,
         chain_id=chain_id,
     )

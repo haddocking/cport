@@ -16,7 +16,7 @@ log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
-NUM_RETRIES = 12
+NUM_RETRIES = 24
 
 
 class Scriber:
@@ -53,6 +53,7 @@ class Scriber:
         fasta_string = get_fasta_from_pdbfile(
             pdb_file=self.pdb_file, chain_id=self.chain_id
         )
+        fasta_string = fasta_string.replace("X", "")
 
         submission_string = ">Chain " + self.chain_id + "\n" + fasta_string
 

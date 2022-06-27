@@ -17,7 +17,7 @@ log = logging.getLogger("cportlog")
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 10  # seconds
 # any request should never take more than 15min so theoretical max is 90 retries
-NUM_RETRIES = 18
+NUM_RETRIES = 24
 
 
 class ConsPPISP:

@@ -37,6 +37,7 @@ pdb_predictors = [
 ]
 
 
+# currently unused function
 def get_fasta_from_pdbid(pdb_id, chain_id):
     """
     Retrieve the Fasta string file given a PDBid/Chain.
@@ -81,6 +82,7 @@ def get_fasta_from_pdbid(pdb_id, chain_id):
         return fasta_seq
 
 
+# currently unused function
 def get_pdb_from_pdbid(pdb_id):
     """
     Retrieve the PDB file from a given PDBid.
@@ -124,10 +126,11 @@ def get_fasta_from_pdbfile(pdb_file, chain_id):
 
     """
     with open(pdb_file) as handle:
-        for record in SeqIO.PdbIO.PdbSeqresIterator(handle):
-            # checks all the chains to find match with chain_id
+        for record in SeqIO.PdbIO.PdbAtomIterator(handle):
+            # checks for matching chain id
             if record.id[-1] == chain_id:
                 sequence = str(record.seq)
+
     return sequence
 
 
@@ -247,8 +250,8 @@ def standardize_residues(result_dic, chain_id, pdb_file):
         The standardized results dict
 
     """
-    # https://regex101.com/r/UdPJ7I/1
-    bias_regex = r"DBREF\s\s.*?\s" + chain_id + r"\s\s\s(.*?)\s\s\s"
+    # https://regex101.com/r/1myWjv/1
+    bias_regex = r"ATOM\s{6}1\s*\S*\s*\S{3}\s\S\s*(\S*)"
 
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())
