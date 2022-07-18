@@ -261,15 +261,15 @@ def standardize_residues(result_dic, chain_id, pdb_file):
     # if there was no bias present, then no need to run through this block
     if bias != 0:
         for pred in result_dic:
-            if pred not in scored_predictors and pred in pdb_predictors:
+            if pred not in scored_predictors and pred not in pdb_predictors:
                 for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]] -= bias
+                    result_dic[pred]["active"][index[0]] += bias
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= bias
-            elif pred in pdb_predictors:
+                    result_dic[pred]["passive"][index[0]] += bias
+            elif pred in scored_predictors and pred not in pdb_predictors:
                 for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]][0] -= bias
+                    result_dic[pred]["active"][index[0]][0] += bias
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= bias
+                    result_dic[pred]["passive"][index[0]] += bias
 
     return result_dic
