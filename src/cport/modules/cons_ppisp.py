@@ -177,7 +177,7 @@ class ConsPPISP:
                 delim_whitespace=True,
                 names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
                 header=0,
-                error_bad_lines=False
+                error_bad_lines=False,
             )
 
         for row in final_predictions.itertuples():
