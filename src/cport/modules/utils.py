@@ -9,7 +9,7 @@ from urllib import request
 
 import pandas as pd
 import requests
-from Bio import SeqIO
+from Bio import SeqIO, PDB
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 
@@ -273,3 +273,17 @@ def standardize_residues(result_dic, chain_id, pdb_file):
                     result_dic[pred]["passive"][index[0]] += bias
 
     return result_dic
+
+
+def get_residue_list(pdb_file="tests/test_data/1PPE.pdb", chain_id="E"):
+    parser = PDB.PDBParser()
+    structure = parser.get_structure("pdb", pdb_file)
+    model = structure[0]
+    chain = model[chain_id]
+    residue_list = []
+
+    for residue in chain:
+        if residue.get_full_id()[3][0] == " ":
+            residue_list.append(residue.get_id()[1])
+
+    return residue_list
