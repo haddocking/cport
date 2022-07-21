@@ -238,7 +238,8 @@ def get_residue_range(result_dic):
 def standardize_residues(result_dic, chain_id, pdb_file):
     """
     Standardize the residues from different predictors
-    into a uniform numbering system starting at 1.
+    into a uniform numbering system starting at 1 and
+    prevents any shifts due to gaps in the PDB file.
 
     Parameters
     ----------
@@ -275,6 +276,7 @@ def standardize_residues(result_dic, chain_id, pdb_file):
                 for index in enumerate(result_dic[pred]["passive"]):
                     result_dic[pred]["passive"][index[0]] += bias
 
+    # find any missing items from the residue list in the PDB file
     missing_list = []
     for ele in range(reslist[0], reslist[-1] + 1):
         if ele not in reslist:
@@ -284,6 +286,7 @@ def standardize_residues(result_dic, chain_id, pdb_file):
         # dummy addition to keep the iteration working
         missing_list.append(10000000)
         for pred in result_dic:
+            # these use sequences and do not see missing items
             if pred == "predictprotein" or pred == "scriber":
                 item = 0
                 bias = 0
@@ -314,7 +317,17 @@ def standardize_residues(result_dic, chain_id, pdb_file):
     return result_dic
 
 
-def get_residue_list(pdb_file="tests/test_data/1PPE.pdb", chain_id="E"):
+def get_residue_list(pdb_file, chain_id):
+    """
+    Extract list of residues present in PDB file.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to the file that has to be parsed.
+    chain_id : str
+        Letter to indicate which chain to use from the file.
+    """
     parser = PDB.PDBParser()
     structure = parser.get_structure("pdb", pdb_file)
     model = structure[0]
