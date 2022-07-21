@@ -9,7 +9,7 @@ from urllib import request
 
 import pandas as pd
 import requests
-from Bio import SeqIO
+from Bio import PDB, SeqIO
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 
@@ -151,6 +151,7 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
     data = []
     for pred in result_dic:
         row = [pred]
+
         if pred in scored_predictors:
             active_list = [x[0] for x in result_dic[pred]["active"]]
 
@@ -237,7 +238,8 @@ def get_residue_range(result_dic):
 def standardize_residues(result_dic, chain_id, pdb_file):
     """
     Standardize the residues from different predictors
-    into a uniform numbering system starting at 1.
+    into a uniform numbering system starting at 1 and
+    prevents any shifts due to gaps in the PDB file.
 
     Parameters
     ----------
@@ -253,6 +255,8 @@ def standardize_residues(result_dic, chain_id, pdb_file):
     # https://regex101.com/r/1myWjv/1
     bias_regex = r"ATOM\s{6}1\s*\S*\s*\S{3}\s\S\s*(\S*)"
 
+    reslist = get_residue_list(pdb_file, chain_id)
+
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())
     # pdb files start at a number residue, so remove this bias
@@ -261,15 +265,78 @@ def standardize_residues(result_dic, chain_id, pdb_file):
     # if there was no bias present, then no need to run through this block
     if bias != 0:
         for pred in result_dic:
-            if pred not in scored_predictors and pred in pdb_predictors:
+            if pred not in scored_predictors and pred not in pdb_predictors:
                 for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]] -= bias
+                    result_dic[pred]["active"][index[0]] += bias
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= bias
-            elif pred in pdb_predictors:
+                    result_dic[pred]["passive"][index[0]] += bias
+            elif pred in scored_predictors and pred not in pdb_predictors:
                 for index in enumerate(result_dic[pred]["active"]):
-                    result_dic[pred]["active"][index[0]][0] -= bias
+                    result_dic[pred]["active"][index[0]][0] += bias
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] -= bias
+                    result_dic[pred]["passive"][index[0]] += bias
+
+    # find any missing items from the residue list in the PDB file
+    missing_list = []
+    for ele in range(reslist[0], reslist[-1] + 1):
+        if ele not in reslist:
+            missing_list.append(ele)
+
+    if missing_list:
+        # dummy addition to keep the iteration working
+        missing_list.append(10000000)
+        for pred in result_dic:
+            # these use sequences and do not see missing items
+            if pred == "predictprotein" or pred == "scriber":
+                item = 0
+                bias = 0
+                new_active = []
+                for index in enumerate(result_dic[pred]["active"]):
+                    if index[1][0] >= missing_list[item]:
+                        new_index = index[1][0] + bias
+                        while (
+                            new_index >= missing_list[item] or new_index in missing_list
+                        ):
+                            bias += 1
+                            new_index += 1
+                            item += 1
+
+                        new_active.append(
+                            [new_index, result_dic[pred]["active"][index[0]][1]]
+                        )
+                    else:
+                        new_active.append(
+                            [
+                                index[1][0] + bias,
+                                result_dic[pred]["active"][index[0]][1],
+                            ]
+                        )
+
+                result_dic[pred]["active"] = new_active
 
     return result_dic
+
+
+def get_residue_list(pdb_file, chain_id):
+    """
+    Extract list of residues present in PDB file.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to the file that has to be parsed.
+    chain_id : str
+        Letter to indicate which chain to use from the file.
+    """
+    parser = PDB.PDBParser()
+    structure = parser.get_structure("pdb", pdb_file)
+    model = structure[0]
+    chain = model[chain_id]
+    residue_list = []
+
+    for residue in chain:
+        # prevents HETATM from being added
+        if residue.get_full_id()[3][0] == " ":
+            residue_list.append(residue.get_id()[1])
+
+    return residue_list
