@@ -9,7 +9,7 @@ from urllib import request
 
 import pandas as pd
 import requests
-from Bio import SeqIO, PDB
+from Bio import PDB, SeqIO
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 
@@ -151,6 +151,7 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
     data = []
     for pred in result_dic:
         row = [pred]
+
         if pred in scored_predictors:
             active_list = [x[0] for x in result_dic[pred]["active"]]
 
@@ -253,6 +254,8 @@ def standardize_residues(result_dic, chain_id, pdb_file):
     # https://regex101.com/r/1myWjv/1
     bias_regex = r"ATOM\s{6}1\s*\S*\s*\S{3}\s\S\s*(\S*)"
 
+    reslist = get_residue_list(pdb_file, chain_id)
+
     f = open(pdb_file, "r")
     pdb_text = "\n".join(f.read().splitlines())
     # pdb files start at a number residue, so remove this bias
@@ -272,6 +275,42 @@ def standardize_residues(result_dic, chain_id, pdb_file):
                 for index in enumerate(result_dic[pred]["passive"]):
                     result_dic[pred]["passive"][index[0]] += bias
 
+    missing_list = []
+    for ele in range(reslist[0], reslist[-1] + 1):
+        if ele not in reslist:
+            missing_list.append(ele)
+
+    if missing_list:
+        # dummy addition to keep the iteration working
+        missing_list.append(10000000)
+        for pred in result_dic:
+            if pred == "predictprotein" or pred == "scriber":
+                item = 0
+                bias = 0
+                new_active = []
+                for index in enumerate(result_dic[pred]["active"]):
+                    if index[1][0] >= missing_list[item]:
+                        new_index = index[1][0] + bias
+                        while (
+                            new_index >= missing_list[item] or new_index in missing_list
+                        ):
+                            bias += 1
+                            new_index += 1
+                            item += 1
+
+                        new_active.append(
+                            [new_index, result_dic[pred]["active"][index[0]][1]]
+                        )
+                    else:
+                        new_active.append(
+                            [
+                                index[1][0] + bias,
+                                result_dic[pred]["active"][index[0]][1],
+                            ]
+                        )
+
+                result_dic[pred]["active"] = new_active
+
     return result_dic
 
 
@@ -283,6 +322,7 @@ def get_residue_list(pdb_file="tests/test_data/1PPE.pdb", chain_id="E"):
     residue_list = []
 
     for residue in chain:
+        # prevents HETATM from being added
         if residue.get_full_id()[3][0] == " ":
             residue_list.append(residue.get_id()[1])
 
