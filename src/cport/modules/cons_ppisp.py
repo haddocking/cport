@@ -15,9 +15,9 @@ from cport.url import CONS_PPISP_URL
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 10  # seconds
+WAIT_INTERVAL = 30  # seconds
 # any request should never take more than 15min so theoretical max is 90 retries
-NUM_RETRIES = 24
+NUM_RETRIES = 36
 
 
 class ConsPPISP:
