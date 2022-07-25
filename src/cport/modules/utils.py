@@ -200,7 +200,9 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
             data.append(row)
 
     output_df = pd.DataFrame(data, columns=["predictor"] + reslist)
-    output_df.to_csv(output_fname, index=False)
+    if not os.path.exists("output"):
+        os.mkdir("output")
+    output_df.to_csv("output/" + output_fname, index=False)
 
 
 def get_residue_range(result_dic):
