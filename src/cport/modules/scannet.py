@@ -15,7 +15,6 @@ result_url = "http://bioinfo3d.cs.tau.ac.il/ScanNet/results/0407500892.html"
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 30  # seconds
-# any request should never take more than 15min so theoretical max is 90 retries
 NUM_RETRIES = 36
 
 
@@ -133,6 +132,7 @@ class ScanNet:
             browser = ms.StatefulBrowser()
 
             browser.open(url)
+            # page contains PDB file as a string with results in b_factor column
             pdb_string = re.findall(
                 r"stringContainingTheWholePdbFile = (.*?);",
                 str(browser.page),
@@ -153,6 +153,7 @@ class ScanNet:
             for atom in res:
                 b_fact = atom.get_bfactor()
 
+            # arbitrary value for active
             if b_fact >= 0.5:
                 prediction_dict["active"].append([res.id[1], b_fact])
             else:
