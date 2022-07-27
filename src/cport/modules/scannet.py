@@ -134,11 +134,13 @@ class ScanNet:
 
             browser.open(url)
             pdb_string = re.findall(
-                r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL
+                r"stringContainingTheWholePdbFile = (.*?);",
+                str(browser.page),
+                re.DOTALL,
             )[0]
 
             structure = parser.get_structure("pdb", io.StringIO(pdb_string))
-        
+
         else:
             structure = parser.get_structure("pdb", test_file)
 
