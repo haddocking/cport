@@ -129,14 +129,19 @@ class ScanNet:
 
         """
         parser = PDB.PDBParser()
-        browser = ms.StatefulBrowser()
+        if not test_file:
+            browser = ms.StatefulBrowser()
 
-        browser.open(url)
-        pdb_string = re.findall(
-            r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL
-        )[0]
+            browser.open(url)
+            pdb_string = re.findall(
+                r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL
+            )[0]
 
-        structure = parser.get_structure("pdb", io.StringIO(pdb_string))
+            structure = parser.get_structure("pdb", io.StringIO(pdb_string))
+        
+        else:
+            structure = parser.get_structure("pdb", test_file)
+
         model = structure[0]
         chain = model[self.chain_id]
 
