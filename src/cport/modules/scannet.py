@@ -8,7 +8,8 @@ import time
 
 import mechanicalsoup as ms
 import pandas as pd
-import requests
+
+from Bio import PDB
 
 from cport.url import SCANNET_URL
 
@@ -93,9 +94,9 @@ class ScanNet:
 
         completed = False
         while not completed:
-            # Check if the result page exists
-            match = re.search(r"404 Not Found", str(browser.page))
-            if not match:
+            # Check if the variable with the results is present
+            match = re.search(r"stringContainingTheWholePdbFile", str(browser.page))
+            if match:
                 completed = True
             else:
                 # still running, wait a bit
@@ -111,27 +112,6 @@ class ScanNet:
 
         return url
 
-    @staticmethod
-    def download_result(download_link):
-        """
-        Download the results.
-
-        Parameters
-        ----------
-        download_link : str
-            The link to the results.
-
-        Returns
-        -------
-        temp_file.name : str
-            The path to the results file.
-
-        """
-        temp_file = tempfile.NamedTemporaryFile(delete=False)
-        # this verify=False is a security issue but i'm afraid there's
-        #  no trivial solution and that the issue might be of the server
-        temp_file.name = requests.get(download_link, verify=False).content  # nosec
-        return temp_file.name
 
     def parse_prediction(self, url=None, test_file=None):
         """
@@ -151,40 +131,26 @@ class ScanNet:
             and passive sites.
 
         """
+        parser = PDB.PDBParser()
+        browser = ms.StatefulBrowser()
+
+        browser.open(url)
+        pdb_string = re.findall(r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL)[0]
+
+        structure = parser.get_structure("pdb", io.StringIO(pdb_string))
+        model = structure[0]
+        chain = model[self.chain_id]
+
         prediction_dict = {"active": [], "passive": []}
 
-        if test_file:
-            final_predictions = pd.read_csv(
-                test_file,
-                skiprows=13,
-                delim_whitespace=True,
-                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
-                header=0,
-                skipfooter=16,
-            )
-        else:
-            # direct reading of page with read_csv is impossible due to
-            #  the same SSL error
-            file = self.download_result(url)
-            final_predictions = pd.read_csv(
-                io.StringIO(file.decode("utf-8")),
-                skiprows=13,
-                delim_whitespace=True,
-                names=["AA", "Ch", "AA_nr", "Score", "Prediction"],
-                header=0,
-                error_bad_lines=False,
-            )
+        for res in chain:
+            for atom in res:
+                b_fact = atom.get_bfactor()
 
-        for row in final_predictions.itertuples():
-            if row.Prediction == "P":  # positive for interaction
-                # cons_ppisp occasionally adds an A to the number, needs to be removed
-                prediction_dict["active"].append(
-                    # trunk-ignore(flake8/W605)
-                    [int(re.sub("\D", "", row.AA_nr)), row.Score]
-                )
-            elif row.Prediction == "N":
-                # trunk-ignore(flake8/W605)
-                prediction_dict["passive"].append(int(re.sub("\D", "", row.AA_nr)))
+            if b_fact >= 0.5:
+                prediction_dict["active"].append([res.id[1], b_fact])
+            else:
+                prediction_dict["passive"].append(res.id[1])
 
         return prediction_dict
 
@@ -202,7 +168,7 @@ class ScanNet:
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
         # submitted_url = self.submit()
-        prediction_url = self.retrieve_prediction_link(url=submitted_url)
-        prediction_dict = self.parse_prediction(url=prediction_url)
+        # prediction_url = self.retrieve_prediction_link(url=result_url)
+        prediction_dict = self.parse_prediction(url=result_url)
 
         return prediction_dict

@@ -24,6 +24,7 @@ scored_predictors = [
     "psiver",
     "scriber",
     "csm_potential",
+    "scannet",
 ]
 
 pdb_predictors = [
@@ -34,6 +35,7 @@ pdb_predictors = [
     "predus2",
     "sppider",
     "csm_potential",
+    "scannet",
 ]
 
 
