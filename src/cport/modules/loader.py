@@ -13,6 +13,7 @@ from cport.modules.psiver import Psiver
 from cport.modules.scriber import Scriber
 from cport.modules.sppider import Sppider
 from cport.modules.whiscy import Whiscy
+from cport.modules.scannet import ScanNet
 
 log = logging.getLogger("cportlog")
 
@@ -247,6 +248,28 @@ def run_csm_potential(pdb_file, chain_id):
     return predictions
 
 
+def run_scannet(pdb_file, chain_id):
+    """
+    Run the ScanNet predictor.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to PDB file.
+    chain_id : str
+        Chain identifier.
+
+    Returns
+    -------
+    predictions : dict
+        Dictionary containing the predictions.
+    """
+    scannet = ScanNet(pdb_file, chain_id)
+    predictions = scannet.run()
+    log.info(predictions)
+    return predictions
+
+
 def run_placeholder(fasta_str):
     """
     Run the PLACEHOLDER predictor.
@@ -272,6 +295,7 @@ PDB_PREDICTORS = {
     "sppider": run_sppider,
     "whiscy": run_whiscy,
     "csm_potential": run_csm_potential,
+    "scannet": run_scannet,
 }
 
 FASTA_PREDICTORS = {"placeholder": run_placeholder}
