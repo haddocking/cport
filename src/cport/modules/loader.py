@@ -10,10 +10,10 @@ from cport.modules.meta_ppisp import MetaPPISP
 from cport.modules.predictprotein_api import Predictprotein
 from cport.modules.predus2 import Predus2
 from cport.modules.psiver import Psiver
+from cport.modules.scannet import ScanNet
 from cport.modules.scriber import Scriber
 from cport.modules.sppider import Sppider
 from cport.modules.whiscy import Whiscy
-from cport.modules.scannet import ScanNet
 
 log = logging.getLogger("cportlog")
 

@@ -55,16 +55,12 @@ class ScanNet:
         browser.open(SCANNET_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="submitter", value=str(self.chain_id))
-        input_form.set(name="emailAddr", value="validmail@trustme.yes")
-        input_form.set(name="pChain", value=self.chain_id)
-        input_form.set(name="userfile", value=self.pdb_file)
+        input_form.set(name="PDBfile", value=self.pdb_file)
+        input_form.set(name="email", value="validmail@trustme.yes")
+        input_form.set(name="chain", value=self.chain_id)
         browser.submit_selected()
 
-        # https://regex101.com/r/FBgZFE/1
-        processing_url = re.findall(r"<a href=\"(.*)\">this link<", str(browser.page))[
-            0
-        ]
+        processing_url = browser.links()[7]
         log.debug(f"The url being looked at: {processing_url}")
 
         return processing_url
@@ -202,10 +198,10 @@ class ScanNet:
             A dictionary containing the raw prediction.
 
         """
-        log.info("Running cons-PPISP")
+        log.info("Running ScanNet")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        submitted_url = self.submit()
+        # submitted_url = self.submit()
         prediction_url = self.retrieve_prediction_link(url=submitted_url)
         prediction_dict = self.parse_prediction(url=prediction_url)
 
