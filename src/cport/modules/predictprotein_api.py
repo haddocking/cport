@@ -15,8 +15,8 @@ from cport.url import PREDICTPROTEIN_API
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 30  # seconds
-NUM_RETRIES = 24
+WAIT_INTERVAL = 45  # seconds
+NUM_RETRIES = 36
 ELEMENT_LOAD_WAIT = 5  # seconds
 
 
