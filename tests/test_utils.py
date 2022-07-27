@@ -61,7 +61,7 @@ def test_format_output(test_result_dic, pdb_file = "tests/test_data/1PPE.pdb", c
 def test_get_residue_range(test_result_dic):
 
     observed_residue_list = get_residue_range(test_result_dic)
-    expected_residue_lsit = [1, 2, 3, 4, 5, 6]
+    expected_residue_list = [1, 2, 3, 4, 5, 6, 7]
 
     assert isinstance(observed_residue_list, list)
-    assert observed_residue_list == expected_residue_lsit
+    assert observed_residue_list == expected_residue_list

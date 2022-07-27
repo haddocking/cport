@@ -150,6 +150,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
             "cons_ppisp",
             "predictprotein",
             "csm_potential",
+            "scannet",
         ]
 
     threads = {}
