@@ -27,7 +27,7 @@ Please also refer to the original publication:
 | ---------------------------------------------------------------- | ------ | ----------- |
 | [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🔴     |             |
 | [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/)            | 🟢     | ✔️          |
-| [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟠     | ✔️          |
+| [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢     | ✔️          |
 | [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
 | [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html)           | 🟢     | ✔️          |
 | [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🟠     |             |
