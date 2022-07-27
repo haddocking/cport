@@ -233,7 +233,7 @@ def get_residue_range(result_dic):
             active_reslist += [x for x in result_dic[pred]["active"]]
 
     reslist = passive_reslist + active_reslist
-    absolute_range = list(range(min(reslist), max(reslist)+1))
+    absolute_range = list(range(min(reslist), max(reslist) + 1))
     return absolute_range
 
 

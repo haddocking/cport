@@ -3,12 +3,9 @@ import io
 import logging
 import re
 import sys
-import tempfile
 import time
 
 import mechanicalsoup as ms
-import pandas as pd
-
 from Bio import PDB
 
 from cport.url import SCANNET_URL
@@ -61,7 +58,8 @@ class ScanNet:
         input_form.set(name="chain", value=self.chain_id)
         browser.submit_selected()
 
-        processing_url = browser.links()[7]
+        browser.follow_link(browser.links()[7])
+        processing_url = browser.get_url()
         log.debug(f"The url being looked at: {processing_url}")
 
         return processing_url
@@ -112,7 +110,6 @@ class ScanNet:
 
         return url
 
-
     def parse_prediction(self, url=None, test_file=None):
         """
         Take the results extracts the active and passive residue predictions.
@@ -135,7 +132,9 @@ class ScanNet:
         browser = ms.StatefulBrowser()
 
         browser.open(url)
-        pdb_string = re.findall(r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL)[0]
+        pdb_string = re.findall(
+            r"stringContainingTheWholePdbFile = (.*?);", str(browser.page), re.DOTALL
+        )[0]
 
         structure = parser.get_structure("pdb", io.StringIO(pdb_string))
         model = structure[0]
@@ -167,8 +166,8 @@ class ScanNet:
         log.info("Running ScanNet")
         log.info(f"Will try {self.tries} times waiting {self.wait}s between tries")
 
-        # submitted_url = self.submit()
-        # prediction_url = self.retrieve_prediction_link(url=result_url)
-        prediction_dict = self.parse_prediction(url=result_url)
+        submitted_url = self.submit()
+        prediction_url = self.retrieve_prediction_link(url=submitted_url)
+        prediction_dict = self.parse_prediction(url=prediction_url)
 
         return prediction_dict
