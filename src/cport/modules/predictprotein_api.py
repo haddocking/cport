@@ -63,7 +63,7 @@ class Predictprotein:
         completed = False
         while not completed:
             # Check if the result page exists
-            match = re.search(r"No results found", str(results.text))
+            match = re.search(r"No results found|error", str(results.text))
             if not match:
                 completed = True
             else:

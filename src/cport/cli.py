@@ -158,7 +158,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     # prepare a dict of predictor initializations.
     for predictor in pred:
         threads[predictor] = ThreadReturnVal(
-            target=run_prediction, args=predictor, kwargs=data
+            target=run_prediction, args=predictor, kwargs=data, name=predictor
         )
 
     for predictor in threads:

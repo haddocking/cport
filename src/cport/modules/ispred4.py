@@ -14,7 +14,7 @@ from cport.url import ISPRED4_URL
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 30  # seconds
+WAIT_INTERVAL = 60  # seconds
 NUM_RETRIES = 36
 
 

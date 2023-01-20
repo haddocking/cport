@@ -11,7 +11,7 @@ from cport.url import SPPIDER_URL
 log = logging.getLogger("cportlog")
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
-WAIT_INTERVAL = 30  # seconds
+WAIT_INTERVAL = 45  # seconds
 # results take up to 5 minutes for 1ppe E, but are usually ready within 2 minutes
 NUM_RETRIES = 36
 
@@ -167,10 +167,10 @@ class Sppider:
         # checks if any residues are actually predicted
         if page_search != ["None"]:
             # removes aa identifier to only retain the position of the residues
-            active_list = re.sub(r"[A-Z]", "", page_search[0])
+            active_list = re.sub(r"[A-Z]|\s", "", page_search[0])
 
             # splits on any non-word character, creating a list of all active residues
-            prediction["active"] = re.split(r"\W+", active_list)
+            prediction["active"] = re.split(r",", active_list)
 
             for item in prediction["active"]:
                 prediction_dict["active"].append(int(item))
