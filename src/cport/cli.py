@@ -9,6 +9,7 @@ from cport.modules.loader import run_prediction
 from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
+from cport.modules.predict import ModelPredict
 
 # Setup logging
 log = logging.getLogger("cportlog")
@@ -171,6 +172,9 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     for predictor in threads:
         # retrieve results from predictions with modified join
         result_dic[predictor] = threads[predictor].join()
+    
+    prediction = ModelPredict.prediction(result_dic)
+    result_dic["int_pred"] = prediction
 
     # Ouput results #==================================================================#
     filename = Path(pdb_file)
