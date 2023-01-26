@@ -3,7 +3,7 @@ import numpy as np
 from tensorflow import keras
 
 # best model uses scriber, ispred4, sppider, csm-potential, and scannet
-model_path = "model/keras_classifier_scriber_ispred4_sppider_csm_potential_scannet/saved_model.pb"
+model_path = "model/keras_classifier_scriber_ispred4_sppider_csm_potential_scannet/"
 
 
 class ModelPredict:
@@ -20,15 +20,14 @@ class ModelPredict:
 
         Returns
         -------
-        results : dict
-            Updated prediction dict with the predictions from the model added.
+        results : list
+            List of the predictions for each residue of the PDB.
 
         """
         model = keras.models.load_model(model_path)
-        # check if the layout of the predictions is correct
+        # FIX THE LAYOUT OF THE PREDICTION DICT
         probabilities = model.predict(predictions)
 
-        # ADD THESE RESULTS TO THE EXISTING TABLE
         results = [1 if prob > threshold else 0 for prob in np.ravel(probabilities)]
 
         return results
