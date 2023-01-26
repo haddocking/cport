@@ -48,8 +48,8 @@ argument_parser.add_argument(
 argument_parser.add_argument(
     "--pred",
     nargs="+",
-    default=["all"],
-    choices=CONFIG["predictors"] + ["all"] + ["fast"],
+    default=["validated"],
+    choices=CONFIG["predictors"] + ["all"] + ["validated"],
     help="",
 )
 
@@ -142,13 +142,11 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     if "all" in pred:
         pred = CONFIG["predictors"]
 
-    if "fast" in pred:
+    if "validated" in pred:
         pred = [
             "scriber",
             "ispred4",
             "sppider",
-            "cons_ppisp",
-            "predictprotein",
             "csm_potential",
             "scannet",
         ]
