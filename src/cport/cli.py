@@ -173,17 +173,24 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         # retrieve results from predictions with modified join
         result_dic[predictor] = threads[predictor].join()
 
-    prediction = ModelPredict.prediction(result_dic)
-    result_dic["int_pred"] = prediction
-
     # Ouput results #==================================================================#
     filename = Path(pdb_file)
+    save_file = "output/cport_" + filename.stem + ".csv"
     format_output(
         result_dic,
-        output_fname="cport_" + filename.stem + ".csv",
+        output_fname=save_file,
         pdb_file=pdb_file,
         chain_id=chain_id,
     )
+
+    pred_res = ModelPredict.read_pred(path=save_file)
+    prediction, probabilities, predict_keys = ModelPredict.prediction(pred_res)
+    result_dic["int_pred"] = prediction
+    result_dic["probabilites"] = probabilities
+    result_dic["keys"] = predict_keys
+
+    print(result_dic["int_pred"])
+    print(result_dic["keys"])
 
 
 if __name__ == "__main__":
