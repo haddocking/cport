@@ -161,3 +161,4 @@ cython_debug/
 1PPE_E*
 1PPE_3*
 example/*.csv
+output/

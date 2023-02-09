@@ -5,6 +5,8 @@ import logging
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 from cport.modules.loader import run_prediction
 from cport.modules.predict import ModelPredict
 from cport.modules.threadreturn import ThreadReturnVal
@@ -175,7 +177,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
 
     # Ouput results #==================================================================#
     filename = Path(pdb_file)
-    save_file = "output/cport_" + filename.stem + ".csv"
+    save_file = "output/predictors_" + filename.stem + ".csv"
     format_output(
         result_dic,
         output_fname=save_file,
@@ -184,13 +186,24 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     )
 
     pred_res = ModelPredict.read_pred(path=save_file)
-    prediction, probabilities, predict_keys = ModelPredict.prediction(pred_res)
-    result_dic["int_pred"] = prediction
-    result_dic["probabilites"] = probabilities
-    result_dic["keys"] = predict_keys
+    prediction, probabilities, predict_residue = ModelPredict.prediction(pred_res)
+    output_dic = {}
 
-    print(result_dic["int_pred"])
-    print(result_dic["keys"])
+    probabilities_edit = []
+    residue_edit = []
+    for item in probabilities.tolist():
+        probabilities_edit.append(item[0])
+
+    for item in predict_residue:
+        residue_edit.append(int(item))
+
+    output_dic["threshold_pred"] = prediction
+    output_dic["probabilities"] = probabilities_edit
+    output_dic["residue"] = residue_edit
+
+    save_file = "output/cport_" + filename.stem + ".csv"
+    out_csv = pd.DataFrame(output_dic)
+    out_csv.to_csv(save_file)
 
 
 if __name__ == "__main__":

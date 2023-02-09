@@ -52,7 +52,7 @@ class ModelPredict:
 
         return pred_int_dict
 
-    def prediction(predictions, threshold=0.8):
+    def prediction(predictions, threshold=0.6):
         """
         Take the different results and create a final prediction.
 
