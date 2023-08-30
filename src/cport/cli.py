@@ -135,7 +135,6 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
 
     # Run predictors #================================================================#
 
-
     data = {
         "pdb_id": pdb_id,
         "chain_id": chain_id,
@@ -163,7 +162,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
                 "csm_potential", ###
                 "scannet",
             ]"""
-            
+
     threads = {}
 
     # prepare a dict of predictor initializations.
@@ -184,12 +183,12 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     for predictor in threads:
         # retrieve results from predictions with modified join
         result_dic[predictor] = threads[predictor].join()
-        
+
     # Ouput results #==================================================================#
     filename = Path(pdb_file)
-        
+
     save_file = "output/predictors_" + filename.stem + ".csv"
-    #print(result_dic)
+    # print(result_dic)
     format_output(
         result_dic,
         output_fname=save_file,
@@ -198,7 +197,9 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     )
 
     pred_res = ModelPredict.read_pred(path=save_file)
-    prediction, probabilities, predict_residue, mean_scores = ModelPredict.prediction(pred_res, threshold=0.4)
+    prediction, probabilities, predict_residue, mean_scores = ModelPredict.prediction(
+        pred_res, threshold=0.4
+    )
     output_dic = {}
 
     cport_scores = []
@@ -217,7 +218,6 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     save_file = "output/cport_" + filename.stem + ".csv"
     out_csv = pd.DataFrame(output_dic)
     out_csv.to_csv(save_file)
-        
 
 
 if __name__ == "__main__":

@@ -117,7 +117,7 @@ class Sppider:
         #  soup browser is an exception so url needs to be extracted and opened
         #  to function
         # https://regex101.com/r/Izy7PR/1
-        #print(str(browser.page))
+        # print(str(browser.page))
         new_url = re.findall(r"URL=(.*?=int)", str(browser.page))[0]
 
         browser.close()

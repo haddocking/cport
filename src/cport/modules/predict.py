@@ -6,15 +6,16 @@ import pandas as pd
 from tensorflow import keras
 
 # best model uses scriber, ispred4, sppider, and scannet
-model_path = "model/keras_classifier_scriber_ispred4_scannet_sppider1692711989_668405arch2X16/"
+model_path = (
+    "model/keras_classifier_scriber_ispred4_scannet_sppider1692711989_668405arch2X16/"
+)
 
 
 class ModelPredict:
-
     def mean_calculator(df):
 
         """
-        Decides the active residues  by calculating the mean of the values provided for predictors 
+        Decides the active residues  by calculating the mean of the values provided for predictors
 
         Parameters
         ------
@@ -25,7 +26,7 @@ class ModelPredict:
         ------
         mean_preds:
             list of mean prediction values for each residue in the correct order
-        
+
         """
 
         mean_preds = []

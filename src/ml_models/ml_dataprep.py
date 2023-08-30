@@ -1,5 +1,4 @@
 import pandas as pd
-
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
@@ -29,7 +28,7 @@ class DataPrep:
         y_under : list
             Undersampled list of ground truths
         """
-        #sampler = RandomUnderSampler(sampling_strategy="majority")
+        # sampler = RandomUnderSampler(sampling_strategy="majority")
         sampler = RandomOverSampler(sampling_strategy="minority")
         scaler = StandardScaler()
 
@@ -48,13 +47,7 @@ class DataPrep:
         pred_path="/Users/erdemkertmen/Desktop/combined_dataset_r_u/master.csv",
         sampler=True,
         scale=False,
-        predictors=[
-            "scriber",
-            "ispred4",
-            "sppider",
-            "scannet",
-            "arctic3d_interaction"
-        ],
+        predictors=["scriber", "ispred4", "sppider", "scannet", "arctic3d_interaction"],
     ):
         """
         Split a dataset into a train and test set.
@@ -110,21 +103,21 @@ class DataPrep:
                 "sppider",
                 # "csm_potential",
                 "scannet",
-                "arctic3d_interaction"
+                "arctic3d_interaction",
             ],
             skiprows=1,
         )
-        #print(train)
+        # print(train)
 
         for name in train:
             if name not in predictors and name != "arctic3d_interaction":
                 train.pop(name)
 
-        #train.pop("residue")
+        # train.pop("residue")
         features = train.copy(deep=True)
         labels = features.pop("arctic3d_interaction")
-        #print(features)
-        #print(labels)
+        # print(features)
+        # print(labels)
 
         if sampler:
             # create imblanced train-test splits
@@ -140,8 +133,8 @@ class DataPrep:
             X_train, X_test, y_train, y_test = train_test_split(
                 features, labels, test_size=0.2
             )
-        #print(X_train)
-        #print(X_test)
-        #print(y_train.value_counts())
-        #print(y_test.value_counts())
+        # print(X_train)
+        # print(X_test)
+        # print(y_train.value_counts())
+        # print(y_test.value_counts())
         return X_train, X_test, y_train, y_test, features, labels

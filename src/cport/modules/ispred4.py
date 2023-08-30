@@ -104,7 +104,7 @@ class Ispred4:
             job_id = re.findall(r"id=(.*)", str(url))[0]
 
         completed = False
-        #print(str(browser.page))
+        # print(str(browser.page))
         while not completed:
             # Check if the completion time has replaced the placeholder string
             # https://regex101.com/r/fK3U6b/1
@@ -179,7 +179,9 @@ class Ispred4:
                     [int(row.ResNum), float(row.Probability)]
                 )
             elif row.Inter == "no":
-                prediction_dict["passive"].append([int(row.ResNum), float(row.Probability)])
+                prediction_dict["passive"].append(
+                    [int(row.ResNum), float(row.Probability)]
+                )
 
         return prediction_dict
 
