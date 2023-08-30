@@ -169,7 +169,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         except Exception as thrown_exception:
             log.error(f"Error running {predictor}")
             log.error(thrown_exception)
-            sys.exit()
+            sys.exit(1)
 
     for predictor in threads:
         # retrieve results from predictions with modified join
@@ -185,8 +185,8 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         chain_id=chain_id,
     )
 
-    pred_res = ModelPredict.read_pred(path=save_file)
-    prediction, probabilities, predict_residue = ModelPredict.prediction(pred_res)
+    pred_res = ModelPredict.read_pred(path=save_file)  # type: ignore
+    prediction, probabilities, predict_residue = ModelPredict.prediction(pred_res)  # type: ignore
     output_dic = {}
 
     probabilities_edit = []
