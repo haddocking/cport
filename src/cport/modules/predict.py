@@ -5,13 +5,43 @@ import numpy as np
 import pandas as pd
 from tensorflow import keras
 
-# best model uses scriber, ispred4, sppider, csm-potential, and scannet
-model_path = "model/keras_classifier_scriber_ispred4_sppider_csm_potential_scannet/"
+# best model uses scriber, ispred4, sppider, and scannet
+model_path = "model/keras_classifier_scriber_ispred4_scannet_sppider1692711989_668405arch2X16/"
 
 
 class ModelPredict:
+
+    def mean_calculator(df):
+
+        """
+        Decides the active residues  by calculating the mean of the values provided for predictors 
+
+        Parameters
+        ------
+        df:
+            dataframe of predictors and the values for each residue
+
+        Outputs
+        ------
+        mean_preds:
+            list of mean prediction values for each residue in the correct order
+        
+        """
+
+        mean_preds = []
+        for i, row in df.iterrows():
+            value = 0.0
+            value += row["scriber"]
+            value += row["sppider"]
+            value += row["ispred4"]
+            value += row["scannet"]
+            value = value / 4
+            mean_preds.append(value)
+        return mean_preds
+
     def read_pred(path):
-        with open(path, "r") as pred:
+
+        with open(path, "r", encoding="utf-8-sig") as pred:
             reader = csv.reader(pred)
             pred_dict = {rows[0]: rows for rows in reader}
 
@@ -61,7 +91,7 @@ class ModelPredict:
         predictions : dict
             Predictions made by the different servers.
         threshold : int
-            Value to use as a threshold, defaults to 0.8.
+            Value to use as a threshold, defaults to 0.6.
 
         Returns
         -------
@@ -74,8 +104,12 @@ class ModelPredict:
         pred = pd.DataFrame(pred_dict)
         model = keras.models.load_model(model_path)
         # FIX THE LAYOUT OF THE PREDICTION DICT
-        probabilities = model.predict(pred)
 
-        results = [1 if prob > threshold else 0 for prob in np.ravel(probabilities)]
+        print(pred)
 
-        return results, probabilities, predictor
+        cport_scores = model.predict(pred)
+        mean_scores = ModelPredict.mean_calculator(pred)
+
+        results = [1 if prob > threshold else 0 for prob in np.ravel(cport_scores)]
+
+        return results, cport_scores, predictor, mean_scores

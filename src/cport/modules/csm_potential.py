@@ -1,4 +1,5 @@
 """CSM_POTENTIAL module for API interaction."""
+import argparse
 import json
 import logging
 import sys
@@ -48,18 +49,20 @@ class CsmPotential:
             prediction results.
 
         """
-        data = {"pdb_file": open(self.pdb_file)}
+        data = {"pdb_file": self.pdb_file}
 
-        req = requests.post(CSM_POTENTIAL_URL, files=data)
+        print(CSM_POTENTIAL_URL)
+        req = requests.post(CSM_POTENTIAL_URL, data=data)
+        print(req)
+        print(req.json)
 
-        response = req.json()
+        response = req.json
         if response["job_id"]:
             # successful submission
             job_id = response["job_id"]
         else:
             # failed submission
             sys.exit()
-
         return job_id
 
     def retrieve_prediction(self, job_id=None):

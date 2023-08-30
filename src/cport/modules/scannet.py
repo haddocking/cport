@@ -60,7 +60,7 @@ class ScanNet:
         browser.follow_link(browser.links()[7])
         processing_url = browser.get_url()
         log.debug(f"The url being looked at: {processing_url}")
-
+        print(processing_url)
         return processing_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
@@ -134,16 +134,19 @@ class ScanNet:
             browser.open(url)
             # page contains PDB file as a string with results in b_factor column
             pdb_string = re.findall(
-                r"stringContainingTheWholePdbFile = (.*?);",
+                r"stringContainingTheWholePdbFile = `(.*?)`",
                 str(browser.page),
                 re.DOTALL,
-            )[0]
-
-            structure = parser.get_structure("pdb", io.StringIO(pdb_string))
+            )
+            # print(pdb_string)
+            # print(pdb_string[0])
+            structure = parser.get_structure("pdb", io.StringIO(pdb_string[0]))
 
         else:
             structure = parser.get_structure("pdb", test_file)
-
+        print()
+        print(structure[0])
+        print()
         model = structure[0]
         chain = model[self.chain_id]
 
@@ -157,7 +160,7 @@ class ScanNet:
             if b_fact >= 0.5:
                 prediction_dict["active"].append([res.id[1], b_fact])
             else:
-                prediction_dict["passive"].append(res.id[1])
+                prediction_dict["passive"].append([res.id[1], b_fact])
 
         return prediction_dict
 

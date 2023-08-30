@@ -54,3 +54,84 @@ Please have a look at [CONTRIBUTE](CONTRIBUTING.md)
 ## How to get Support
 
 If you encounter a bug or would like to request a feature, please open an ISSUE or a PR.
+
+
+# CPORT2.0: Consensus Prediction Of interface Residues in Transient complexes version 2.0
+
+CPORT2.0 is developed to obtain the interface residues of proteins for protein docking, using the predictions of several webservers and a deep neural network. The current model implemented in this version of CPORT2.0 uses the webservers of SCRIBER, SCANNET, ISPRED4, and SPPIDER. 
+
+| Server                                                           | Used | Implemented |
+| ---------------------------------------------------------------- | ------ | ----------- |
+| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🔴     |             |
+| [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/)            | 🟢     | ✔️          |
+| [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢     | ✔️          |
+| [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
+| [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html)           | 🔴     | ✔️          |
+| [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🔴     |             |
+| [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🔴     | ✔️          |
+| [PredictProtein](https://predictprotein.org)                     | 🔴     | ✔️          |
+| [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🔴     | ✔️          |
+| [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🔴     | ✔️ (Server not available) |
+| [ScanNet](http://bioinfo3d.cs.tau.ac.il/ScanNet/index_real.html) | 🟢     | ✔️          |
+
+
+## Data Preparetion
+
+The training and validation data can be found in "cport/data".
+Scripts for data preparetion step can be found in "cport/src/data_prep". 
+
+***prepare_training_data.py***: This script is used for combining the retrieved predictions of the receptors in BM5 and ARCTIC3D interface residues, and create a master ".csv" file for training the machine learning model.
+
+***prepare_validation_data.py***: This script is used for combining the retrieved predictions of the Alphafold reference structures of the ligands in the BM5 and ARCTIC3D interface residues, and create a master ".csv" file for validating the machine learning model.
+
+***filter_pdb.py***: This script is used on the AlphaFold validation data to distinguish between the residues according to their b-factor values. The residues with a b-factor value higher than 0.8 and below 0.8 are seperated and used for creating 2 different master ".csv" files. This is performed because the residues with lower b-factor values were not reliable for validation. 
+
+
+## Machine Learning Model
+
+Scripts related to the machine learning model can be found in "cport/src/ml_models".
+
+***ml_dataprep.py***: This script contains the codes for utilities used in building the model such as handling imbalance in the data, splitting the data into train-test data, etc. The default model is built and trained without any sampling on the data, with the ratio of the labels 0 and 1 being 2/1. If desired, the sampler can be used, created in lines 32-33. 
+
+***tf_class.py***: This is the script where the model is built and trained with the proper data. 
+The model is built with certain parameters to maximize the efficiency of the predictions, considering the amount of the features and the training data. These parameters can be adjusted and a new model can be created by modifiying the following lines as desired:
+
+line 44 -> modify units=16
+
+line 47 -> modify loop variable to create more layers
+
+line 48 -> modify units=16
+
+line 55 -> modify learning_rate=1e-2
+
+
+After the model has been built and trained, the model and the analysis graphs are saved into the path given in line 92. 
+The training data for the model can be changed by changing the "pred_path" parameter in line 68.
+The sampling method can be modified by changing the "sampler" parameter in line 69
+
+***alphafold_data_prediction.py***: This script is used to analyze the created model using the validation data of AlphaFold proteins. 
+
+
+## Using CPORT2.0
+
+CPORT2.0 can be used with the command;
+
+```text
+cport path/to/file/1PPE.pdb E
+```
+
+with providing the path of the PDB file of the protein and the corresponding chain that the interface residues are wanted. 
+
+### Estimating Time
+
+Since CPORT2.0 uses several different webservers to get the probabilites of the residues being interface residues, the time to obtain the results from the webservers vary according to the length of the protein chain. It can be said that it approximately tkaes 5-15 mins, regarding the length of the chain. 
+
+After all of the predictions are obtained, the pre-trained model predicts the probability of the residues being interface residues for each of them, which takes less than a minute.  
+
+### Output Format
+
+CPORT2.0 outputs 2 files after finishes running. 
+
+The name of the first file is syntaxed as "predictors_\*w_values.csv", and contains the results obtained from different predictors and the scores for residues. 
+
+The second file is called "cport_\*w_values.csv" and contains the main output of CPORT2.0, a csv file with each residue as rows and "residue number", "cport_scores", and "threshold_pred" as columns. "cport_scores" column has the scores that the machine learning model assigned to each residue, and "threshold_pred" has a binary classification of the residues according to their "cport_scores" being higher or lower than a threshold value (0.4 by default). 

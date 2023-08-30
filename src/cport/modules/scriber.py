@@ -191,7 +191,7 @@ class Scriber:
             ):  # uppercase denotes a predicted interaction
                 prediction_dict["active"].append([row.ResidueNumber, row.ResidueScore])
             elif str.islower(row.ResidueType):
-                prediction_dict["passive"].append(row.ResidueNumber)
+                prediction_dict["passive"].append([row.ResidueNumber, row.ResidueScore])
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"

@@ -150,30 +150,34 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
     """
     standardized_dic = standardize_residues(result_dic, chain_id, pdb_file)
     reslist = get_residue_range(standardized_dic)
+    # print(reslist)
     data = []
     for pred in result_dic:
         row = [pred]
 
         if pred in scored_predictors:
             active_list = [x[0] for x in result_dic[pred]["active"]]
+            passive_list = [x[0] for x in result_dic[pred]["passive"]]
 
             for res in reslist:
                 is_passive = None
                 is_active = None
 
-                if res in result_dic[pred]["passive"]:
+                if res in passive_list:
                     is_passive = True
+                    score = result_dic[pred]["passive"][passive_list.index(res)][1]
 
                 if res in active_list:
                     is_active = True
                     score = result_dic[pred]["active"][active_list.index(res)][1]
+                    # print(res, score)
 
                 if is_active and is_passive:
-                    row.append("AP")
+                    row.append(str(score))
                 elif is_active:
                     row.append(str(score))
                 elif is_passive:
-                    row.append("P")
+                    row.append(str(score))
                 else:
                     row.append("-")
             # print(row)
@@ -220,17 +224,20 @@ def get_residue_range(result_dic):
         The list of residues.
 
     """
-    passive_reslist = list(
+    """passive_reslist = list(
         itertools.chain(*[result_dic[e]["passive"] for e in result_dic])
-    )
+    )"""
 
     # due to the scored predictors using tuples, the extraction is different
     active_reslist = []
+    passive_reslist = []
     for pred in result_dic:
         if pred in scored_predictors:
             active_reslist += [x[0] for x in result_dic[pred]["active"]]
+            passive_reslist += [x[0] for x in result_dic[pred]["passive"]]
         else:
             active_reslist += [x for x in result_dic[pred]["active"]]
+            passive_reslist += [x for x in result_dic[pred]["passive"]]
 
     reslist = passive_reslist + active_reslist
     absolute_range = list(range(min(reslist), max(reslist) + 1))
@@ -275,7 +282,7 @@ def standardize_residues(result_dic, chain_id, pdb_file):
                 for index in enumerate(result_dic[pred]["active"]):
                     result_dic[pred]["active"][index[0]][0] += bias
                 for index in enumerate(result_dic[pred]["passive"]):
-                    result_dic[pred]["passive"][index[0]] += bias
+                    result_dic[pred]["passive"][index[0]][0] += bias
 
     # find any missing items from the residue list in the PDB file
     missing_list = []

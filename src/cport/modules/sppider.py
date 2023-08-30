@@ -117,6 +117,7 @@ class Sppider:
         #  soup browser is an exception so url needs to be extracted and opened
         #  to function
         # https://regex101.com/r/Izy7PR/1
+        #print(str(browser.page))
         new_url = re.findall(r"URL=(.*?=int)", str(browser.page))[0]
 
         browser.close()
@@ -174,7 +175,11 @@ class Sppider:
 
             for item in prediction["active"]:
                 prediction_dict["active"].append(int(item))
-
+        """
+        for i in range(1, 246):
+            if i not in prediction_dict["active"]:
+                prediction_dict["passive"].append(i)
+        """
         return prediction_dict
 
     def run(self):
