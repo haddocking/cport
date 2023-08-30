@@ -186,7 +186,9 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     )
 
     pred_res = ModelPredict.read_pred(path=save_file)  # type: ignore
-    prediction, probabilities, predict_residue = ModelPredict.prediction(pred_res)  # type: ignore
+    prediction, probabilities, predict_residue = ModelPredict.prediction(
+        pred_res  # type: ignore
+    )
     output_dic = {}
 
     probabilities_edit = []
