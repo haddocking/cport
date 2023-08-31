@@ -4,9 +4,13 @@ import logging
 import re
 import sys
 import time
+import warnings
 
 import mechanicalsoup as ms
-from Bio import PDB
+from Bio import PDB, BiopythonWarning
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", BiopythonWarning)
 
 from cport.url import SCANNET_URL
 
