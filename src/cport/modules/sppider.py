@@ -49,9 +49,9 @@ class Sppider:
         browser.open(SPPIDER_URL)
 
         sppider_form = browser.select_form()
-        sppider_form.set(name="PDBFileName", value=self.pdb_file)
-
-        browser.submit_selected()
+        with open(self.pdb_file, "rb") as file_obj:
+            sppider_form.set(name="PDBFileName", value=file_obj)
+            browser.submit_selected()
 
         sppider_links = browser.links()
         browser.follow_link(sppider_links[0])

@@ -16,9 +16,10 @@ def csm_potential():
     yield CsmPotential("tests/test_data/1PPE.pdb", "E")
 
 
-@pytest.mark.skip("Cannot guarantee that the CSM-Potential server is up")
-def test_submit():
-    pass
+@pytest.mark.skip("CSM-Potential is not working")
+def test_submit(csm_potential):
+    summary_url = csm_potential.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_parse_prediction(csm_potential, precalc_result):
