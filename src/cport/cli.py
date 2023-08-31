@@ -199,7 +199,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
             missing_predictors.append(predictor)
 
     if len(missing_predictors) != 0:
-        log.info(f"Not all needed predictors returned a result, skipping ML model.")
+        log.info("Not all needed predictors returned a result, skipping ML model.")
         log.info("Missing predictors: " + ", ".join(missing_predictors))
         sys.exit(0)
 
