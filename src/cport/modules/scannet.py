@@ -4,9 +4,13 @@ import logging
 import re
 import sys
 import time
+import warnings
 
 import mechanicalsoup as ms
-from Bio import PDB
+from Bio import PDB, BiopythonWarning
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", BiopythonWarning)
 
 from cport.url import SCANNET_URL
 
@@ -52,10 +56,11 @@ class ScanNet:
         browser.open(SCANNET_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="PDBfile", value=self.pdb_file)
         input_form.set(name="email", value="validmail@trustme.yes")
         input_form.set(name="chain", value=self.chain_id)
-        browser.submit_selected()
+        with open(self.pdb_file, "rb") as file_obj:
+            input_form.set(name="PDBfile", value=file_obj)
+            browser.submit_selected()
 
         browser.follow_link(browser.links()[7])
         processing_url = browser.get_url()

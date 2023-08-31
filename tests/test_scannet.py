@@ -16,9 +16,10 @@ def scannet():
     yield ScanNet("tests/test_data/1PPE.pdb", "A")
 
 
-@pytest.mark.skip("Cannot guarantee that the cons-PPISP server is up")
-def test_submit():
-    pass
+@pytest.mark.skip("server is down")
+def test_submit(scannet):
+    summary_url = scannet.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_retrieve_prediction_link(scannet):

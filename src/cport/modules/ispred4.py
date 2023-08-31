@@ -52,12 +52,14 @@ class Ispred4:
         browser.open(ISPRED4_URL)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="structure", value=self.pdb_file)
         input_form.set(name="ispred_chain", value=self.chain_id)
         input_form.set(
             name="ispred_rsath", value="0.20"
         )  # this is the default value, could be changed for analysis later
-        browser.submit_selected()
+        with open(self.pdb_file, "rb") as file_obj:
+            input_form.set(name="structure", value=file_obj)
+            # input_form.set(name="structure", value=self.pdb_file)
+            browser.submit_selected()
 
         # https://regex101.com/r/KFLLil/1
         job_id = re.findall(r"Jobid:.*?;\">(.*?)</div>", str(browser.page))[0]
@@ -145,7 +147,6 @@ class Ispred4:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        # trunk-ignore(bandit/B310)
         request.urlretrieve(download_link, temp_file.name)
         return temp_file.name
 

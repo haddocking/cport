@@ -1,0 +1,14 @@
+coverage:
+  round: up
+  range: 0..10
+  precision: 2
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 0%
+        informational: false
+        only_pulls: false
+        paths:
+          - ^src.*
+        if_ci_failed: error

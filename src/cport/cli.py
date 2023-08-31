@@ -178,7 +178,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         except Exception as thrown_exception:
             log.error(f"Error running {predictor}")
             log.error(thrown_exception)
-            sys.exit()
+            sys.exit(1)
 
     for predictor in threads:
         # retrieve results from predictions with modified join

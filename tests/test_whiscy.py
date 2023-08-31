@@ -9,9 +9,10 @@ def whiscy():
     yield Whiscy("tests/test_data/1PPE.pdb", "E")
 
 
-@pytest.mark.skip("Cannot test the submission")
+@pytest.mark.skip("FIXME: Split into smaller tests")
 def test_submit(whiscy):
-    pass
+    summary_url = whiscy.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_retrieve_prediction(whiscy):
