@@ -224,9 +224,6 @@ def get_residue_range(result_dic):
         The list of residues.
 
     """
-    """passive_reslist = list(
-        itertools.chain(*[result_dic[e]["passive"] for e in result_dic])
-    )"""
 
     # due to the scored predictors using tuples, the extraction is different
     active_reslist = []
