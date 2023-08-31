@@ -16,7 +16,7 @@ def mean_calculator(
         value = 0.0
         for predictor in target_predictors:
             value += row[predictor]
-        value = value / 4
+        value = value / len(target_predictors)
         mean_preds.append(value)
     return mean_preds
 
@@ -93,12 +93,14 @@ def scriber_ispred4_sppider_csm_potential_scannet(prediction_csv: str, threshold
     output_dic["probabilities"] = probabilities_edit
     output_dic["residue"] = residue_edit
 
-    save_file = "output/cport_something.csv"
+    save_file = "output/cport_ML_scriber_ispred4_sppider_csm_potential_scannet.csv"
     out_csv = pd.DataFrame(output_dic)
     out_csv.to_csv(save_file)
 
 
-def scriber_ispred4_scannet_sppider(prediction_csv, threshold=0.6):
+def scriber_ispred4_scannet_sppider(
+    prediction_csv: str, threshold: float = 0.6
+) -> None:
     """Apply the `scriber_ispred4_scannet_sppider` model."""
     pred_res = read_pred(path=prediction_csv)
     model_path = (
@@ -129,6 +131,6 @@ def scriber_ispred4_scannet_sppider(prediction_csv, threshold=0.6):
     output_dic["threshold_pred"] = prediction
     output_dic["mean_scores"] = mean_scores
 
-    save_file = "output/cport_something_else.csv"
+    save_file = "output/cport_ML_scriber_ispred4_scannet_sppider.csv"
     out_csv = pd.DataFrame(output_dic)
     out_csv.to_csv(save_file)
