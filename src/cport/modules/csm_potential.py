@@ -48,9 +48,9 @@ class CsmPotential:
             prediction results.
 
         """
-        data = {"pdb_file": open(self.pdb_file)}
+        data = {"pdb_file": self.pdb_file}
 
-        req = requests.post(CSM_POTENTIAL_URL, files=data)
+        req = requests.post(CSM_POTENTIAL_URL, data=data)
 
         response = req.json()
         if "job_id" in response:
@@ -59,7 +59,6 @@ class CsmPotential:
         else:
             # failed submission
             sys.exit()
-
         return job_id
 
     def retrieve_prediction(self, job_id=None):

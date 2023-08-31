@@ -5,10 +5,11 @@ import logging
 import sys
 from pathlib import Path
 
-import pandas as pd
-
 from cport.modules.loader import run_prediction
-from cport.modules.predict import make_prediction, read_pred
+from cport.modules.predict import (
+    scriber_ispred4_scannet_sppider,
+    scriber_ispred4_sppider_csm_potential_scannet,
+)
 from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
@@ -24,6 +25,15 @@ log.addHandler(ch)
 
 
 CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
+
+ML_PREDICTION = {
+    scriber_ispred4_scannet_sppider: {
+        "needed": ["scriber", "ispred4", "scannet", "sppider"],
+    },
+    scriber_ispred4_sppider_csm_potential_scannet: {
+        "needed": ["scriber", "ispred4", "scannet", "sppider", "csm_potential"],
+    },
+}
 
 # ===========================================================================================================
 # Define arguments
@@ -134,6 +144,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     log.info("-" * 42)
 
     # Run predictors #================================================================#
+
     data = {
         "pdb_id": pdb_id,
         "chain_id": chain_id,
@@ -148,10 +159,9 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     if "validated" in pred:
         pred = [
             "scriber",
-            "ispred4",
             "sppider",
-            "csm_potential",
             "scannet",
+            "ispred4",
         ]
 
     threads = {}
@@ -176,11 +186,9 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         result_dic[predictor] = threads[predictor].join()
 
     # Ouput results #==================================================================#
-    output_dir = Path("output")
-    if not output_dir.exists():
-        output_dir.mkdir(parents=True, exist_ok=True)
+    filename = Path(pdb_file)
 
-    save_file = Path(output_dir, f"{ Path(pdb_file).stem}.csv")
+    save_file = "output/predictors_" + filename.stem + ".csv"
     format_output(
         result_dic,
         output_fname=save_file,
@@ -189,39 +197,18 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     )
 
     # Use the ML model to make the prediction #========================================#
-    # The model is trained on the following predictors: scriber, ispred4, sppider,
-    #  csm-potential, and scannet
-    # So we can only use the ML model if these predictors retuned a result.
-    needed_predictors = ["scriber", "ispred4", "sppider", "csm_potential", "scannet"]
-    missing_predictors = []
-    for predictor in needed_predictors:
-        if predictor not in result_dic:
-            missing_predictors.append(predictor)
-
-    if len(missing_predictors) != 0:
-        log.info("Not all needed predictors returned a result, skipping ML model.")
-        log.info("Missing predictors: " + ", ".join(missing_predictors))
-        sys.exit(0)
-
-    pred_res = read_pred(path=str(save_file))
-    prediction, probabilities, predict_residue = make_prediction(pred_res)
-    output_dic = {}
-
-    probabilities_edit = []
-    residue_edit = []
-    for item in probabilities.tolist():
-        probabilities_edit.append(item[0])
-
-    for item in predict_residue:
-        residue_edit.append(int(item))
-
-    output_dic["threshold_pred"] = prediction
-    output_dic["probabilities"] = probabilities_edit
-    output_dic["residue"] = residue_edit
-
-    save_file = "output/cport_" + Path(pdb_file).stem + ".csv"
-    out_csv = pd.DataFrame(output_dic)
-    out_csv.to_csv(save_file)
+    for predictor in ML_PREDICTION:
+        # Check if all the features are there
+        if all(item in result_dic for item in ML_PREDICTION[predictor]["needed"]):
+            log.info(f"Running ML predictor {predictor.__name__}")
+            predictor(save_file)
+        else:
+            log.warning(
+                "Not all needed predictors returned a result, skipping ML model."
+            )
+            log.warning(
+                "Missing predictors: " + ", ".join(ML_PREDICTION[predictor]["needed"])
+            )
 
 
 if __name__ == "__main__":

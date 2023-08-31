@@ -121,7 +121,6 @@ class Whiscy:
 
         # https://regex101.com/r/rwcIl8/1
         new_url = re.findall(r"(https:.*)\"", page_text_list)[0]
-        print(new_url)
 
         browser.close()
         # remove file in main directory for cleanliness

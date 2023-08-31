@@ -110,6 +110,7 @@ class Ispred4:
             # Check if the completion time has replaced the placeholder string
             # https://regex101.com/r/fK3U6b/1
             match = re.findall(r">--<", str(browser.page))
+
             if not match:
                 completed = True
             else:
@@ -178,7 +179,9 @@ class Ispred4:
                     [int(row.ResNum), float(row.Probability)]
                 )
             elif row.Inter == "no":
-                prediction_dict["passive"].append(int(row.ResNum))
+                prediction_dict["passive"].append(
+                    [int(row.ResNum), float(row.Probability)]
+                )
 
         return prediction_dict
 

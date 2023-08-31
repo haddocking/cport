@@ -142,7 +142,6 @@ class Scriber:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        # trunk-ignore(bandit/B310)
         request.urlretrieve(download_link, temp_file.name)
         return temp_file.name
 
@@ -191,7 +190,7 @@ class Scriber:
             ):  # uppercase denotes a predicted interaction
                 prediction_dict["active"].append([row.ResidueNumber, row.ResidueScore])
             elif str.islower(row.ResidueType):
-                prediction_dict["passive"].append(row.ResidueNumber)
+                prediction_dict["passive"].append([row.ResidueNumber, row.ResidueScore])
             else:
                 log.warning(
                     f"There appears that residue {row} is either empty or unprocessable"
