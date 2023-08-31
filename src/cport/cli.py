@@ -189,9 +189,20 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     )
 
     # Use the ML model to make the prediction #========================================#
-    # The model is trained on the following predictors: scriber, ispred4, sppider, csm-potential, and scannet
-    #
+    # The model is trained on the following predictors: scriber, ispred4, sppider,
+    #  csm-potential, and scannet
     # So we can only use the ML model if these predictors retuned a result.
+    needed_predictors = ["scriber", "ispred4", "sppider", "csm_potential", "scannet"]
+    missing_predictors = []
+    for predictor in needed_predictors:
+        if predictor not in result_dic:
+            missing_predictors.append(predictor)
+
+    if len(missing_predictors) != 0:
+        log.info(f"Not all needed predictors returned a result, skipping ML model.")
+        log.info("Missing predictors: " + ", ".join(missing_predictors))
+        sys.exit(0)
+
     pred_res = read_pred(path=save_file)
     prediction, probabilities, predict_residue = make_prediction(pred_res)
     output_dic = {}
@@ -208,7 +219,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     output_dic["probabilities"] = probabilities_edit
     output_dic["residue"] = residue_edit
 
-    save_file = "output/cport_" + filename.stem + ".csv"
+    save_file = "output/cport_" + Path(pdb_file).stem + ".csv"
     out_csv = pd.DataFrame(output_dic)
     out_csv.to_csv(save_file)
 
