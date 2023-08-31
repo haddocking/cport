@@ -105,7 +105,6 @@ def get_pdb_from_pdbid(pdb_id):
     """
     target_url = f"{PDB_URL}{pdb_id}.pdb"
     temp_file = tempfile.NamedTemporaryFile(delete=False)
-    # trunk-ignore(bandit/B310)
     request.urlretrieve(target_url, temp_file.name)
 
     pdb_fname = temp_file.name
