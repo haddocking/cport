@@ -10,7 +10,7 @@ model_path = "model/keras_classifier_scriber_ispred4_sppider_csm_potential_scann
 
 
 # class ModelPredict:
-def read_pred(path):
+def read_pred(path: str) -> dict[str, list[str]]:
     with open(path, "r") as pred:
         reader = csv.reader(pred)
         pred_dict = {rows[0]: rows for rows in reader}
@@ -42,9 +42,9 @@ def format_predictions(pred_int_dict):
             for entry in pred_int_dict[pred]:
                 if entry == "P" or entry == "-" or entry == 0:
                     pred_int_dict[pred][key] = 0
-                if entry == "A":
+                elif entry == "A":
                     pred_int_dict[pred][key] = 1
-                if entry == "AP":
+                elif entry == "AP":
                     pred_int_dict[pred][key] = 0.5
                 else:
                     temp_pred = pred_int_dict[pred][key]
