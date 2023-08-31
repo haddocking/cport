@@ -154,7 +154,6 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
     """
     standardized_dic = standardize_residues(result_dic, chain_id, pdb_file)
     reslist = get_residue_range(standardized_dic)
-    # print(reslist)
     data = []
     for pred in result_dic:
         row = [pred]
@@ -174,7 +173,6 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
                 if res in active_list:
                     is_active = True
                     score = result_dic[pred]["active"][active_list.index(res)][1]
-                    # print(res, score)
 
                 if is_active and is_passive:
                     row.append(str(score))
@@ -184,7 +182,6 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
                     row.append(str(score))
                 else:
                     row.append("-")
-            # print(row)
             data.append(row)
 
         else:
@@ -206,7 +203,6 @@ def format_output(result_dic, output_fname, pdb_file, chain_id):
                     row.append("P")
                 else:
                     row.append("-")
-            # print(row)
             data.append(row)
 
     output_df = pd.DataFrame(data, columns=["predictor"] + reslist)

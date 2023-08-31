@@ -15,7 +15,6 @@ with warnings.catch_warnings():
 from cport.url import SCANNET_URL
 
 log = logging.getLogger("cportlog")
-result_url = "http://bioinfo3d.cs.tau.ac.il/ScanNet/results/0407500892.html"
 
 # Total wait (seconds) = WAIT_INTERVAL * NUM_RETRIES
 WAIT_INTERVAL = 30  # seconds
@@ -65,7 +64,6 @@ class ScanNet:
         browser.follow_link(browser.links()[7])
         processing_url = browser.get_url()
         log.debug(f"The url being looked at: {processing_url}")
-        print(processing_url)
         return processing_url
 
     def retrieve_prediction_link(self, url=None, page_text=None):
@@ -143,15 +141,11 @@ class ScanNet:
                 str(browser.page),
                 re.DOTALL,
             )
-            # print(pdb_string)
-            # print(pdb_string[0])
             structure = parser.get_structure("pdb", io.StringIO(pdb_string[0]))
 
         else:
             structure = parser.get_structure("pdb", test_file)
-        print()
-        print(structure[0])
-        print()
+
         model = structure[0]
         chain = model[self.chain_id]
 

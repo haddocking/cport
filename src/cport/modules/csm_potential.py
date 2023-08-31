@@ -1,5 +1,4 @@
 """CSM_POTENTIAL module for API interaction."""
-import argparse
 import json
 import logging
 import sys
@@ -51,13 +50,10 @@ class CsmPotential:
         """
         data = {"pdb_file": self.pdb_file}
 
-        print(CSM_POTENTIAL_URL)
         req = requests.post(CSM_POTENTIAL_URL, data=data)
-        print(req)
-        print(req.json)
 
-        response = req.json
-        if response["job_id"]:
+        response = req.json()
+        if "job_id" in response:
             # successful submission
             job_id = response["job_id"]
         else:
