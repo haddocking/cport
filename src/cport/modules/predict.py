@@ -1,5 +1,6 @@
 """Trained model prediction."""
 import csv
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -93,6 +94,9 @@ def scriber_ispred4_sppider_csm_potential_scannet(prediction_csv: str, threshold
     output_dic["probabilities"] = probabilities_edit
     output_dic["residue"] = residue_edit
 
+    if not Path("output").exists():
+        Path("output").mkdir()
+
     save_file = "output/cport_ML_scriber_ispred4_sppider_csm_potential_scannet.csv"
     out_csv = pd.DataFrame(output_dic)
     out_csv.to_csv(save_file)
@@ -130,6 +134,9 @@ def scriber_ispred4_scannet_sppider(
     output_dic["cport_scores"] = cport_scores
     output_dic["threshold_pred"] = prediction
     output_dic["mean_scores"] = mean_scores
+
+    if not Path("output").exists():
+        Path("output").mkdir()
 
     save_file = "output/cport_ML_scriber_ispred4_scannet_sppider.csv"
     out_csv = pd.DataFrame(output_dic)
