@@ -1,7 +1,6 @@
 import os
 import tempfile
 
-import numpy as np
 import pytest
 
 from cport.modules.predict import format_predictions, read_pred
