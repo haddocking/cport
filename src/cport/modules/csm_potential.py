@@ -53,7 +53,7 @@ class CsmPotential:
         req = requests.post(CSM_POTENTIAL_URL, files=data)
 
         response = req.json()
-        if response["job_id"]:
+        if "job_id" in response:
             # successful submission
             job_id = response["job_id"]
         else:

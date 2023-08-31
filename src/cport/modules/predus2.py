@@ -68,8 +68,9 @@ class Predus2:
         browser.open(PREDUS2_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="userfile", value=filename)
-        browser.submit_selected()
+        with open(filename, "rb") as file_obj:
+            input_form.set(name="userfile", value=file_obj)
+            browser.submit_selected()
 
         # finds the submission url from the many links present on the page
         # https://regex101.com/r/Do6b51/1

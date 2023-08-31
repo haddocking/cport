@@ -16,9 +16,9 @@ def cons_ppisp():
     yield ConsPPISP("tests/test_data/1PPE.pdb", "E")
 
 
-@pytest.mark.skip("Cannot guarantee that the cons-PPISP server is up")
-def test_submit():
-    pass
+def test_submit(cons_ppisp):
+    summary_url = cons_ppisp.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_retrieve_prediction_link(cons_ppisp):

@@ -16,9 +16,9 @@ def psiver():
     yield Psiver("tests/test_data/1PPE.pdb", "E")
 
 
-@pytest.mark.skip("Cannot guarantee that the PSIVER server is up")
-def test_submit():
-    pass
+def test_submit(psiver):
+    summary_url = psiver.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_retrieve_prediction_link(psiver):

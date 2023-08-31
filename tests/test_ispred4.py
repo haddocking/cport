@@ -17,9 +17,9 @@ def ispred4():
     yield Ispred4("tests/test_data/1PPE.pdb", "E")
 
 
-@pytest.mark.skip("Cannot guarantee that the ISPRED4 server is up")
-def test_submit():
-    pass
+def test_submit(ispred4):
+    summary_url = ispred4.submit()
+    assert isinstance(summary_url, str)
 
 
 def test_retrieve_prediction_link(ispred4):

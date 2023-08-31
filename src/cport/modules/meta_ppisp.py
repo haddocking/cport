@@ -63,8 +63,9 @@ class MetaPPISP:
         input_form.set(name="submitter", value=str(self.chain_id))
         input_form.set(name="emailAddr", value="validmail@trustme.yes")
         input_form.set(name="pChain", value=self.chain_id)
-        input_form.set(name="userfile", value=self.pdb_file)
-        browser.submit_selected()
+        with open(self.pdb_file, "rb") as file_obj:
+            input_form.set(name="userfile", value=file_obj)
+            browser.submit_selected()
 
         # https://regex101.com/r/FBgZFE/1
         processing_url = re.findall(r"<a href=\"(.*)\">this link<", str(browser.page))[
