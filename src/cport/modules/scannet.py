@@ -52,10 +52,11 @@ class ScanNet:
         browser.open(SCANNET_URL, verify=False)
 
         input_form = browser.select_form(nr=0)
-        input_form.set(name="PDBfile", value=self.pdb_file)
         input_form.set(name="email", value="validmail@trustme.yes")
         input_form.set(name="chain", value=self.chain_id)
-        browser.submit_selected()
+        with open(self.pdb_file, "rb") as file_obj:
+            input_form.set(name="PDBfile", value=file_obj)
+            browser.submit_selected()
 
         browser.follow_link(browser.links()[7])
         processing_url = browser.get_url()
