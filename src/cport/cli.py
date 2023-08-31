@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from cport.modules.loader import run_prediction
-from cport.modules.predict import ModelPredict
+from cport.modules.predict import make_prediction, read_pred
 from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
@@ -176,8 +176,11 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         result_dic[predictor] = threads[predictor].join()
 
     # Ouput results #==================================================================#
-    filename = Path(pdb_file)
-    save_file = "output/predictors_" + filename.stem + ".csv"
+    output_dir = Path("output")
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+    save_file = Path(output_dir, f"{ Path(pdb_file).stem}.csv")
     format_output(
         result_dic,
         output_fname=save_file,
@@ -185,10 +188,12 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         chain_id=chain_id,
     )
 
-    pred_res = ModelPredict.read_pred(path=save_file)  # type: ignore
-    prediction, probabilities, predict_residue = ModelPredict.prediction(
-        pred_res  # type: ignore
-    )
+    # Use the ML model to make the prediction #========================================#
+    # The model is trained on the following predictors: scriber, ispred4, sppider, csm-potential, and scannet
+    #
+    # So we can only use the ML model if these predictors retuned a result.
+    pred_res = read_pred(path=save_file)
+    prediction, probabilities, predict_residue = make_prediction(pred_res)
     output_dic = {}
 
     probabilities_edit = []
