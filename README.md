@@ -49,6 +49,8 @@ cport path/to/file/1PPE.pdb E
 
 ## Machine Learning based consensus prediction of interface residues
 
+See all related data at https://github.com/haddocking/cport-data
+
 #### `scriber_ispred4_sppider_csm_potential_scannet`
 
 _pending_
