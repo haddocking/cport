@@ -1,5 +1,4 @@
 """Utilities for CPORT."""
-import itertools
 import logging
 import os
 import re

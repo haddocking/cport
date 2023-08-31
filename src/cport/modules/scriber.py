@@ -142,7 +142,6 @@ class Scriber:
 
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False)
-        # trunk-ignore(bandit/B310)
         request.urlretrieve(download_link, temp_file.name)
         return temp_file.name
 
