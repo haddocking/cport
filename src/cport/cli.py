@@ -203,7 +203,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         log.info("Missing predictors: " + ", ".join(missing_predictors))
         sys.exit(0)
 
-    pred_res = read_pred(path=save_file)
+    pred_res = read_pred(path=str(save_file))
     prediction, probabilities, predict_residue = make_prediction(pred_res)
     output_dic = {}
 
