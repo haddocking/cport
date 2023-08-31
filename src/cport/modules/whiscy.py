@@ -5,12 +5,16 @@ import re
 import shutil
 import sys
 import time
+import warnings
 from pathlib import Path
 
 import mechanicalsoup as ms
-from Bio import AlignIO
+from Bio import AlignIO, BiopythonWarning
 from Bio.Blast import NCBIWWW
 from defusedxml import lxml as ET
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", BiopythonWarning)
 
 from cport.modules.utils import get_fasta_from_pdbfile
 from cport.url import WHISCY_URL

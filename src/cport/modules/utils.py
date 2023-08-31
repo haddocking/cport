@@ -5,11 +5,15 @@ import os
 import re
 import sys
 import tempfile
+import warnings
 from urllib import request
 
 import pandas as pd
 import requests
-from Bio import PDB, SeqIO
+from Bio import PDB, BiopythonWarning, SeqIO
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", BiopythonWarning)
 
 from cport.url import PDB_FASTA_URL, PDB_URL
 

@@ -5,7 +5,10 @@ import logging
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 from cport.modules.loader import run_prediction
+from cport.modules.predict import make_prediction, read_pred
 from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
@@ -48,8 +51,8 @@ argument_parser.add_argument(
 argument_parser.add_argument(
     "--pred",
     nargs="+",
-    default=["all"],
-    choices=CONFIG["predictors"] + ["all"] + ["fast"],
+    default=["validated"],
+    choices=CONFIG["predictors"] + ["all"] + ["validated"],
     help="",
 )
 
@@ -142,13 +145,11 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     if "all" in pred:
         pred = CONFIG["predictors"]
 
-    if "fast" in pred:
+    if "validated" in pred:
         pred = [
             "scriber",
             "ispred4",
             "sppider",
-            "cons_ppisp",
-            "predictprotein",
             "csm_potential",
             "scannet",
         ]
@@ -158,7 +159,7 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     # prepare a dict of predictor initializations.
     for predictor in pred:
         threads[predictor] = ThreadReturnVal(
-            target=run_prediction, args=predictor, kwargs=data
+            target=run_prediction, args=predictor, kwargs=data, name=predictor
         )
 
     for predictor in threads:
@@ -168,20 +169,59 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         except Exception as thrown_exception:
             log.error(f"Error running {predictor}")
             log.error(thrown_exception)
-            sys.exit()
+            sys.exit(1)
 
     for predictor in threads:
         # retrieve results from predictions with modified join
         result_dic[predictor] = threads[predictor].join()
 
     # Ouput results #==================================================================#
-    filename = Path(pdb_file)
+    output_dir = Path("output")
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+    save_file = Path(output_dir, f"{ Path(pdb_file).stem}.csv")
     format_output(
         result_dic,
-        output_fname="cport_" + filename.stem + ".csv",
+        output_fname=save_file,
         pdb_file=pdb_file,
         chain_id=chain_id,
     )
+
+    # Use the ML model to make the prediction #========================================#
+    # The model is trained on the following predictors: scriber, ispred4, sppider,
+    #  csm-potential, and scannet
+    # So we can only use the ML model if these predictors retuned a result.
+    needed_predictors = ["scriber", "ispred4", "sppider", "csm_potential", "scannet"]
+    missing_predictors = []
+    for predictor in needed_predictors:
+        if predictor not in result_dic:
+            missing_predictors.append(predictor)
+
+    if len(missing_predictors) != 0:
+        log.info("Not all needed predictors returned a result, skipping ML model.")
+        log.info("Missing predictors: " + ", ".join(missing_predictors))
+        sys.exit(0)
+
+    pred_res = read_pred(path=str(save_file))
+    prediction, probabilities, predict_residue = make_prediction(pred_res)
+    output_dic = {}
+
+    probabilities_edit = []
+    residue_edit = []
+    for item in probabilities.tolist():
+        probabilities_edit.append(item[0])
+
+    for item in predict_residue:
+        residue_edit.append(int(item))
+
+    output_dic["threshold_pred"] = prediction
+    output_dic["probabilities"] = probabilities_edit
+    output_dic["residue"] = residue_edit
+
+    save_file = "output/cport_" + Path(pdb_file).stem + ".csv"
+    out_csv = pd.DataFrame(output_dic)
+    out_csv.to_csv(save_file)
 
 
 if __name__ == "__main__":
