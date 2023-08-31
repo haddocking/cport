@@ -1,6 +1,9 @@
 name: unittests
 
-on: pull_request
+on:
+  push:
+    branches:
+      - "*" # All branches
 
 jobs:
   test:
