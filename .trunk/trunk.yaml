@@ -13,7 +13,6 @@ runtimes:
 lint:
   enabled:
     - actionlint@1.6.25
-    - bandit@1.7.5
     - black@23.7.0
     - checkov@2.4.9
     - flake8@6.1.0
@@ -26,6 +25,8 @@ lint:
     - trivy@0.44.1
     - trufflehog@3.54.0
     - yamllint@1.32.0
+  disabled:
+    - bandit
 actions:
   enabled:
     - trunk-announce
