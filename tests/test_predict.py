@@ -1,9 +1,18 @@
 import os
 import tempfile
+from pathlib import Path
 
+import pandas as pd
 import pytest
 
-from cport.modules.predict import format_predictions, read_pred
+from cport.modules.predict import (
+    format_predictions,
+    mean_calculator,
+    read_pred,
+    scriber_ispred4_scannet_sppider,
+)
+
+DATA_DIR = Path(__file__).parents[1] / "tests/test_data"
 
 
 @pytest.fixture
@@ -20,6 +29,11 @@ def formatted_prediction():
         "predictor": ["1", "2", "3", "4", "5", "6"],
         "ispred4": [0.0, 0.0, 0.5, 0.0, 0.0, 1.7],
     }
+
+
+@pytest.fixture
+def prediction_csv():
+    return Path(DATA_DIR, "predictors_1PPE.csv")
 
 
 @pytest.fixture
@@ -48,5 +62,22 @@ def test_format_predictions(prediction_dic, formatted_prediction):
 
 
 @pytest.mark.skip(reason="Not implemented yet.")
-def test_make_prediction():
+def test_scriber_ispred4_sppider_csm_potential_scannet():
     pass
+
+
+def test_scriber_ispred4_scannet_sppider(prediction_csv):
+    scriber_ispred4_scannet_sppider(prediction_csv)
+    expected_file = Path("output/cport_ML_scriber_ispred4_scannet_sppider.csv")
+    assert expected_file.exists()
+
+
+def test_mean_calculator():
+    df = pd.DataFrame.from_dict(
+        {"col_1": [1.0, 2.0], "col_2": [2.0, 3.0], "col_3": [3.0, 4.0]}
+    )
+
+    observed = mean_calculator(df, ["col_1", "col_2", "col_3"])
+    expected = [2.0, 3.0]
+
+    assert observed == expected
