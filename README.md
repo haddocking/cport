@@ -25,7 +25,7 @@ Please also refer to the original publication:
 
 | Server                                                           | Status | Implemented |
 | ---------------------------------------------------------------- | ------ | ----------- |
-| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🔴     |             |
+| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🟢     | ✔️          |
 | [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/)            | 🟢     | ✔️          |
 | [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢     | ✔️          |
 | [SPPIDER](https://sppider.cchmc.org)                             | 🟢     | ✔️          |
@@ -34,7 +34,7 @@ Please also refer to the original publication:
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🟢     | ✔️          |
 | [PredictProtein](https://predictprotein.org)                     | 🟢     | ✔️          |
 | [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🟢     | ✔️          |
-| [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🟢     | ✔️          |
+| [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🔴     | ✔️          |
 | [ScanNet](http://bioinfo3d.cs.tau.ac.il/ScanNet/index_real.html) | 🟢     | ✔️          |
 
 ## Installation
@@ -47,33 +47,17 @@ Please refer to [INSTALL.md](INSTALL.md) for installation instructions.
 cport path/to/file/1PPE.pdb E
 ```
 
-## How to contribute
+## Machine Learning based consensus prediction of interface residues
 
-Please have a look at [CONTRIBUTE](CONTRIBUTING.md)
+#### `scriber_ispred4_sppider_csm_potential_scannet`
 
-## How to get Support
+_pending_
 
-If you encounter a bug or would like to request a feature, please open an ISSUE or a PR.
+#### `cport_ispred4_scannet_sppider`
 
-# CPORT2.0: Consensus Prediction Of interface Residues in Transient complexes version 2.0
+The `cport_ispred4_scannet_sppider` model was developed to obtain the interface residues of proteins for protein docking, using the predictions of several webservers and a deep neural network. This model uses SCRIBER, SCANNET, ISPRED4, and SPPIDER.
 
-CPORT2.0 is developed to obtain the interface residues of proteins for protein docking, using the predictions of several webservers and a deep neural network. The current model implemented in this version of CPORT2.0 uses the webservers of SCRIBER, SCANNET, ISPRED4, and SPPIDER.
-
-| Server                                                           | Used | Implemented               |
-| ---------------------------------------------------------------- | ---- | ------------------------- |
-| [WHISCY](https://wenmr.science.uu.nl/whiscy/)                    | 🔴   |                           |
-| [SCRIBER](http://biomine.cs.vcu.edu/servers/SCRIBER/)            | 🟢   | ✔️                        |
-| [ISPRED4](https://ispred4.biocomp.unibo.it/ispred/default/index) | 🟢   | ✔️                        |
-| [SPPIDER](https://sppider.cchmc.org)                             | 🟢   | ✔️                        |
-| [meta-PPISP](https://pipe.rcc.fsu.edu/meta-ppisp.html)           | 🔴   | ✔️                        |
-| [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🔴   |                           |
-| [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🔴   | ✔️                        |
-| [PredictProtein](https://predictprotein.org)                     | 🔴   | ✔️                        |
-| [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🔴   | ✔️                        |
-| [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🔴   | ✔️ (Server not available) |
-| [ScanNet](http://bioinfo3d.cs.tau.ac.il/ScanNet/index_real.html) | 🟢   | ✔️                        |
-
-## Data Preparetion
+##### Data Preparation
 
 The training and validation data can be found in "cport/data".
 Scripts for data preparetion step can be found in "cport/src/data_prep".
@@ -107,26 +91,10 @@ The sampling method can be modified by changing the "sampler" parameter in line 
 
 **_alphafold_data_prediction.py_**: This script is used to analyze the created model using the validation data of AlphaFold proteins.
 
-## Using CPORT2.0
+## How to contribute
 
-CPORT2.0 can be used with the command;
+Please have a look at [CONTRIBUTE](CONTRIBUTING.md)
 
-```text
-cport path/to/file/1PPE.pdb E
-```
+## How to get Support
 
-with providing the path of the PDB file of the protein and the corresponding chain that the interface residues are wanted.
-
-### Estimating Time
-
-Since CPORT2.0 uses several different webservers to get the probabilites of the residues being interface residues, the time to obtain the results from the webservers vary according to the length of the protein chain. It can be said that it approximately tkaes 5-15 mins, regarding the length of the chain.
-
-After all of the predictions are obtained, the pre-trained model predicts the probability of the residues being interface residues for each of them, which takes less than a minute.
-
-### Output Format
-
-CPORT2.0 outputs 2 files after finishes running.
-
-The name of the first file is syntaxed as "predictors\_\*w_values.csv", and contains the results obtained from different predictors and the scores for residues.
-
-The second file is called "cport\_\*w_values.csv" and contains the main output of CPORT2.0, a csv file with each residue as rows and "residue number", "cport_scores", and "threshold_pred" as columns. "cport_scores" column has the scores that the machine learning model assigned to each residue, and "threshold_pred" has a binary classification of the residues according to their "cport_scores" being higher or lower than a threshold value (0.4 by default).
+If you encounter a bug or would like to request a feature, please open an ISSUE or a PR.
