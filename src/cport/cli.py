@@ -5,10 +5,11 @@ import logging
 import sys
 from pathlib import Path
 
-import pandas as pd
-
 from cport.modules.loader import run_prediction
-from cport.modules.predict import ModelPredict
+from cport.modules.predict import (
+    scriber_ispred4_scannet_sppider,
+    scriber_ispred4_sppider_csm_potential_scannet,
+)
 from cport.modules.threadreturn import ThreadReturnVal
 from cport.modules.utils import format_output
 from cport.version import VERSION
@@ -24,6 +25,15 @@ log.addHandler(ch)
 
 
 CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
+
+ML_PREDICTION = {
+    scriber_ispred4_scannet_sppider: {
+        "needed": ["scriber", "ispred4", "scannet", "sppider"],
+    },
+    scriber_ispred4_sppider_csm_potential_scannet: {
+        "needed": ["scriber", "ispred4", "scannet", "sppider", "csm_potential"],
+    },
+}
 
 # ===========================================================================================================
 # Define arguments
@@ -154,15 +164,6 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
             "ispred4",
         ]
 
-        """if "validated" in pred:
-            pred = [
-                "scriber",
-                "ispred4",
-                "sppider",
-                "csm_potential", ###
-                "scannet",
-            ]"""
-
     threads = {}
 
     # prepare a dict of predictor initializations.
@@ -188,7 +189,6 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
     filename = Path(pdb_file)
 
     save_file = "output/predictors_" + filename.stem + ".csv"
-    # print(result_dic)
     format_output(
         result_dic,
         output_fname=save_file,
@@ -196,28 +196,19 @@ def main(pdb_file, chain_id, pdb_id, pred, fasta_file):
         chain_id=chain_id,
     )
 
-    pred_res = ModelPredict.read_pred(path=save_file)
-    prediction, probabilities, predict_residue, mean_scores = ModelPredict.prediction(
-        pred_res, threshold=0.4
-    )
-    output_dic = {}
-
-    cport_scores = []
-    residue_edit = []
-    for item in probabilities.tolist():
-        cport_scores.append(item[0])
-
-    for item in predict_residue:
-        residue_edit.append(int(item))
-
-    output_dic["residue"] = residue_edit
-    output_dic["cport_scores"] = cport_scores
-    output_dic["threshold_pred"] = prediction
-    output_dic["mean_scores"] = mean_scores
-
-    save_file = "output/cport_" + filename.stem + ".csv"
-    out_csv = pd.DataFrame(output_dic)
-    out_csv.to_csv(save_file)
+    # Use the ML model to make the prediction #========================================#
+    for predictor in ML_PREDICTION:
+        # Check if all the features are there
+        if all(item in result_dic for item in ML_PREDICTION[predictor]["needed"]):
+            log.info(f"Running ML predictor {predictor.__name__}")
+            predictor(save_file)
+        else:
+            log.warning(
+                "Not all needed predictors returned a result, skipping ML model."
+            )
+            log.warning(
+                "Missing predictors: " + ", ".join(ML_PREDICTION[predictor]["needed"])
+            )
 
 
 if __name__ == "__main__":
