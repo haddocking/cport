@@ -24,7 +24,23 @@ ch.setFormatter(formatter)
 log.addHandler(ch)
 
 
-CONFIG = json.load(open(Path(Path(__file__).parents[2], "etc/config.json")))
+CONFIG = {
+  "MUSCLE": "tools/muscle3",
+  "NACCESS": "tools/naccess.config",
+  "predictors": [
+    "whiscy",
+    "scriber",
+    "ispred4",
+    "sppider",
+    "cons_ppisp",
+    "meta_ppisp",
+    "predus2",
+    "predictprotein",
+    "psiver",
+    "csm_potential",
+    "scannet"
+  ]
+}
 
 ML_PREDICTION = {
     scriber_ispred4_scannet_sppider: {
