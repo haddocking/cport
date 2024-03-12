@@ -1,4 +1,5 @@
-"""Test if the meta_ppisp prediction is working"""
+"""Test if the meta_ppisp prediction is working."""
+
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,7 @@ def test_submit(psiver):
     summary_url = psiver.submit()
     assert isinstance(summary_url, str)
 
+
 @pytest.mark.skip("PSIVER offline")
 def test_retrieve_prediction_link(psiver):
     page_text = "All the results are available now."
@@ -32,6 +34,7 @@ def test_retrieve_prediction_link(psiver):
 @pytest.mark.skip("PSIVER offline")
 def test_download_results():
     pass
+
 
 @pytest.mark.skip("PSIVER offline")
 def test_parse_prediction(psiver, precalc_result):

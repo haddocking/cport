@@ -4,7 +4,7 @@ cli:
 plugins:
   sources:
     - id: trunk
-      ref: v1.2.2
+      ref: v1.4.4
       uri: https://github.com/trunk-io/plugins
 runtimes:
   enabled:

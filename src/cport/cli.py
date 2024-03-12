@@ -1,6 +1,6 @@
 """Main CLI."""
+
 import argparse
-import json
 import logging
 import sys
 from pathlib import Path
@@ -25,21 +25,21 @@ log.addHandler(ch)
 
 
 CONFIG = {
-  "MUSCLE": "tools/muscle3",
-  "NACCESS": "tools/naccess.config",
-  "predictors": [
-    "whiscy",
-    "scriber",
-    "ispred4",
-    "sppider",
-    "cons_ppisp",
-    "meta_ppisp",
-    "predus2",
-    "predictprotein",
-    "psiver",
-    "csm_potential",
-    "scannet"
-  ]
+    "MUSCLE": "tools/muscle3",
+    "NACCESS": "tools/naccess.config",
+    "predictors": [
+        "whiscy",
+        "scriber",
+        "ispred4",
+        "sppider",
+        "cons_ppisp",
+        "meta_ppisp",
+        "predus2",
+        "predictprotein",
+        "psiver",
+        "csm_potential",
+        "scannet",
+    ],
 }
 
 ML_PREDICTION = {
