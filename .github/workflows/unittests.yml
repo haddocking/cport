@@ -27,7 +27,7 @@ jobs:
       #   with:
       #     check-mode: all
 
-      - run: poetry run pytest --cov=./ --cov-report=xml -v
+      - run: poetry run pytest --cov=./ --cov-report=xml -v --disable-warnings
 
       - uses: codecov/codecov-action@v3
         with:
