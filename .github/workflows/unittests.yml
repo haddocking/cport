@@ -4,11 +4,7 @@ on: [pull_request]
 
 jobs:
   test:
-    runs-on: ${{ matrix.platform }}
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -17,7 +13,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.12
 
       - uses: snok/install-poetry@v1
         with:
