@@ -33,7 +33,7 @@ Please also refer to the original publication:
 | [PredUs2](http://honig.c2b2.columbia.edu/predus)                 | 🟠     |             |
 | [Cons-PPISP](https://pipe.rcc.fsu.edu/ppisp.html)                | 🟢     | ✔️          |
 | [PredictProtein](https://predictprotein.org)                     | 🟢     | ✔️          |
-| [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🟢     | ✔️          |
+| [PSIVER](https://mizuguchilab.org/PSIVER/)                       | 🔴     | ✔️          |
 | [CSM-Potential](http://biosig.unimelb.edu.au/csm_potential/)     | 🔴     | ✔️          |
 | [ScanNet](http://bioinfo3d.cs.tau.ac.il/ScanNet/index_real.html) | 🟢     | ✔️          |
 
