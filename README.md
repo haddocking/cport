@@ -1,7 +1,6 @@
 # CPORT: Consensus Prediction Of interface Residues in Transient complexes
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![python lint](https://github.com/haddocking/cport/actions/workflows/lint.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/lint.yml)
 [![unittests](https://github.com/haddocking/cport/actions/workflows/unittests.yml/badge.svg)](https://github.com/haddocking/cport/actions/workflows/unittests.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c4dd6c7da85847e1832b9668beb6de31)](https://www.codacy.com/gh/haddocking/cport/dashboard?utm_source=github.com&utm_medium=referral&utm_content=haddocking/cport&utm_campaign=Badge_Grade)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c4dd6c7da85847e1832b9668beb6de31)](https://www.codacy.com/gh/haddocking/cport/dashboard?utm_source=github.com&utm_medium=referral&utm_content=haddocking/cport&utm_campaign=Badge_Coverage)
