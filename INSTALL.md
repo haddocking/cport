@@ -11,6 +11,6 @@ Once those are in place;
 ```bash
 git clone https://github.com/haddocking/cport.git
 cd cport
-python setup.py develop
+pip install .
 cport
 ```
