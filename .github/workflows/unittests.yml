@@ -23,9 +23,7 @@ jobs:
 
       - run: poetry install --no-interaction --no-root
 
-      # - uses: trunk-io/trunk-action@v1
-      #   with:
-      #     check-mode: all
+      - uses: trunk-io/trunk-action@v1
 
       - run: poetry run pytest --cov=./ --cov-report=xml -v --disable-warnings
 
