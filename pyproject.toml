@@ -20,7 +20,7 @@ tensorflow = "^2.13.0"
 pytest = "*"
 pytest-cov = "*"
 coverage = "*"
-hypothesis = "*"
+hypothesis = "~6"
 
 [tool.poetry.scripts]
 cport = "cport.cli:maincli"
