@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: "3.11"
 
       - uses: snok/install-poetry@v1
         with:
@@ -21,9 +21,7 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - run: poetry install --no-interaction --no-root
-
-      # - uses: trunk-io/trunk-action@v1
+      - run: poetry install
 
       - run: poetry run pytest --cov=./ --cov-report=xml -v --disable-warnings
 

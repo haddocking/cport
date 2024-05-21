@@ -162,3 +162,4 @@ cython_debug/
 1PPE_3*
 example/*.csv
 output/
+poetry.lock
