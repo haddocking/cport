@@ -15,6 +15,7 @@ pdb-tools = "^2.5.0"
 keras = "^2.13.1"
 tensorflow = "^2.13.0"
 idna = "^3.7"
+requests = "2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]
